@@ -278,20 +278,28 @@
             if (!selectedVault || !depositAmount) return;
             const amount = parseFloat(depositAmount);
             if (amount <= 0) { alert("Erreur : Le montant de l'investissement doit être strictement positif."); return; }
-            const updatedVaults = vaults.map(v => {
-              if (v.id === selectedVault.id) {
-                return {
-                  ...v,
-                  currentAssets: v.currentAssets + amount,
-                  userBalance: v.userBalance + amount
-                };
-              }
-              return v;
-            });
+
+            // --- NOUVELLE VÉRIFICATION : HARD CAP ---
+            const remainingCapacity = selectedVault.totalCapacity - selectedVault.currentAssets;
+            if (amount > remainingCapacity) {
+                alert(`Erreur : Le dépôt dépasse la capacité restante du Vault.\nMaximum possible : ${formatCurrency(remainingCapacity)}`);
+                return;
+            }
+
+            // Mise à jour de l'objet selectedVault pour reflet immédiat
+            const updatedVault = {
+                ...selectedVault,
+                currentAssets: selectedVault.currentAssets + amount,
+                userBalance: selectedVault.userBalance + amount
+            };
+            setSelectedVault(updatedVault);
+
+            const updatedVaults = vaults.map(v => v.id === selectedVault.id ? updatedVault : v);
             setVaults(updatedVaults);
             alert(`Dépôt de ${formatCurrency(amount)} confirmé sur la blockchain !`);
             setDepositAmount('');
-            setSelectedVault(null);
+            // On garde la modale ouverte pour voir la mise à jour, ou on peut la fermer :
+            // setSelectedVault(null);
           };
 
           const handleTriggerOracle = (vaultId) => {
@@ -300,6 +308,9 @@
               return v;
             });
             setVaults(updatedVaults);
+            // Si le vault modifié est celui actuellement sélectionné (modale ouverte), on doit mettre à jour selectedVault aussi
+            // Mais ici handleTriggerOracle est appelé depuis le dashboard Oracle, pas la modale investisseur.
+            // Donc pas besoin de mettre à jour selectedVault ici.
             alert("⚠️ ORACLE ALERT : Catastrophe validée. Soft Default activé.");
           };
 
@@ -321,9 +332,19 @@
               const principalRecovered = vault.userBalance * recoveryRatio;
               const yieldBonus = vault.userBalance * 0.05;
               const totalPayout = principalRecovered + yieldBonus;
+
               alert(`Réclamation réussie !\n\nVous avez récupéré : ${formatCurrency(totalPayout)}\n(Dont 5% de Yield garanti)`);
+
+              // --- MISE À JOUR ÉTAT (POUR DÉSACTIVER BOUTON) ---
+              // On met le solde à 0 pour indiquer que tout a été réclamé
+              const updatedVault = { ...vault, userBalance: 0 };
+
+              // 1. Mettre à jour la modale actuelle immédiatement
+              setSelectedVault(updatedVault);
+
+              // 2. Mettre à jour la liste globale
               const updatedVaults = vaults.map(v => {
-                  if (v.id === vault.id) return { ...v, userBalance: 0 };
+                  if (v.id === vault.id) return updatedVault;
                   return v;
               });
               setVaults(updatedVaults);
@@ -580,7 +601,9 @@
                                         </div>
                                     ) : (
                                         <div className="text-center p-3 bg-red-100/50 dark:bg-red-900/30 rounded-lg text-red-800 dark:text-red-200 text-sm font-medium">
-                                            Vous n'avez pas de position active sur ce vault, mais le Haircut global est de {((1 - calculateClaimStats(selectedVault).recoveryRatio) * 100).toFixed(2)}%.
+                                            {/* Si userBalance est 0, c'est soit qu'il n'avait rien, soit qu'il a déjà réclamé. */}
+                                            {/* Pour être précis, on pourrait ajouter un état "hasClaimed", mais ici userBalance=0 suffit pour la logique d'affichage simplifiée. */}
+                                            Vous n'avez pas de position active sur ce vault (ou vous avez déjà effectué votre réclamation).
                                         </div>
                                     )}
                                 </div>
@@ -677,7 +700,7 @@
                                     }`}
                                 >
                                     <Coins className="h-5 w-5" />
-                                    {selectedVault.userBalance > 0 ? "Réclamer Fonds Restants (Soft Default)" : "Aucun solde à réclamer"}
+                                    {selectedVault.userBalance > 0 ? "Réclamer Fonds Restants (Soft Default)" : "Fonds Réclamés"}
                                 </button>
                               ) : (
                                   <div className="text-center py-2 text-slate-500 dark:text-slate-400 font-medium">
