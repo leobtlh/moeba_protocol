@@ -81,6 +81,14 @@ a { text-decoration: none; color: inherit; }
     transition: color 0.2s;
 }
 
+.nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    color: inherit;
+}
+
 .nav-btn-icon:hover,
 .nav-link:hover { color: var(--accent); }
 
