@@ -93,21 +93,24 @@
         const Building2 = ({ className }) => <IconWrapper className={className}><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/></IconWrapper>;
         const Coins = ({ className }) => <IconWrapper className={className}><circle cx="8" cy="8" r="6" /><path d="M18.09 10.37A6 6 0 1 1 10.34 18" /><path d="M7 6h1v4" /><path d="m16.71 13.88.7.71-2.82 2.82" /></IconWrapper>;
         const FileText = ({ className }) => <IconWrapper className={className}><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></IconWrapper>;
+        const PieChart = ({ className }) => <IconWrapper className={className}><path d="M21.21 15.89A10 10 0 1 1 8 2.83" /><path d="M22 12A10 10 0 0 0 12 2v10z" /></IconWrapper>;
+        const Info = ({ className }) => <IconWrapper className={className}><circle cx="12" cy="12" r="10" /><path d="M12 16v-4" /><path d="M12 8h.01" /></IconWrapper>;
 
         // Icônes Thème
         const Sun = ({ className }) => <IconWrapper className={className}><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41-1.41"/><path d="m19.07 4.93-1.41 1.41"/></IconWrapper>;
         const Moon = ({ className }) => <IconWrapper className={className}><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></IconWrapper>;
 
         // --- DONNÉES MOCK ---
+        // Modification : totalCapacity inclut désormais la prime pour être cohérent avec la logique "Assets Total"
         const INITIAL_VAULTS = [
           {
             id: "0x742...d439",
             name: "Florida Wind Season 2026",
             description: "Couverture contre les ouragans de catégorie 4 ou plus frappant la côte de Floride. \n\nConditions de déclenchement :\n- Vitesse du vent > 250 km/h (soutenue pendant 1 min).\n- Zone géographique : Comté de Miami-Dade.\n- Source Oracle : NOAA National Hurricane Center.\n\nEn cas de déclenchement, le paiement est effectué sous 48h via le Smart Contract.",
             insurer: "State Farm Re",
-            totalCapacity: 40000000,
+            totalCapacity: 40330000, // 40M (Risk Capital) + 330k (Premium)
             claimAmount: 40000000,
-            currentAssets: 4330000,
+            currentAssets: 4330000, // Junior (4M) + Prime (330k)
             juniorCapital: 4000000,
             premium: 330000,
             maturityDate: "18 Jan 2026",
@@ -122,7 +125,7 @@
             name: "Tokyo Earthquake Bond",
             description: "Obligation catastrophe liée au risque sismique dans la région métropolitaine de Tokyo.\n\nConditions de déclenchement :\n- Magnitude > 7.5 sur l'échelle de Richter.\n- Épicentre : Rayon de 50km autour de la tour de Tokyo.\n- Source Oracle : Japan Meteorological Agency (JMA).\n\nStructure : 100% Fully Funded, aucun risque de crédit assureur.",
             insurer: "Japan Post Insurance",
-            totalCapacity: 100000000,
+            totalCapacity: 100000000, // Pas de prime définie ici encore
             claimAmount: 100000000,
             currentAssets: 0,
             juniorCapital: 10000000,
@@ -206,11 +209,12 @@
           const handleCreateVault = (e) => {
             e.preventDefault();
             const capVal = parseFloat(newVaultData.cap);
+            const premiumVal = parseFloat(newVaultData.premium);
             const claimVal = isOvercollateralized ? parseFloat(newVaultData.coverage) : capVal;
 
             if (capVal <= 0) { alert("Erreur: La capacité doit être supérieure à 0."); return; }
             if (claimVal <= 0) { alert("Erreur: Le montant assuré doit être supérieur à 0."); return; }
-            if (parseFloat(newVaultData.premium) < 0) { alert("Erreur: La prime ne peut pas être négative."); return; }
+            if (premiumVal < 0) { alert("Erreur: La prime ne peut pas être négative."); return; }
             if (!newVaultData.description) { alert("Erreur: Veuillez ajouter une description et les conditions de déclenchement."); return; }
 
 
@@ -232,12 +236,15 @@
             const formattedDate = `${newVaultData.day} ${newVaultData.month} ${newVaultData.year}`;
             const simulatedRisk = (Math.random() * 19 + 1).toFixed(1);
 
+            // CORRECTION LOGIQUE : Total Capacity = Risk Capital (Entrée Assureur) + Prime
+            const totalCapacityCalculated = capVal + premiumVal;
+
             const newVault = {
               id: `0x${Math.floor(Math.random()*10000)}...new`,
               name: newVaultData.name || "Nouveau Cat Bond",
               description: newVaultData.description,
               insurer: "Moi (Assureur)",
-              totalCapacity: capVal,
+              totalCapacity: totalCapacityCalculated, // Inc. Prime
               claimAmount: claimVal,
               currentAssets: 0,
               juniorCapital: parseFloat(newVaultData.junior || 0),
@@ -260,12 +267,23 @@
             const updatedVaults = vaults.map(v => {
               if (v.id === vaultId) {
                 const newCurrentAssets = v.juniorCapital + premiumValue;
+
+                // Recalcul du Total Capacity si la prime change à l'initialisation (cas edge)
+                // Ici on suppose que la prime est celle définie à la création si non modifiée
+
+                // Pour le calcul d'APR : on divise la prime par le capital senior (Total - Junior - Prime)
+                // Note : totalCapacity ici inclut la prime, donc (Total - Junior - Prime) = (RiskCap + Prime - Junior - Prime) = RiskCap - Junior = SeniorCap
+                const riskCapacity = v.totalCapacity - v.premium; // Approximation si premium pas encore set, mais ici on update
+
                 return {
                   ...v,
                   status: "OPEN",
                   premium: premiumValue,
+                  // Si la prime est payée maintenant, on s'assure que totalCapacity est bien ajusté si besoin (mais fait à la création)
                   currentAssets: newCurrentAssets,
-                  apr: ((premiumValue * 100 * 365) / ((v.totalCapacity - v.juniorCapital) * 30)).toFixed(2),
+                  // APR = (Prime * 365) / (Senior Capital * Durée)
+                  // Senior Capital = TotalCapacity - Premium - Junior
+                  apr: ((premiumValue * 100 * 365) / ((v.totalCapacity - premiumValue - v.juniorCapital) * 30)).toFixed(2),
                   maturityDate: v.maturityDate === "En attente" ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString() : v.maturityDate
                 };
               }
@@ -280,8 +298,13 @@
             const amount = parseFloat(depositAmount);
             if (amount <= 0) { alert("Erreur : Le montant de l'investissement doit être strictement positif."); return; }
 
-            // --- NOUVELLE VÉRIFICATION : HARD CAP ---
+            // --- NOUVELLE VÉRIFICATION : HARD CAP SIMPLIFIÉ ---
+            // Capacité Restante = Total Capacity (Risk+Prime) - Current Assets
+            // Puisque Current Assets inclut déjà Junior + Prime + Dépôts précédents
+            // Et Total Capacity inclut Junior + SeniorMax + Prime
+            // Alors: (Junior + SeniorMax + Prime) - (Junior + Prime + SeniorCurrent) = SeniorMax - SeniorCurrent
             const remainingCapacity = selectedVault.totalCapacity - selectedVault.currentAssets;
+
             if (amount > remainingCapacity) {
                 alert(`Erreur : Le dépôt dépasse la capacité restante du Vault.\nMaximum possible : ${formatCurrency(remainingCapacity)}`);
                 return;
@@ -313,32 +336,62 @@
           const calculateClaimStats = (vault) => {
               const totalFunds = vault.currentAssets;
               const junior = vault.juniorCapital;
-              const senior = Math.max(0, totalFunds - junior);
+              // On exclut la prime du calcul du Senior "Risk Capital"
+              const premium = vault.premium || 0;
+              const riskCapital = totalFunds - premium;
+
+              const senior = Math.max(0, riskCapital - junior);
               const claimNeeded = vault.claimAmount || vault.totalCapacity;
+
+              // Waterfall
               const juniorPayout = Math.min(junior, claimNeeded);
               const remainingClaim = claimNeeded - juniorPayout;
               const seniorPayout = Math.min(senior, remainingClaim);
               const seniorRemaining = Math.max(0, senior - seniorPayout);
+
               const recoveryRatio = senior > 0 ? (seniorRemaining / senior) : 0;
               return { recoveryRatio, seniorRemaining };
           };
 
-          const handleClaim = (vault) => {
+          // --- NOUVELLE FONCTION CALCUL DÉTAILLÉ ---
+          const calculatePayoutDetails = (vault) => {
               const { recoveryRatio } = calculateClaimStats(vault);
+
+              // 1. Principal récupéré (Risk Capital)
               const principalRecovered = vault.userBalance * recoveryRatio;
-              const yieldBonus = vault.userBalance * 0.05;
-              const totalPayout = principalRecovered + yieldBonus;
 
-              alert(`Réclamation réussie !\n\nVous avez récupéré : ${formatCurrency(totalPayout)}\n(Dont 5% de Yield garanti)`);
+              // 2. Part de la Prime (Yield Sanctuarisé)
+              const seniorCapacity = vault.totalCapacity - vault.juniorCapital - vault.premium;
+              const userShare = seniorCapacity > 0 ? (vault.userBalance / seniorCapacity) : 0;
+              const yieldPayout = vault.premium * userShare;
 
-              // --- MISE À JOUR ÉTAT (POUR DÉSACTIVER BOUTON) ---
-              // On met le solde à 0 pour indiquer que tout a été réclamé
+              // 3. Rendement Base RWA (5% simlé sur capital restant)
+              // Note: Normalement calculé sur la durée, ici simplifié à 5% fixe
+              const rwaYield = vault.userBalance * 0.05;
+
+              // 4. Perte sur Principal
+              const loss = vault.userBalance - principalRecovered;
+
+              const totalPayout = principalRecovered + yieldPayout + rwaYield;
+
+              return { principalRecovered, yieldPayout, rwaYield, loss, totalPayout };
+          };
+
+          const handleClaim = (vault) => {
+              const details = calculatePayoutDetails(vault);
+
+              alert(`🧾 REÇU DE RÉCLAMATION\n
+----------------------------------------
+Solde Initial : ${formatCurrency(vault.userBalance)}
+----------------------------------------
+- ${formatCurrency(details.loss)} (Sinistre)
++ ${formatCurrency(details.rwaYield)} (5% Yield RWA)
++ ${formatCurrency(details.yieldPayout)} (Part de la Prime)
+----------------------------------------
+TOTAL VERSÉ : ${formatCurrency(details.totalPayout)}`);
+
               const updatedVault = { ...vault, userBalance: 0 };
-
-              // 1. Mettre à jour la modale actuelle immédiatement
               setSelectedVault(updatedVault);
-
-              // 2. Mettre à jour la liste globale
               const updatedVaults = vaults.map(v => {
                   if (v.id === vault.id) return updatedVault;
                   return v;
@@ -565,7 +618,7 @@
                                             <div>
                                                 <div className="flex items-center gap-3 mb-2">
                                                     <h1 className={`text-3xl font-bold ${selectedVault.status === 'TRIGGERED' ? 'text-red-700 dark:text-red-400' : 'text-slate-900 dark:text-white'}`}>
-                                                        {selectedVault.status === 'TRIGGERED' && "🚨 "}{selectedVault.name}
+                                                        {selectedVault.status === 'TRIGGERED' && "⚠ "}{selectedVault.name}
                                                     </h1>
                                                     {selectedVault.status === 'OPEN' && <span className="px-3 py-1 rounded-full text-xs font-bold bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-400 flex items-center gap-1">OPEN</span>}
                                                     {selectedVault.status === 'TRIGGERED' && <span className="px-3 py-1 rounded-full text-xs font-bold bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-400 flex items-center gap-1">CATASTROPHE</span>}
@@ -596,18 +649,35 @@
                                                         <span className="text-sm font-medium text-red-800 dark:text-red-300">Votre Solde Initial</span>
                                                         <span className="font-mono font-bold text-slate-600 dark:text-slate-400">{formatCurrency(selectedVault.userBalance)}</span>
                                                     </div>
-                                                    <div className="flex justify-between items-center mb-2">
-                                                        <span className="text-sm font-medium text-red-800 dark:text-red-300">Perte (Haircut)</span>
-                                                        <span className="font-mono font-bold text-red-600">-{((1 - calculateClaimStats(selectedVault).recoveryRatio) * 100).toFixed(2)}%</span>
-                                                    </div>
+
+                                                    {/* AFFICHAGE DU DÉTAIL DE LA RÉCLAMATION (Preview) */}
+                                                    {(() => {
+                                                        const details = calculatePayoutDetails(selectedVault);
+                                                        return (
+                                                            <div className="space-y-1 my-3 text-sm">
+                                                                <div className="flex justify-between text-red-600 dark:text-red-400">
+                                                                    <span>- Perte (Sinistre)</span>
+                                                                    <span>{formatCurrency(details.loss)}</span>
+                                                                </div>
+                                                                <div className="flex justify-between text-green-600 dark:text-green-400">
+                                                                    <span>+ 5% Yield RWA (Base)</span>
+                                                                    <span>{formatCurrency(details.rwaYield)}</span>
+                                                                </div>
+                                                                <div className="flex justify-between text-green-600 dark:text-green-400">
+                                                                    <span>+ Part de Prime (Yield)</span>
+                                                                    <span>{formatCurrency(details.yieldPayout)}</span>
+                                                                </div>
+                                                            </div>
+                                                        );
+                                                    })()}
+
                                                     <div className="h-px bg-red-200 dark:bg-red-800 my-2"></div>
                                                     <div className="flex justify-between items-center">
                                                         <span className="text-lg font-bold text-red-900 dark:text-white">Montant Récupérable</span>
                                                         <span className="font-mono text-xl font-bold text-green-600 dark:text-green-400">
-                                                            {formatCurrency(selectedVault.userBalance * calculateClaimStats(selectedVault).recoveryRatio + (selectedVault.userBalance * 0.05))}
+                                                            {formatCurrency(calculatePayoutDetails(selectedVault).totalPayout)}
                                                         </span>
                                                     </div>
-                                                    <p className="text-xs text-right text-green-600 dark:text-green-400 mt-1">+ Inclus 5% Yield (RWA)</p>
                                                 </div>
                                             ) : (
                                                 <div className="text-center p-3 bg-red-100/50 dark:bg-red-900/30 rounded-lg text-red-800 dark:text-red-200 text-sm font-medium">
@@ -627,31 +697,64 @@
                                         </div>
                                     </section>
 
-                                    {/* BLOC METRIQUES FINANCIERES */}
+                                    {/* BLOC EXPLICATION TRANSPARENCE (NOUVEAU) */}
+                                    <section className="bg-indigo-50 dark:bg-indigo-900/20 rounded-2xl p-8 border border-indigo-100 dark:border-indigo-800">
+                                        <h4 className="text-lg font-bold text-indigo-900 dark:text-indigo-300 uppercase tracking-wider mb-4 flex items-center gap-2">
+                                            <Info className="h-5 w-5 text-indigo-600 dark:text-indigo-400"/> Mécanisme de Transparence
+                                        </h4>
+                                        <p className="text-sm text-indigo-800 dark:text-indigo-200 leading-relaxed mb-4">
+                                            Pour garantir l'équité ("Fairplay"), ce vault sépare strictement les fonds :
+                                        </p>
+                                        <ul className="list-disc list-inside text-sm text-indigo-700 dark:text-indigo-300 space-y-2">
+                                            <li><strong>Poche de Risque (Risk Capital) :</strong> Composée de la Tranche Junior (Assureur) et de la Tranche Senior (Investisseurs). C'est le seul capital utilisé pour payer les sinistres.</li>
+                                            <li><strong>Réserve de Rendement (Yield Reserve) :</strong> Composée de la Prime versée par l'assureur. Cette poche est <strong>sanctuarisée</strong> et ne sert jamais à payer les sinistres. Elle garantit que le rendement promis est distribué aux investisseurs, même en cas de défaut total.</li>
+                                        </ul>
+                                    </section>
+
+                                    {/* BLOC METRIQUES FINANCIERES (MISE À JOUR) */}
                                     <section className="bg-white dark:bg-slate-800 rounded-2xl p-8 border border-slate-200 dark:border-slate-700">
                                         <h4 className="text-lg font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-6 flex items-center gap-2">
                                             <Activity className="h-5 w-5 text-green-600 dark:text-green-400"/> Données Financières
                                         </h4>
-                                        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                                        <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+                                            {/* Ligne 1 : Structure du Capital */}
                                             <div className="bg-slate-50 dark:bg-slate-900/30 p-4 rounded-xl border border-slate-100 dark:border-slate-700">
-                                                <p className="text-xs text-slate-500 dark:text-slate-400 mb-2 uppercase font-semibold">Capacité Totale</p>
+                                                <p className="text-xs text-slate-500 dark:text-slate-400 mb-2 uppercase font-semibold">Capacité Totale (Hard Cap)</p>
                                                 <p className="text-xl font-bold text-slate-900 dark:text-white">{formatCurrency(selectedVault.totalCapacity)}</p>
+                                                <p className="text-[10px] text-slate-400 mt-1">Inclus Capital Risque + Prime</p>
                                             </div>
                                             <div className="bg-slate-50 dark:bg-slate-900/30 p-4 rounded-xl border border-slate-100 dark:border-slate-700">
-                                                <p className="text-xs text-slate-500 dark:text-slate-400 mb-2 uppercase font-semibold">Tranche Junior</p>
+                                                <p className="text-xs text-slate-500 dark:text-slate-400 mb-2 uppercase font-semibold text-indigo-600 dark:text-indigo-400">Tranche Junior (First Loss)</p>
                                                 <p className="text-xl font-bold text-indigo-600 dark:text-indigo-400">{formatCurrency(selectedVault.juniorCapital)}</p>
+                                                <p className="text-[10px] text-slate-400 mt-1">Capital Assureur à risque</p>
                                             </div>
                                             <div className="bg-slate-50 dark:bg-slate-900/30 p-4 rounded-xl border border-slate-100 dark:border-slate-700">
-                                                <p className="text-xs text-slate-500 dark:text-slate-400 mb-2 uppercase font-semibold">Liquidité Actuelle</p>
+                                                <p className="text-xs text-slate-500 dark:text-slate-400 mb-2 uppercase font-semibold text-green-600 dark:text-green-400">Réserve de Prime (Yield)</p>
+                                                <p className="text-xl font-bold text-green-600 dark:text-green-400">{formatCurrency(selectedVault.premium)}</p>
+                                                <p className="text-[10px] text-slate-400 mt-1">Sanctuarisée pour les investisseurs</p>
+                                            </div>
+
+                                            {/* Ligne 2 : État Actuel */}
+                                            <div className="bg-slate-50 dark:bg-slate-900/30 p-4 rounded-xl border border-slate-100 dark:border-slate-700">
+                                                <p className="text-xs text-slate-500 dark:text-slate-400 mb-2 uppercase font-semibold">Liquidité Totale (TVL)</p>
                                                 <p className="text-xl font-bold text-slate-900 dark:text-white">{formatCurrency(selectedVault.currentAssets)}</p>
+                                                <p className="text-[10px] text-slate-400 mt-1">Fonds présents dans le contrat</p>
+                                            </div>
+                                            <div className="bg-slate-50 dark:bg-slate-900/30 p-4 rounded-xl border border-slate-100 dark:border-slate-700">
+                                                <p className="text-xs text-slate-500 dark:text-slate-400 mb-2 uppercase font-semibold">Capacité Investisseurs</p>
+                                                <p className="text-xl font-bold text-blue-600 dark:text-blue-400">
+                                                    {formatCurrency(selectedVault.totalCapacity - selectedVault.juniorCapital - selectedVault.premium)}
+                                                </p>
+                                                <p className="text-[10px] text-slate-400 mt-1">Espace Senior Strict (Cap - Junior)</p>
                                             </div>
                                             <div className="bg-slate-50 dark:bg-slate-900/30 p-4 rounded-xl border border-slate-100 dark:border-slate-700">
                                                 <p className="text-xs text-slate-500 dark:text-slate-400 mb-2 uppercase font-semibold">Sur-Collatéralisation</p>
-                                                <p className="text-xl font-bold text-green-600 dark:text-green-400">
+                                                <p className="text-xl font-bold text-slate-900 dark:text-white">
                                                     {selectedVault.totalCapacity > selectedVault.claimAmount ?
                                                         ((selectedVault.totalCapacity / selectedVault.claimAmount) * 100).toFixed(0) + '%'
                                                         : '100%'}
                                                 </p>
+                                                <p className="text-[10px] text-slate-400 mt-1">Ratio Couverture / Risque</p>
                                             </div>
                                         </div>
                                     </section>
@@ -685,7 +788,13 @@
                                                     <div>
                                                         <div className="flex justify-between items-center mb-2">
                                                             <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Montant (USDC)</label>
-                                                            <span className="text-xs text-slate-500 dark:text-slate-400">Max: {formatCurrency(selectedVault.totalCapacity - selectedVault.currentAssets)}</span>
+                                                            {/* Calcul dynamique de l'espace restant pour les investisseurs */}
+                                                            <span className="text-xs text-slate-500 dark:text-slate-400">
+                                                                Max: {formatCurrency(
+                                                                    (selectedVault.totalCapacity - selectedVault.juniorCapital - selectedVault.premium) -
+                                                                    (selectedVault.currentAssets - selectedVault.juniorCapital - selectedVault.premium)
+                                                                )}
+                                                            </span>
                                                         </div>
                                                         <div className="relative">
                                                             <input
