@@ -35,7 +35,7 @@ body {
   background-color: var(--bg-main);
   color: var(--text-main);
   height: 100vh;
-  overflow: hidden; /* Nécessaire pour le script de scroll */
+  overflow: hidden; /* Nécessaire pour ton script de scroll */
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
@@ -132,6 +132,33 @@ a { text-decoration: none; color: inherit; }
     padding: 0 2rem;
     margin-top: var(--header-height); /* Compenser le header fixe */
 }
+
+/* --- DECORATION MOUTONS (NOUVEAU) --- */
+.bg-sheep {
+    position: absolute;
+    bottom: 0;
+    width: 300px; /* Ajuster selon le rendu souhaité */
+    max-width: 20vw;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.85;
+}
+
+.bg-sheep-left {
+    left: 2rem;
+    /* Transformation si nécessaire, par ex: transform: scaleX(-1); */
+}
+
+.bg-sheep-right {
+    right: 2rem;
+}
+
+/* Le contenu doit passer au-dessus des images de fond */
+.page-advanced .content-wrapper {
+    position: relative;
+    z-index: 10;
+}
+
 
 /* --- PAGE 1: HERO --- */
 .hero-content {
@@ -296,12 +323,12 @@ a { text-decoration: none; color: inherit; }
     transform: translate(-50%, -50%);
 
     /* MODIF 1 : Largeur forcée pour prendre presque tout l'écran */
-    width: 90vw;
-    height: 90vh;
+    width: 95vw !important;
+    height: 90vh !important;
 
     /* MODIF 2 : Max-width très large pour écrans larges */
-    max-width: 1250px;
-    max-height: 80vh;
+    max-width: 1600px !important;
+    max-height: 95vh;
 
     z-index: 1000;
     overflow-y: auto;
@@ -312,8 +339,8 @@ a { text-decoration: none; color: inherit; }
     padding: 4rem; /* Espace interne augmenté */
 
     /* MODIF 3 : Reset des grid-column qui pourraient interférer si non sortis du flux */
-    grid-column: auto;
-    margin: 0;
+    grid-column: auto !important;
+    margin: 0 !important;
 }
 
 /* Adaptation de la typographie pour la grande carte */
