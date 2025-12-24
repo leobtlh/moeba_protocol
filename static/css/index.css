@@ -157,6 +157,13 @@ a { text-decoration: none; color: inherit; }
 .page-advanced .content-wrapper {
     position: relative;
     z-index: 10;
+    /* FIX: Suppression du z-index: 10 ici.
+       Il créait un contexte d'empilement qui forçait la carte (z=1000)
+       à rester SOUS l'overlay (z=999) car le parent wrapper était à 10.
+
+       Comme le wrapper vient APRES les moutons dans le HTML,
+       position: relative suffit à le garder au-dessus des moutons. */
+    z-index: auto;
 }
 
 
@@ -327,8 +334,8 @@ a { text-decoration: none; color: inherit; }
     height: 90vh !important;
 
     /* MODIF 2 : Max-width très large pour écrans larges */
-    max-width: 1600px !important;
-    max-height: 95vh;
+    max-width: 1200px !important;
+    max-height: 85vh;
 
     z-index: 1000;
     overflow-y: auto;
