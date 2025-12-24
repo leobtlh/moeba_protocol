@@ -35,7 +35,7 @@ body {
   background-color: var(--bg-main);
   color: var(--text-main);
   height: 100vh;
-  overflow: hidden; /* Nécessaire pour ton script de scroll */
+  overflow: hidden; /* Nécessaire pour le script de scroll */
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
