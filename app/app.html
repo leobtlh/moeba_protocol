@@ -54,7 +54,7 @@
     <script src="https://unpkg.com/prop-types/prop-types.min.js"></script>
     <script src="https://unpkg.com/recharts@2.5.0/umd/Recharts.js"></script>
 
-    <!-- 6. Chargement de Ethers.js (CORRECTIF CDNJS PLUS STABLE) -->
+    <!-- 6. Chargement de Ethers.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js" xintegrity="sha512-FDcVY+g7vc55I8ZY0C0n8n7qoAVbFmnzz414JIqLuuqiCe3rMZQ52QB1tNRg7pDOcCS5jTKS23IGvBJq7V3Wbw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <!-- 7. Chargement de Babel -->
@@ -68,20 +68,17 @@
         .animate-fade-in {
             animation: fadeIn 0.5s ease-out forwards;
         }
-        /* Custom scrollbar for dark mode */
         .dark ::-webkit-scrollbar { width: 8px; }
         .dark ::-webkit-scrollbar-track { background: #0f172a; }
         .dark ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
         .dark ::-webkit-scrollbar-thumb:hover { background: #475569; }
 
         /* --- CSS POUR CACHER LES FLÈCHES DES INPUTS NUMBER --- */
-        /* Chrome, Safari, Edge, Opera */
         input::-webkit-outer-spin-button,
         input::-webkit-inner-spin-button {
           -webkit-appearance: none;
           margin: 0;
         }
-        /* Firefox */
         input[type=number] {
           -moz-appearance: textfield;
         }
@@ -97,9 +94,9 @@
         // Importation sécurisée des composants Recharts depuis l'objet global window.Recharts
         const { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } = window.Recharts || {};
 
-        // --- CONSTANTES WEB3 (A REMPLIR POUR LE MODE LIVE) ---
-        const FACTORY_ADDRESS = "0x..."; // Adresse du HPIVFactory déployé
-        const USDC_ADDRESS = "0x...";    // Adresse de l'USDC
+        // --- CONSTANTES WEB3 ---
+        const AVAILABLE_CHAINS = ['Base', 'Ethereum', 'Polygon', 'Arbitrum', 'Optimism'];
+        const AVAILABLE_ASSETS = ['USDC', 'USDT', 'DAI', 'WETH'];
 
         // --- COMPOSANTS ICONS ---
         const IconWrapper = ({ children, className }) => (
@@ -133,6 +130,7 @@
         const LogOut = ({ className }) => <IconWrapper className={className}><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></IconWrapper>;
         const RefreshCw = ({ className }) => <IconWrapper className={className}><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></IconWrapper>;
         const Zap = ({ className }) => <IconWrapper className={className}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></IconWrapper>;
+        const Globe = ({ className }) => <IconWrapper className={className}><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></IconWrapper>;
 
         // Icônes Thème
         const Sun = ({ className }) => <IconWrapper className={className}><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41-1.41"/><path d="m19.07 4.93-1.41 1.41"/></IconWrapper>;
@@ -179,12 +177,12 @@
             return data;
         };
 
-        // --- DONNÉES MOCK ---
+        // --- DONNÉES MOCK AVEC CHAINES ET ASSETS ---
         const INITIAL_VAULTS = [
           {
             id: "0x742...d439",
             name: "Florida Wind Season 2026",
-            description: "Couverture contre les ouragans de catégorie 4 ou plus frappant la côte de Floride. \n\nConditions de déclenchement :\n- Vitesse du vent > 250 km/h (soutenue pendant 1 min).\n- Zone géographique : Comté de Miami-Dade.\n- Source Oracle : NOAA National Hurricane Center.\n\nEn cas de déclenchement, le paiement est effectué sous 48h via le Smart Contract.",
+            description: "Couverture contre les ouragans de catégorie 4 ou plus frappant la côte de Floride.",
             insurer: "State Farm Re",
             totalCapacity: 40330000,
             claimAmount: 40000000,
@@ -198,6 +196,8 @@
             userBalance: 0,
             triggerValue: 250,
             oracleType: 'WIND',
+            chain: 'Base',
+            asset: 'USDC',
             triggers: [
                 { id: 'windSpeed', name: 'Vitesse Vent', unit: 'km/h', color: '#3b82f6', threshold: 250 }
             ],
@@ -206,7 +206,7 @@
           {
             id: "0x891...a122",
             name: "Tokyo Earthquake Bond",
-            description: "Obligation catastrophe liée au risque sismique dans la région métropolitaine de Tokyo.\n\nConditions de déclenchement :\n- Magnitude > 7.5 sur l'échelle de Richter.\n- Épicentre : Rayon de 50km autour de la tour de Tokyo.\n- Source Oracle : Japan Meteorological Agency (JMA).\n\nStructure : 100% Fully Funded, aucun risque de crédit assureur.",
+            description: "Obligation catastrophe liée au risque sismique dans la région métropolitaine de Tokyo.",
             insurer: "Japan Post Insurance",
             totalCapacity: 100000000,
             claimAmount: 100000000,
@@ -220,6 +220,8 @@
             userBalance: 0,
             triggerValue: 7.5,
             oracleType: 'EARTHQUAKE',
+            chain: 'Ethereum',
+            asset: 'USDT',
             triggers: [
                 { id: 'magnitude', name: 'Magnitude', unit: 'Richter', color: '#8b5cf6', threshold: 7.5 }
             ],
@@ -301,13 +303,13 @@
           const [selectedVault, setSelectedVault] = useState(null);
           const [depositAmount, setDepositAmount] = useState('');
 
+          // FILTRES
+          const [selectedChains, setSelectedChains] = useState([]); // Stocke les chaînes sélectionnées
+
           // --- MODE LIVE VS SIMULATION ---
-          const [isLiveMode, setIsLiveMode] = useState(false); // Default: Simulation
+          const [isLiveMode, setIsLiveMode] = useState(false);
 
-          // État pour le Dark Mode
           const [isDarkMode, setIsDarkMode] = useState(false);
-
-          // État Notification Toast
           const [notification, setNotification] = useState({ message: '', type: 'info' });
 
           const showNotification = (msg, type = 'info') => {
@@ -327,7 +329,6 @@
                         const addr = accounts[0];
                         setUserAddress(`${addr.substring(0, 6)}...${addr.substring(addr.length - 4)}`);
                         showNotification("Compte changé détecté", 'info');
-                        // Optionnel: Re-fetch balance
                     } else {
                         setWalletConnected(false);
                         setUserAddress('');
@@ -359,14 +360,30 @@
             premium: 330000,
             day: '',
             month: 'Janvier',
-            year: new Date().getFullYear()
+            year: new Date().getFullYear(),
+            chain: 'Base', // Valeur par défaut
+            asset: 'USDC'  // Valeur par défaut
           });
 
           const [isOvercollateralized, setIsOvercollateralized] = useState(false);
 
-          // --- CONNEXION WALLET AVEC SIGNATURE & BALANCE (VERSION ROBUSTE) ---
+          // --- GESTION DES FILTRES INVESTISSEUR ---
+          const toggleChainFilter = (chain) => {
+              if (selectedChains.includes(chain)) {
+                  setSelectedChains(selectedChains.filter(c => c !== chain));
+              } else {
+                  setSelectedChains([...selectedChains, chain]);
+              }
+          };
+
+          // Filtrage des vaults
+          const filteredVaults = vaults.filter(vault => {
+              if (selectedChains.length === 0) return true; // Aucun filtre = tout afficher
+              return selectedChains.includes(vault.chain);
+          });
+
+          // --- CONNEXION WALLET ---
           const connectWallet = async () => {
-            // Sécurité : Vérifier si Ethers est chargé
             if (!window.ethers) {
                 showNotification("Erreur technique : Librairie Web3 non chargée.", 'error');
                 return;
@@ -374,8 +391,6 @@
 
             if (typeof window.ethereum !== 'undefined') {
                 try {
-                    // 1. Demande d'accès (Standard EIP-1102 plus compatible)
-                    // On demande d'abord les comptes via l'API native du navigateur
                     const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
 
                     if (!accounts || accounts.length === 0) {
@@ -383,33 +398,24 @@
                         return;
                     }
 
-                    // Initialisation du Provider
-                    // Utilisation explicite de window.ethers
                     const provider = new window.ethers.providers.Web3Provider(window.ethereum);
                     const signer = provider.getSigner();
                     const address = await signer.getAddress();
 
-                    // 2. SIGNATURE DE MESSAGE (Authentification Sécurisée)
                     try {
                         const messageToSign = `Connexion Mœba Protocol\n\nWallet: ${address}\nNonce: ${Date.now()}`;
                         showNotification("Veuillez signer la demande dans votre wallet...", 'info');
-
-                        // Appel bloquant pour la signature
                         await signer.signMessage(messageToSign);
-
                         showNotification("Signature valide. Connexion autorisée.", 'success');
                     } catch (signErr) {
                         console.error("Erreur signature:", signErr);
                         showNotification("Connexion annulée : Signature refusée par l'utilisateur.", 'error');
-                        return; // Arrêt impératif si pas de signature
+                        return;
                     }
 
-                    // 3. Récupération du SOLDE RÉEL
                     const balanceBig = await provider.getBalance(address);
-                    // Utilisation explicite de window.ethers
                     const balanceFmt = window.ethers.utils.formatEther(balanceBig);
 
-                    // Mise à jour State
                     const shortAddress = `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
                     setWalletConnected(true);
                     setUserAddress(shortAddress);
@@ -420,7 +426,6 @@
 
                 } catch (error) {
                     console.error("Erreur connexion:", error);
-                    // Affiche le message d'erreur précis (ex: User rejected the request)
                     showNotification(`Echec connexion: ${error.message || error}`, 'error');
                 }
             } else {
@@ -453,16 +458,13 @@
               return m ? m.days : 31;
           };
 
-          // ==========================================================
-          // === ACTION CRÉATION DE VAULT (INSURER) ===
-          // ==========================================================
+          // --- CREATION VAULT ---
           const handleCreateVault = async (e) => {
             e.preventDefault();
             const capVal = parseFloat(newVaultData.cap);
             const premiumVal = parseFloat(newVaultData.premium);
             const claimVal = isOvercollateralized ? parseFloat(newVaultData.coverage) : capVal;
 
-            // Validations de base...
             if (capVal <= 0) { showNotification("Erreur: La capacité doit être supérieure à 0.", 'error'); return; }
             if (claimVal <= 0) { showNotification("Erreur: Le montant assuré doit être supérieur à 0.", 'error'); return; }
             if (!newVaultData.description) { showNotification("Erreur: Description manquante.", 'error'); return; }
@@ -474,48 +476,19 @@
 
             if (selectedDate < today) { showNotification("Date invalide (passé).", 'error'); return; }
 
-            // --- LOGIQUE LIVE VS SIMULATION ---
             if (isLiveMode) {
-                // ============================================
-                // === MODE LIVE (Blockchain Interaction) ===
-                // ============================================
                 if (!walletConnected) { showNotification("Connectez votre wallet pour le mode Live.", 'error'); return; }
-
                 try {
                     const provider = new window.ethers.providers.Web3Provider(window.ethereum);
                     const signer = provider.getSigner();
-                    // const factory = new window.ethers.Contract(FACTORY_ADDRESS, FACTORY_ABI, signer);
-
                     showNotification("Mode Live: Envoi de la transaction vers la Blockchain...", 'info');
-
-                    /* // DECOMMENTER ICI QUAND FACTORY_ADDRESS EST DEFINIE
-                       const diffTime = Math.abs(selectedDate - today);
-                       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-                       const tx = await factory.createVault(
-                            USDC_ADDRESS,
-                            "0x0000000000000000000000000000000000000000",
-                            window.ethers.utils.parseUnits(newVaultData.cap.toString(), 6),
-                            window.ethers.utils.parseUnits(claimVal.toString(), 6),
-                            diffDays,
-                            newVaultData.name,
-                            newVaultData.description
-                       );
-                       await tx.wait();
-                    */
-
-                    // Pour le moment, simuler le succès même en live pour ne pas casser l'UI sans contrat
                     showNotification("Mode Live: Transaction envoyée (Simulée pour démo car pas d'adresse Factory)", 'success');
-
                 } catch (err) {
                     console.error(err);
                     showNotification("Erreur Blockchain: " + err.message, 'error');
                     return;
                 }
             } else {
-                // ============================================
-                // === MODE SIMULATION (Mock Data) ===
-                // ============================================
                 const formattedDate = `${newVaultData.day} ${newVaultData.month} ${newVaultData.year}`;
                 const simulatedRisk = (Math.random() * 19 + 1).toFixed(1);
                 const totalCapacityCalculated = capVal + premiumVal;
@@ -537,21 +510,21 @@
                     userBalance: 0,
                     triggerValue: 0,
                     oracleType: 'WIND',
+                    // NOUVEAUX CHAMPS
+                    chain: newVaultData.chain,
+                    asset: newVaultData.asset,
                     triggers: [{ id: 'windSpeed', name: 'Paramètre', unit: 'unit', color: '#3b82f6' }],
                     history: generateMockHistory('WIND')
                 };
                 setVaults([...vaults, newVault]);
-                showNotification(`Vault créé (Simulation) ! Probabilité: ${simulatedRisk}%`, 'success');
+                showNotification(`Vault créé sur ${newVaultData.chain} (${newVaultData.asset})!`, 'success');
             }
 
-            // Reset form
             setNewVaultData({ ...newVaultData, name: '', description: '', day: '', month: 'Janvier', year: new Date().getFullYear(), coverage: capVal });
             setIsOvercollateralized(false);
           };
 
           const handleInitializeVault = (vaultId) => {
-             // Fonction Purement locale pour l'instant (transition Pending -> Open)
-             // En live, cela nécessiterait approve + initializeVault sur le contrat
              const premiumValue = parseFloat(newVaultData.premium || 0);
              const updatedVaults = vaults.map(v => {
                if (v.id === vaultId) {
@@ -570,9 +543,6 @@
              showNotification(isLiveMode ? "Vault Initialisé (Live Mock)" : "Vault Initialisé (Simulation)", 'success');
           };
 
-          // ==========================================================
-          // === ACTION DE DÉPÔT (INVESTOR) ===
-          // ==========================================================
           const handleDeposit = async () => {
             if (!walletConnected) {
                 showNotification("Veuillez d'abord connecter votre wallet.", 'error');
@@ -588,38 +558,17 @@
                 return;
             }
 
-            // --- LOGIQUE LIVE VS SIMULATION ---
             if (isLiveMode) {
-                 // ============================================
-                 // === MODE LIVE (Blockchain Interaction) ===
-                 // ============================================
                  try {
                      const provider = new window.ethers.providers.Web3Provider(window.ethereum);
                      const signer = provider.getSigner();
-
                      showNotification("Mode Live: Veuillez approuver la transaction...", 'info');
-
-                     /*
-                        // DECOMMENTER ICI POUR ACTIVER LA LOGIQUE REELLE
-                        const usdc = new window.ethers.Contract(USDC_ADDRESS, ERC20_ABI, signer);
-                        const vault = new window.ethers.Contract(selectedVault.id, VAULT_ABI, signer);
-                        const amountWei = window.ethers.utils.parseUnits(amount.toString(), 6);
-
-                        await (await usdc.approve(selectedVault.id, amountWei)).wait();
-                        await (await vault.deposit(amountWei, userAddress)).wait();
-                     */
-
-                     // Simulation de réussite pour la démo UI en mode Live
                      showNotification("Mode Live: Transaction envoyée (Mockée sans ABI)", 'success');
-
                  } catch (err) {
                      showNotification("Erreur Blockchain: " + err.message, 'error');
                      return;
                  }
             } else {
-                 // ============================================
-                 // === MODE SIMULATION (Local State) ===
-                 // ============================================
                  const updatedVault = {
                      ...selectedVault,
                      currentAssets: selectedVault.currentAssets + amount,
@@ -627,7 +576,7 @@
                  };
                  setSelectedVault(updatedVault);
                  setVaults(vaults.map(v => v.id === selectedVault.id ? updatedVault : v));
-                 showNotification(`Dépôt de ${formatCurrency(amount)} confirmé (Simulation).`, 'success');
+                 showNotification(`Dépôt de ${amount} ${selectedVault.asset} confirmé (Simulation).`, 'success');
             }
             setDepositAmount('');
           };
@@ -689,25 +638,13 @@
                         <img src="https://github.com/leobtlh/moeba_protocol/blob/main/img/homeMadeLogo.png?raw=true" alt="MOEBA" className="h-12 w-auto" />
                       </a>
 
-                      {/* --- SWITCH SIMULATION / LIVE --- */}
                       <div className="hidden md:flex items-center gap-2 bg-slate-100 dark:bg-slate-800 p-1 rounded-full ml-4">
-                         <button
-                            onClick={() => setIsLiveMode(false)}
-                            className={`px-3 py-1 text-xs font-bold rounded-full transition-all flex items-center gap-1 ${!isLiveMode ? 'bg-white dark:bg-slate-600 shadow text-slate-900 dark:text-white' : 'text-slate-500 hover:text-slate-700'}`}
-                         >
-                            <RefreshCw className="h-3 w-3" /> Simulation
-                         </button>
-                         <button
-                            onClick={() => setIsLiveMode(true)}
-                            className={`px-3 py-1 text-xs font-bold rounded-full transition-all flex items-center gap-1 ${isLiveMode ? 'bg-red-500 shadow text-white' : 'text-slate-500 hover:text-slate-700'}`}
-                         >
-                            <Zap className="h-3 w-3" /> Live
-                         </button>
+                         <button onClick={() => setIsLiveMode(false)} className={`px-3 py-1 text-xs font-bold rounded-full transition-all flex items-center gap-1 ${!isLiveMode ? 'bg-white dark:bg-slate-600 shadow text-slate-900 dark:text-white' : 'text-slate-500 hover:text-slate-700'}`}><RefreshCw className="h-3 w-3" /> Simulation</button>
+                         <button onClick={() => setIsLiveMode(true)} className={`px-3 py-1 text-xs font-bold rounded-full transition-all flex items-center gap-1 ${isLiveMode ? 'bg-red-500 shadow text-white' : 'text-slate-500 hover:text-slate-700'}`}><Zap className="h-3 w-3" /> Live</button>
                       </div>
                     </div>
 
                     <div className="flex items-center gap-4">
-                      {/* Rôles (Desktop) */}
                       <div className="hidden md:flex bg-slate-100 dark:bg-slate-800 rounded-lg p-1 transition-colors">
                         <button onClick={() => { setActiveRole('investor'); setSelectedVault(null); }} className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${activeRole === 'investor' ? 'bg-white dark:bg-slate-700 shadow-sm text-blue-700 dark:text-blue-400' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'}`}>Investisseur</button>
                         <button onClick={() => { setActiveRole('insurer'); setSelectedVault(null); }} className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${activeRole === 'insurer' ? 'bg-white dark:bg-slate-700 shadow-sm text-indigo-700 dark:text-indigo-400' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'}`}>Assureur</button>
@@ -745,146 +682,130 @@
 
               <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-                {/* --- DASHBOARD GLOBAL (STATS) --- */}
-                {!selectedVault && (
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-
-                      {/* CARTE TVL */}
-                      <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md transition-all">
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Total Value Locked (TVL)</p>
-                            <h3 className="text-3xl font-bold text-slate-900 dark:text-white mt-2">$44.3M</h3>
-                          </div>
-                          <div className="p-3 bg-blue-50 dark:bg-blue-900/30 rounded-xl">
-                            <Activity className="h-6 w-6 text-blue-600 dark:text-blue-400" />
-                          </div>
-                        </div>
-                        <div className="mt-4 flex items-center text-sm text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/30 w-fit px-2 py-1 rounded-full">
-                          <TrendingUp className="h-3 w-3 mr-1" /> +2.4% this week
-                        </div>
-                      </div>
-
-                      {/* CARTE APR */}
-                      <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md transition-all">
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Rendement Moyen (APR)</p>
-                            <h3 className="text-3xl font-bold text-slate-900 dark:text-white mt-2">18.5%</h3>
-                          </div>
-                          <div className="p-3 bg-green-50 dark:bg-green-900/30 rounded-xl">
-                            <TrendingUp className="h-6 w-6 text-green-600 dark:text-green-400" />
-                          </div>
-                        </div>
-                        <div className="mt-4 text-sm text-slate-500 dark:text-slate-400">
-                          Boosté par les primes d'assurance
-                        </div>
-                      </div>
-
-                      {/* CARTE SÉCURITÉ */}
-                      <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md transition-all">
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Capital Sécurisé</p>
-                            <h3 className="text-3xl font-bold text-slate-900 dark:text-white mt-2">100%</h3>
-                          </div>
-                          <div className="p-3 bg-indigo-50 dark:bg-indigo-900/30 rounded-xl">
-                            <Lock className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
-                          </div>
-                        </div>
-                        <div className="mt-4 text-sm text-slate-500 dark:text-slate-400">
-                          Modèle Fully Funded (VUSA)
-                        </div>
-                      </div>
-                    </div>
-                )}
-
                 {/* --- VUE INVESTISSEUR --- */}
                 {activeRole === 'investor' && (
                   <div className="space-y-6 animate-in fade-in duration-500">
 
-                    {/* LISTE DES VAULTS */}
                     {!selectedVault && (
                         <div className="space-y-6">
-                            <div className="flex justify-between items-end">
+
+                            {/* EN-TÊTE + FILTRES MULTI-CHAINS */}
+                            <div className="flex flex-col md:flex-row justify-between items-end gap-4">
                               <div>
                                 <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Opportunités de Vaults</h2>
                                 <p className="text-slate-500 dark:text-slate-400 mt-1">Investissez dans des risques paramétriques sécurisés par la blockchain.</p>
                               </div>
-                              <div className="text-sm font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-4 py-2 rounded-full flex items-center gap-2">
-                                <Shield className="h-4 w-4" /> Audité & Régulé
+
+                              {/* BARRE DE FILTRES BLOCKCHAINS */}
+                              <div className="flex flex-wrap items-center gap-2 bg-slate-100 dark:bg-slate-800 p-1.5 rounded-xl">
+                                <span className="text-xs font-bold text-slate-400 px-2 uppercase tracking-wide flex items-center gap-1"><Globe className="h-3 w-3" /> Réseaux</span>
+                                {AVAILABLE_CHAINS.map(chain => (
+                                    <button
+                                        key={chain}
+                                        onClick={() => toggleChainFilter(chain)}
+                                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${
+                                            selectedChains.includes(chain)
+                                            ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
+                                            : 'bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-600 hover:border-blue-300'
+                                        }`}
+                                    >
+                                        {chain}
+                                    </button>
+                                ))}
+                                {selectedChains.length > 0 && (
+                                    <button onClick={() => setSelectedChains([])} className="px-2 py-1 text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 ml-1">
+                                        Reset
+                                    </button>
+                                )}
                               </div>
                             </div>
 
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                              {vaults.map((vault) => (
-                                <div
-                                    key={vault.id}
-                                    onClick={() => setSelectedVault(vault)}
-                                    className={`group relative bg-white dark:bg-slate-800 rounded-2xl border transition-all cursor-pointer ${vault.status === 'TRIGGERED' ? 'border-red-200 dark:border-red-900 bg-red-50/50 dark:bg-red-900/20' : 'border-slate-200 dark:border-slate-700 hover:border-blue-300 dark:hover:border-blue-500 hover:shadow-lg'}`}
-                                >
-                                  <div className="absolute top-6 right-6">
-                                    {vault.status === 'OPEN' && <span className="px-3 py-1 rounded-full text-xs font-bold bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-400 flex items-center gap-1"><CheckCircle2 className="h-3 w-3" /> OPEN</span>}
-                                    {vault.status === 'PENDING' && <span className="px-3 py-1 rounded-full text-xs font-bold bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-400 flex items-center gap-1"><Activity className="h-3 w-3" /> PENDING</span>}
-                                    {vault.status === 'TRIGGERED' && <span className="px-3 py-1 rounded-full text-xs font-bold bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-400 flex items-center gap-1"><AlertTriangle className="h-3 w-3" /> CATASTROPHE</span>}
+                              {/* UTILISATION DE FILTEREDVAULTS AU LIEU DE VAULTS */}
+                              {filteredVaults.length === 0 ? (
+                                  <div className="col-span-full py-12 text-center text-slate-400 bg-slate-50 dark:bg-slate-900/50 rounded-2xl border border-dashed border-slate-200 dark:border-slate-700">
+                                      Aucun vault trouvé sur les réseaux sélectionnés.
                                   </div>
-
-                                  <div className="p-8">
-                                    <div className="mb-6">
-                                      <h3 className="text-xl font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{vault.name}</h3>
-                                      <p className="text-sm text-slate-500 dark:text-slate-400 mt-1 flex items-center gap-2">
-                                        <Building2 className="h-3 w-3" /> Assureur: {vault.insurer}
-                                      </p>
-                                    </div>
-
-                                    <div className="flex justify-between items-end mb-6">
-                                      <div>
-                                        <p className="text-sm text-slate-500 dark:text-slate-400 mb-1">Rendement (APR)</p>
-                                        <p className={`text-4xl font-bold ${vault.status === 'OPEN' ? 'text-green-600 dark:text-green-400' : 'text-slate-400 dark:text-slate-500'}`}>
-                                          {vault.apr}%
-                                        </p>
+                              ) : (
+                                  filteredVaults.map((vault) => (
+                                    <div
+                                        key={vault.id}
+                                        onClick={() => setSelectedVault(vault)}
+                                        className={`group relative bg-white dark:bg-slate-800 rounded-2xl border transition-all cursor-pointer ${vault.status === 'TRIGGERED' ? 'border-red-200 dark:border-red-900 bg-red-50/50 dark:bg-red-900/20' : 'border-slate-200 dark:border-slate-700 hover:border-blue-300 dark:hover:border-blue-500 hover:shadow-lg'}`}
+                                    >
+                                      <div className="absolute top-6 right-6 flex flex-col items-end gap-2">
+                                        {vault.status === 'OPEN' && <span className="px-3 py-1 rounded-full text-xs font-bold bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-400 flex items-center gap-1"><CheckCircle2 className="h-3 w-3" /> OPEN</span>}
+                                        {vault.status === 'PENDING' && <span className="px-3 py-1 rounded-full text-xs font-bold bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-400 flex items-center gap-1"><Activity className="h-3 w-3" /> PENDING</span>}
+                                        {vault.status === 'TRIGGERED' && <span className="px-3 py-1 rounded-full text-xs font-bold bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-400 flex items-center gap-1"><AlertTriangle className="h-3 w-3" /> CATASTROPHE</span>}
                                       </div>
-                                      <div className="text-right">
-                                        <p className="text-sm text-slate-500 dark:text-slate-400 mb-1">Levée de Fonds</p>
-                                        <p className="text-lg font-semibold text-slate-900 dark:text-white">
-                                          {formatCurrency(vault.currentAssets)} <span className="text-slate-400 dark:text-slate-500 text-sm font-normal">/ {formatCurrency(vault.totalCapacity)}</span>
-                                        </p>
+
+                                      <div className="p-8">
+                                        <div className="mb-6">
+                                          {/* BADGE NETWORK & ASSET DANS LA CARTE */}
+                                          <div className="flex gap-2 mb-3">
+                                              <span className="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-700 text-[10px] font-bold text-slate-500 dark:text-slate-300 border border-slate-200 dark:border-slate-600 uppercase tracking-wider">
+                                                  {vault.chain}
+                                              </span>
+                                              <span className="px-2 py-0.5 rounded-md bg-blue-50 dark:bg-blue-900/30 text-[10px] font-bold text-blue-600 dark:text-blue-300 border border-blue-100 dark:border-blue-800 uppercase tracking-wider">
+                                                  {vault.asset}
+                                              </span>
+                                          </div>
+
+                                          <h3 className="text-xl font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{vault.name}</h3>
+                                          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1 flex items-center gap-2">
+                                            <Building2 className="h-3 w-3" /> Assureur: {vault.insurer}
+                                          </p>
+                                        </div>
+
+                                        <div className="flex justify-between items-end mb-6">
+                                          <div>
+                                            <p className="text-sm text-slate-500 dark:text-slate-400 mb-1">Rendement (APR)</p>
+                                            <p className={`text-4xl font-bold ${vault.status === 'OPEN' ? 'text-green-600 dark:text-green-400' : 'text-slate-400 dark:text-slate-500'}`}>
+                                              {vault.apr}%
+                                            </p>
+                                          </div>
+                                          <div className="text-right">
+                                            <p className="text-sm text-slate-500 dark:text-slate-400 mb-1">Levée de Fonds</p>
+                                            <p className="text-lg font-semibold text-slate-900 dark:text-white">
+                                              {formatCurrency(vault.currentAssets)} <span className="text-slate-400 dark:text-slate-500 text-sm font-normal">/ {formatCurrency(vault.totalCapacity)}</span>
+                                            </p>
+                                          </div>
+                                        </div>
+
+                                        <div className="flex justify-between items-center mb-3">
+                                            <span className="text-sm font-medium text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                                                <AlertTriangle className="h-3 w-3 text-orange-500" /> Probabilité de sinistre
+                                            </span>
+                                            <span className={`text-sm font-bold ${vault.riskProb > 10 ? 'text-red-600 dark:text-red-400' : 'text-orange-500 dark:text-orange-400'}`}>
+                                                {vault.riskProb}%
+                                            </span>
+                                        </div>
+
+                                        <div className="w-full bg-slate-100 dark:bg-slate-700 rounded-full h-3 mb-6 overflow-hidden">
+                                          <div
+                                            className={`h-full rounded-full transition-all duration-1000 ${vault.status === 'TRIGGERED' ? 'bg-red-500' : 'bg-blue-600'}`}
+                                            style={{ width: `${(vault.currentAssets / vault.totalCapacity) * 100}%` }}
+                                          ></div>
+                                        </div>
+
+                                        <div className="grid grid-cols-2 gap-4 mb-6 text-sm">
+                                          <div className="bg-slate-50 dark:bg-slate-900/50 p-3 rounded-lg border border-slate-100 dark:border-slate-700">
+                                            <p className="text-slate-500 dark:text-slate-400 text-xs uppercase tracking-wider mb-1">Protection Junior</p>
+                                            <p className="font-semibold text-slate-900 dark:text-white">{formatCurrency(vault.juniorCapital)}</p>
+                                          </div>
+                                          <div className="bg-slate-50 dark:bg-slate-900/50 p-3 rounded-lg border border-slate-100 dark:border-slate-700">
+                                            <p className="text-slate-500 dark:text-slate-400 text-xs uppercase tracking-wider mb-1">Maturité</p>
+                                            <p className="font-semibold text-slate-900 dark:text-white">{vault.maturityDate}</p>
+                                          </div>
+                                        </div>
+
+                                        <div className="flex justify-center items-center gap-2 text-blue-600 dark:text-blue-400 text-sm font-medium">
+                                            <span>Voir Détails & Investir</span> <ArrowRight className="h-4 w-4" />
+                                        </div>
                                       </div>
                                     </div>
-
-                                    <div className="flex justify-between items-center mb-3">
-                                        <span className="text-sm font-medium text-slate-500 dark:text-slate-400 flex items-center gap-1">
-                                            <AlertTriangle className="h-3 w-3 text-orange-500" /> Probabilité de sinistre
-                                        </span>
-                                        <span className={`text-sm font-bold ${vault.riskProb > 10 ? 'text-red-600 dark:text-red-400' : 'text-orange-500 dark:text-orange-400'}`}>
-                                            {vault.riskProb}%
-                                        </span>
-                                    </div>
-
-                                    <div className="w-full bg-slate-100 dark:bg-slate-700 rounded-full h-3 mb-6 overflow-hidden">
-                                      <div
-                                        className={`h-full rounded-full transition-all duration-1000 ${vault.status === 'TRIGGERED' ? 'bg-red-500' : 'bg-blue-600'}`}
-                                        style={{ width: `${(vault.currentAssets / vault.totalCapacity) * 100}%` }}
-                                      ></div>
-                                    </div>
-
-                                    <div className="grid grid-cols-2 gap-4 mb-6 text-sm">
-                                      <div className="bg-slate-50 dark:bg-slate-900/50 p-3 rounded-lg border border-slate-100 dark:border-slate-700">
-                                        <p className="text-slate-500 dark:text-slate-400 text-xs uppercase tracking-wider mb-1">Protection Junior</p>
-                                        <p className="font-semibold text-slate-900 dark:text-white">{formatCurrency(vault.juniorCapital)}</p>
-                                      </div>
-                                      <div className="bg-slate-50 dark:bg-slate-900/50 p-3 rounded-lg border border-slate-100 dark:border-slate-700">
-                                        <p className="text-slate-500 dark:text-slate-400 text-xs uppercase tracking-wider mb-1">Maturité</p>
-                                        <p className="font-semibold text-slate-900 dark:text-white">{vault.maturityDate}</p>
-                                      </div>
-                                    </div>
-
-                                    <div className="flex justify-center items-center gap-2 text-blue-600 dark:text-blue-400 text-sm font-medium">
-                                        <span>Voir Détails & Investir</span> <ArrowRight className="h-4 w-4" />
-                                    </div>
-                                  </div>
-                                </div>
-                              ))}
+                                  ))
+                              )}
                             </div>
                         </div>
                     )}
@@ -902,10 +823,17 @@
                             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                                 <div className="lg:col-span-2 space-y-6">
 
-                                    {/* En-tête du Vault */}
                                     <div className={`p-8 rounded-2xl border ${selectedVault.status === 'TRIGGERED' ? 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700'}`}>
                                         <div className="flex justify-between items-start">
                                             <div>
+                                                <div className="flex gap-2 mb-3">
+                                                    <span className="px-2.5 py-1 rounded-md bg-slate-100 dark:bg-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-600 uppercase tracking-wide flex items-center gap-1">
+                                                        <Globe className="h-3 w-3" /> {selectedVault.chain}
+                                                    </span>
+                                                    <span className="px-2.5 py-1 rounded-md bg-blue-50 dark:bg-blue-900/30 text-xs font-bold text-blue-600 dark:text-blue-300 border border-blue-100 dark:border-blue-800 uppercase tracking-wide">
+                                                        {selectedVault.asset}
+                                                    </span>
+                                                </div>
                                                 <div className="flex items-center gap-3 mb-2">
                                                     <h1 className={`text-3xl font-bold ${selectedVault.status === 'TRIGGERED' ? 'text-red-700 dark:text-red-400' : 'text-slate-900 dark:text-white'}`}>
                                                         {selectedVault.status === 'TRIGGERED' && "⚠ "}{selectedVault.name}
@@ -922,7 +850,7 @@
                                         </div>
                                     </div>
 
-                                    {/* Alerte si déclenché */}
+                                    {/* ALERTE CATASTROPHE */}
                                     {selectedVault.status === 'TRIGGERED' && (
                                         <div className="bg-red-50 dark:bg-red-900/20 border-l-4 border-red-600 p-6 rounded-r-xl">
                                             <h4 className="text-xl font-bold text-red-800 dark:text-red-300 mb-2 flex items-center gap-2">
@@ -983,20 +911,6 @@
                                         </div>
                                     </section>
 
-                                    {/* Transparence */}
-                                    <section className="bg-indigo-50 dark:bg-indigo-900/20 rounded-2xl p-8 border border-indigo-100 dark:border-indigo-800">
-                                        <h4 className="text-lg font-bold text-indigo-900 dark:text-indigo-300 uppercase tracking-wider mb-4 flex items-center gap-2">
-                                            <Info className="h-5 w-5 text-indigo-600 dark:text-indigo-400"/> Mécanisme de Transparence
-                                        </h4>
-                                        <p className="text-sm text-indigo-800 dark:text-indigo-200 leading-relaxed mb-4">
-                                            Pour garantir l'équité ("Fairplay"), ce vault sépare strictement les fonds :
-                                        </p>
-                                        <ul className="list-disc list-inside text-sm text-indigo-700 dark:text-indigo-300 space-y-2">
-                                            <li><strong>Poche de Risque (Risk Capital) :</strong> Composée de la Tranche Junior (Assureur) et de la Tranche Senior (Investisseurs). C'est le seul capital utilisé pour payer les sinistres.</li>
-                                            <li><strong>Réserve de Rendement (Yield Reserve) :</strong> Composée de la Prime versée par l'assureur. Cette poche est <strong>sanctuarisée</strong> et ne sert jamais à payer les sinistres.</li>
-                                        </ul>
-                                    </section>
-
                                     {/* Données Financières */}
                                     <section className="bg-white dark:bg-slate-800 rounded-2xl p-8 border border-slate-200 dark:border-slate-700">
                                         <h4 className="text-lg font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-6 flex items-center gap-2">
@@ -1042,17 +956,6 @@
                                         </div>
                                     </section>
 
-                                    {/* Avertissement Risque */}
-                                    <div className="bg-blue-50 dark:bg-blue-900/30 border border-blue-100 dark:border-blue-800 p-6 rounded-2xl flex gap-4">
-                                        <AlertTriangle className="h-6 w-6 text-blue-600 dark:text-blue-400 shrink-0 mt-1" />
-                                        <div>
-                                            <p className="text-base font-bold text-blue-900 dark:text-blue-300 mb-2">Profil de Risque</p>
-                                            <p className="text-sm text-blue-700 dark:text-blue-400 leading-relaxed">
-                                                En investissant dans {selectedVault.name}, vous acceptez une probabilité de sinistre de <strong>{selectedVault.riskProb}%</strong>. Le rendement cible est de {selectedVault.apr}%. Le capital est protégé par la Tranche Junior de l'assureur en "First Loss".
-                                            </p>
-                                        </div>
-                                    </div>
-
                                     {/* Graphique Risque */}
                                     <section className="bg-white dark:bg-slate-800 rounded-2xl p-8 border border-slate-200 dark:border-slate-700">
                                         <h4 className="text-lg font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-6 flex items-center gap-2">
@@ -1077,7 +980,7 @@
                                                 <div className="space-y-6">
                                                     <div>
                                                         <div className="flex justify-between items-center mb-2">
-                                                            <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Montant (USDC)</label>
+                                                            <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Montant ({selectedVault.asset})</label>
                                                             <span className="text-xs text-slate-500 dark:text-slate-400">
                                                                 Max: {formatCurrency(
                                                                     (selectedVault.totalCapacity - selectedVault.juniorCapital - selectedVault.premium) -
@@ -1095,7 +998,7 @@
                                                                 className="w-full pl-4 pr-16 py-4 border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none font-medium text-lg"
                                                                 placeholder="0.00"
                                                             />
-                                                            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 font-bold">USDC</span>
+                                                            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 font-bold">{selectedVault.asset}</span>
                                                         </div>
                                                     </div>
 
@@ -1190,7 +1093,34 @@
                             />
                           </div>
 
-                          {/* DESCRIPTION */}
+                          {/* SELECTION BLOCKCHAIN & ASSET */}
+                          <div className="grid grid-cols-2 gap-4">
+                              <div>
+                                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Blockchain</label>
+                                  <select
+                                    value={newVaultData.chain}
+                                    onChange={e => setNewVaultData({...newVaultData, chain: e.target.value})}
+                                    className="w-full p-3 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none"
+                                  >
+                                      {AVAILABLE_CHAINS.map(chain => (
+                                          <option key={chain} value={chain}>{chain}</option>
+                                      ))}
+                                  </select>
+                              </div>
+                              <div>
+                                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Actif (Paiement)</label>
+                                  <select
+                                    value={newVaultData.asset}
+                                    onChange={e => setNewVaultData({...newVaultData, asset: e.target.value})}
+                                    className="w-full p-3 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none"
+                                  >
+                                      {AVAILABLE_ASSETS.map(asset => (
+                                          <option key={asset} value={asset}>{asset}</option>
+                                      ))}
+                                  </select>
+                              </div>
+                          </div>
+
                           <div>
                             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Conditions de Déclenchement (Description)</label>
                             <textarea
@@ -1201,7 +1131,6 @@
                             ></textarea>
                           </div>
 
-                          {/* DATE */}
                           <div className="grid grid-cols-3 gap-4">
                             <div>
                               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Jour</label>
@@ -1253,7 +1182,7 @@
 
                           <div className="grid grid-cols-2 gap-4">
                             <div>
-                              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Capacité (USDC)</label>
+                              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Capacité ({newVaultData.asset})</label>
                               <input
                                 type="number"
                                 min="0"
@@ -1284,7 +1213,6 @@
                             </div>
                           </div>
 
-                          {/* OPTION DE SUR-COLLATÉRALISATION */}
                           <div className="flex items-center gap-2 mb-2 mt-2">
                               <input
                                 type="checkbox"
@@ -1309,7 +1237,7 @@
                                         onChange={e => setNewVaultData({...newVaultData, coverage: e.target.value})}
                                         className="w-full p-3 border border-blue-200 dark:border-blue-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
                                     />
-                                    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 font-bold">USDC</span>
+                                    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 font-bold">{newVaultData.asset}</span>
                                   </div>
                                   <p className="text-xs text-slate-500 dark:text-slate-400 mt-2">
                                       Ce montant est celui qui sera réellement couvert en cas de sinistre. Il peut être inférieur à la capacité levée (sur-collatéralisation).
@@ -1317,13 +1245,11 @@
                               </div>
                           )}
 
-                          {/* Montant Junior Calculé */}
                           <div className="bg-slate-50 dark:bg-slate-900/50 p-3 rounded-xl border border-slate-200 dark:border-slate-700 flex justify-between items-center text-sm">
                               <span className="text-slate-500 dark:text-slate-400">Montant Junior requis:</span>
                               <span className="font-bold text-slate-900 dark:text-white">{formatCurrency(newVaultData.junior)}</span>
                           </div>
 
-                          {/* Prime */}
                           <div>
                             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Prime à Payer (Yield Boost)</label>
                             <div className="relative">
@@ -1334,7 +1260,7 @@
                                 onChange={e => setNewVaultData({...newVaultData, premium: e.target.value})}
                                 className="w-full p-3 pl-3 pr-16 border border-green-200 dark:border-green-800 bg-green-50/30 dark:bg-green-900/20 rounded-xl focus:ring-2 focus:ring-green-500 outline-none text-green-800 dark:text-green-400 font-medium"
                               />
-                              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-green-600 dark:text-green-400 text-xs font-bold">USDC</span>
+                              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-green-600 dark:text-green-400 text-xs font-bold">{newVaultData.asset}</span>
                             </div>
                             <p className="text-xs text-slate-500 dark:text-slate-400 mt-2">
                               Montant versé immédiatement pour booster l'APR des investisseurs.
@@ -1347,7 +1273,6 @@
                         </form>
                       </div>
 
-                      {/* Status Card */}
                       <div className="bg-indigo-600 dark:bg-indigo-700 rounded-2xl p-6 text-white shadow-lg shadow-indigo-200 dark:shadow-none">
                         <div className="flex items-center gap-3 mb-4">
                           <Shield className="h-6 w-6 opacity-80" />
@@ -1369,7 +1294,6 @@
                       </div>
                     </div>
 
-                    {/* Main content Assureur */}
                     <div className="lg:col-span-8">
                       <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-6">Vos Vaults Gérés</h3>
 
