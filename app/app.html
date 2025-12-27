@@ -98,6 +98,33 @@
         const AVAILABLE_CHAINS = ['Base', 'Ethereum', 'Polygon', 'Arbitrum', 'Optimism'];
         const AVAILABLE_ASSETS = ['USDC', 'USDT', 'DAI', 'WETH'];
 
+        // ABI Minimal pour lire les balances ERC20
+        const ERC20_ABI = [
+            "function balanceOf(address owner) view returns (uint256)",
+            "function decimals() view returns (uint8)"
+        ];
+
+        // Mapping partiel des adresses de tokens (Mainnets) pour la démo
+        const TOKEN_MAP = {
+            'Ethereum': {
+                'USDC': '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+                'USDT': '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+                'DAI': '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+                'WETH': '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
+            },
+            'Base': {
+                'USDC': '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+                'WETH': '0x4200000000000000000000000000000000000006'
+            },
+            'Polygon': {
+                'USDC': '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
+                'USDT': '0xc2132D05D31c914a87C6611C10748AEb04B58e8F'
+            },
+            'Arbitrum': {
+                'USDC': '0xaf88d065e77c8cC2239327C5EDb3A432268e5831'
+            }
+        };
+
         // --- COMPOSANTS ICONS ---
         const IconWrapper = ({ children, className }) => (
           <svg
@@ -298,7 +325,13 @@
           const [activeRole, setActiveRole] = useState('investor');
           const [walletConnected, setWalletConnected] = useState(false);
           const [userAddress, setUserAddress] = useState('');
-          const [userBalance, setUserBalance] = useState('0.00');
+          const [userFullAddress, setUserFullAddress] = useState(''); // Ajout de l'adresse complète pour les appels RPC
+          const [userBalance, setUserBalance] = useState('0.00'); // Solde NATIF (ETH)
+
+          // État pour le solde du token spécifique au vault sélectionné
+          const [assetBalance, setAssetBalance] = useState(0);
+          const [assetBalanceFormatted, setAssetBalanceFormatted] = useState('0.00');
+
           const [vaults, setVaults] = useState(INITIAL_VAULTS);
           const [selectedVault, setSelectedVault] = useState(null);
           const [depositAmount, setDepositAmount] = useState('');
@@ -319,6 +352,54 @@
               }, 4000);
           };
 
+          // --- EFFET DE RECUPERATION DU SOLDE TOKEN SPECIFIQUE ---
+          useEffect(() => {
+            const fetchAssetBalance = async () => {
+                // Reset si déconnecté ou pas de vault
+                if (!walletConnected || !selectedVault || !window.ethereum) {
+                    setAssetBalance(0);
+                    setAssetBalanceFormatted('0.00');
+                    return;
+                }
+
+                try {
+                    const provider = new window.ethers.providers.Web3Provider(window.ethereum);
+                    // On cherche l'adresse du token dans notre map (ou natif)
+                    const assetSymbol = selectedVault.asset;
+                    const chainName = selectedVault.chain;
+
+                    // Récupération de l'adresse du contrat token
+                    const tokenAddress = TOKEN_MAP[chainName] ? TOKEN_MAP[chainName][assetSymbol] : null;
+
+                    let balance = window.ethers.BigNumber.from(0);
+                    let decimals = 18;
+
+                    // Si c'est un token ERC20 connu
+                    if (tokenAddress) {
+                        const contract = new window.ethers.Contract(tokenAddress, ERC20_ABI, provider);
+                        // Utiliser l'adresse complète
+                        balance = await contract.balanceOf(userFullAddress);
+                        try { decimals = await contract.decimals(); } catch(e) {}
+                    } else if (assetSymbol === 'ETH' && chainName === 'Ethereum') {
+                        // Cas Natif (si le vault demandait de l'ETH natif)
+                        balance = await provider.getBalance(userFullAddress);
+                    }
+
+                    // Formatage
+                    const formatted = window.ethers.utils.formatUnits(balance, decimals);
+                    setAssetBalance(parseFloat(formatted));
+                    setAssetBalanceFormatted(parseFloat(formatted).toFixed(4));
+                } catch (err) {
+                    console.warn("Impossible de récupérer le solde du token:", err);
+                    setAssetBalance(0);
+                    setAssetBalanceFormatted('Error');
+                }
+            };
+
+            fetchAssetBalance();
+          }, [selectedVault, walletConnected, userFullAddress]);
+
+
           useEffect(() => {
             const isDark = document.documentElement.classList.contains('dark');
             setIsDarkMode(isDark);
@@ -327,11 +408,13 @@
                 window.ethereum.on('accountsChanged', (accounts) => {
                     if (accounts.length > 0) {
                         const addr = accounts[0];
+                        setUserFullAddress(addr);
                         setUserAddress(`${addr.substring(0, 6)}...${addr.substring(addr.length - 4)}`);
                         showNotification("Compte changé détecté", 'info');
                     } else {
                         setWalletConnected(false);
                         setUserAddress('');
+                        setUserFullAddress('');
                         showNotification("Wallet déconnecté", 'info');
                     }
                 });
@@ -419,6 +502,7 @@
                     const shortAddress = `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
                     setWalletConnected(true);
                     setUserAddress(shortAddress);
+                    setUserFullAddress(address); // Stockage de l'adresse complète
                     setUserBalance(parseFloat(balanceFmt).toFixed(4));
 
                     const isRabby = window.ethereum.isRabby;
@@ -436,6 +520,7 @@
           const disconnectWallet = () => {
              setWalletConnected(false);
              setUserAddress('');
+             setUserFullAddress('');
              setUserBalance('0.00');
              showNotification("Déconnecté de l'application.", 'info');
           };
@@ -541,6 +626,14 @@
              });
              setVaults(updatedVaults);
              showNotification(isLiveMode ? "Vault Initialisé (Live Mock)" : "Vault Initialisé (Simulation)", 'success');
+          };
+
+          // GESTION DU POURCENTAGE DE DÉPÔT
+          const handleSetPercentage = (percent) => {
+              if (assetBalance <= 0) return;
+              const amount = (assetBalance * percent) / 100;
+              // On formatte pour éviter trop de décimales dans l'input
+              setDepositAmount(amount.toFixed(4));
           };
 
           const handleDeposit = async () => {
@@ -981,12 +1074,11 @@
                                                     <div>
                                                         <div className="flex justify-between items-center mb-2">
                                                             <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Montant ({selectedVault.asset})</label>
-                                                            <span className="text-xs text-slate-500 dark:text-slate-400">
-                                                                Max: {formatCurrency(
-                                                                    (selectedVault.totalCapacity - selectedVault.juniorCapital - selectedVault.premium) -
-                                                                    (selectedVault.currentAssets - selectedVault.juniorCapital - selectedVault.premium)
-                                                                )}
-                                                            </span>
+                                                            <div className="text-right">
+                                                                <span className="text-xs text-slate-500 dark:text-slate-400">
+                                                                    Solde: <span className="font-bold text-slate-700 dark:text-slate-200 cursor-pointer hover:underline" onClick={() => setDepositAmount(assetBalance.toString())}>{assetBalanceFormatted}</span> {selectedVault.asset}
+                                                                </span>
+                                                            </div>
                                                         </div>
                                                         <div className="relative">
                                                             <input
@@ -1000,6 +1092,21 @@
                                                             />
                                                             <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 font-bold">{selectedVault.asset}</span>
                                                         </div>
+
+                                                        {/* BOUTONS DE POURCENTAGE */}
+                                                        {walletConnected && assetBalance > 0 && (
+                                                            <div className="flex gap-2 mt-2">
+                                                                {[25, 50, 75, 100].map(pct => (
+                                                                    <button
+                                                                        key={pct}
+                                                                        onClick={() => handleSetPercentage(pct)}
+                                                                        className="flex-1 py-1.5 text-xs font-bold rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                                                                    >
+                                                                        {pct}%
+                                                                    </button>
+                                                                ))}
+                                                            </div>
+                                                        )}
                                                     </div>
 
                                                     <div className="space-y-3 pt-2">
