@@ -6,7 +6,8 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 /**
  * @title HPIV Factory
- * @dev Usine à Smart Contracts avec Whitelist d'Assureurs (KYC/KYB).
+ * @dev Usine à Smart Contracts. Pas de changement majeur requis ici,
+ * mais s'assure que le nouveau code du Vault est bien déployé.
  */
 contract HPIVFactory is Ownable {
 
@@ -26,21 +27,15 @@ contract HPIVFactory is Ownable {
     event InsurerStatusChanged(address indexed insurer, bool status);
 
     constructor() Ownable(msg.sender) {
-        // Optionnel : S'ajouter soi-même par défaut ou ajouter l'adresse spécifique demandée
+        // Ajout de l'adresse de démo comme whitelisted par défaut
         isWhitelistedInsurer[0x912F9886Fb676750943fDeFC4c30d3cA927C3a72] = true;
     }
 
-    /**
-     * @dev Gestion de la whitelist par l'admin (DAO/Team).
-     */
     function setInsurerStatus(address _insurer, bool _status) external onlyOwner {
         isWhitelistedInsurer[_insurer] = _status;
         emit InsurerStatusChanged(_insurer, _status);
     }
 
-    /**
-     * @dev Crée un Vault. RESTREINT aux assureurs whitelisted.
-     */
     function createVault(
         IERC20 _asset,
         address _compliance,
@@ -50,13 +45,12 @@ contract HPIVFactory is Ownable {
         string memory _riskName,
         string memory _description
     ) external returns (address) {
-        // --- SÉCURITÉ : Vérification Whitelist ---
         require(isWhitelistedInsurer[msg.sender], "HPIV: Caller is not a whitelisted Insurer");
 
         HPIVVault newVault = new HPIVVault(
             _asset,
             _compliance,
-            msg.sender,
+            msg.sender, // L'assureur reçoit le rôle Admin & DAO initialement
             _capTotal,
             _maxCoverage,
             _durationInDays,

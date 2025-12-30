@@ -331,8 +331,8 @@ a { text-decoration: none; color: inherit; }
     transform: translate(-50%, -50%);
 
     /* MODIF 1 : Largeur forcée pour prendre presque tout l'écran */
-    width: 95vw !important;
-    height: 90vh !important;
+    width: 70vw !important;
+    height: 75vh !important;
 
     /* MODIF 2 : Max-width très large pour écrans larges */
     max-width: 1600px !important;
