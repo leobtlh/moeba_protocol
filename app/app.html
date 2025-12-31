@@ -229,6 +229,39 @@
             return data;
         };
 
+        // --- HELPER FUNCTION : CALCUL DES JOURS RESTANTS (CORRIGÉ POUR MOIS FRANÇAIS) ---
+        const calculateDaysRemaining = (dateStr) => {
+            if (!dateStr || dateStr === "En attente") return 0;
+
+            // Mapping des mois français pour que new Date() comprenne
+            const monthMap = {
+                'Janvier': 'January', 'Février': 'February', 'Mars': 'March',
+                'Avril': 'April', 'Mai': 'May', 'Juin': 'June',
+                'Juillet': 'July', 'Août': 'August', 'Septembre': 'September',
+                'Octobre': 'October', 'Novembre': 'November', 'Décembre': 'December'
+            };
+
+            let dateToParse = dateStr;
+            // Remplacer le mois français par l'anglais si présent
+            Object.keys(monthMap).forEach(fr => {
+                if(dateStr.includes(fr)) {
+                    dateToParse = dateStr.replace(fr, monthMap[fr]);
+                }
+            });
+
+            const targetDate = new Date(dateToParse);
+            const today = new Date();
+
+            // Calcul de la différence en millisecondes
+            const diffTime = targetDate - today;
+
+            // Conversion en jours (arrondi supérieur)
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+            // Si la date est passée, on retourne 0
+            return diffDays > 0 ? diffDays : 0;
+        };
+
         // --- DONNÉES MOCK AVEC CHAINES ET ASSETS ---
         const INITIAL_VAULTS = [
           {
@@ -690,13 +723,25 @@
              const premiumValue = parseFloat(newVaultData.premium || 0);
              const updatedVaults = vaults.map(v => {
                if (v.id === vaultId) {
+                 // CALCUL DE LA DURÉE RÉELLE
+                 // On utilise la date de maturité stockée ou on en génère une par défaut si "En attente"
+                 const maturityStr = v.maturityDate === "En attente"
+                    ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString()
+                    : v.maturityDate;
+
+                 // Calcul du nombre de jours restants réel
+                 const daysRemaining = calculateDaysRemaining(maturityStr);
+                 // Sécurité pour éviter division par 0 ou négatif si la date est aujourd'hui
+                 const durationInDays = daysRemaining > 0 ? daysRemaining : 1;
+
                  return {
                    ...v,
                    status: "OPEN",
                    premium: premiumValue,
                    currentAssets: v.juniorCapital + premiumValue,
-                   apr: ((premiumValue * 100 * 365) / ((v.totalCapacity - premiumValue - v.juniorCapital) * 30)).toFixed(2),
-                   maturityDate: v.maturityDate === "En attente" ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString() : v.maturityDate
+                   // APR Calculation Corrected: Use actual days remaining instead of 30
+                   apr: ((premiumValue * 100 * 365) / ((v.totalCapacity - premiumValue - v.juniorCapital) * durationInDays)).toFixed(2),
+                   maturityDate: maturityStr
                  };
                }
                return v;
@@ -1124,20 +1169,18 @@
                                                 <p className="text-[10px] text-slate-400 mt-1">Fonds présents dans le contrat</p>
                                             </div>
                                             <div className="bg-slate-50 dark:bg-slate-900/30 p-4 rounded-xl border border-slate-100 dark:border-slate-700">
-                                                <p className="text-xs text-slate-500 dark:text-slate-400 mb-2 uppercase font-semibold">Capacité Investisseurs</p>
-                                                <p className="text-xl font-bold text-blue-600 dark:text-blue-400">
-                                                    {formatCurrency(selectedVault.totalCapacity - selectedVault.juniorCapital - selectedVault.premium)}
-                                                </p>
-                                                <p className="text-[10px] text-slate-400 mt-1">Espace Senior Strict (Cap - Junior)</p>
-                                            </div>
-                                            <div className="bg-slate-50 dark:bg-slate-900/30 p-4 rounded-xl border border-slate-100 dark:border-slate-700">
                                                 <p className="text-xs text-slate-500 dark:text-slate-400 mb-2 uppercase font-semibold">Sur-Collatéralisation</p>
                                                 <p className="text-xl font-bold text-slate-900 dark:text-white">
-                                                    {selectedVault.totalCapacity > selectedVault.claimAmount ?
-                                                        ((selectedVault.totalCapacity / selectedVault.claimAmount) * 100).toFixed(0) + '%'
+                                                    {(selectedVault.totalCapacity - selectedVault.premium) > selectedVault.claimAmount ?
+                                                        (((selectedVault.totalCapacity - selectedVault.premium) / selectedVault.claimAmount) * 100).toFixed(0) + '%'
                                                         : '100%'}
                                                 </p>
-                                                <p className="text-[10px] text-slate-400 mt-1">Ratio Couverture / Risque</p>
+                                                <p className="text-[10px] text-slate-400 mt-1">Ratio (Cap - Prime) / Risque</p>
+                                            </div>
+                                            <div className="bg-slate-50 dark:bg-slate-900/30 p-4 rounded-xl border border-slate-100 dark:border-slate-700">
+                                                <p className="text-xs text-slate-500 dark:text-slate-400 mb-2 uppercase font-semibold">Date de Maturité</p>
+                                                <p className="text-xl font-bold text-slate-900 dark:text-white">{selectedVault.maturityDate}</p>
+                                                <p className="text-[10px] text-slate-400 mt-1">Fin de la période de risque</p>
                                             </div>
                                         </div>
                                     </section>
@@ -1156,6 +1199,39 @@
 
                                 <div className="lg:col-span-1">
                                     <div className="sticky top-24 space-y-6">
+
+                                        {selectedVault.userBalance > 0 && (
+                                            <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-green-200 dark:border-green-800 shadow-sm relative overflow-hidden">
+                                                <div className="absolute top-0 right-0 p-3 opacity-10">
+                                                    <Coins className="h-20 w-20 text-green-600" />
+                                                </div>
+                                                <h3 className="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-2">
+                                                    Votre Position Actuelle
+                                                </h3>
+                                                <div className="mb-4">
+                                                    <p className="text-3xl font-mono font-bold text-green-700 dark:text-green-400">
+                                                        {formatCurrency(selectedVault.userBalance)}
+                                                    </p>
+                                                    <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
+                                                        Investi dans {selectedVault.name}
+                                                    </p>
+                                                </div>
+                                                <div className="bg-green-50 dark:bg-green-900/30 p-3 rounded-lg border border-green-100 dark:border-green-800">
+                                                    <div className="flex justify-between items-center text-sm">
+                                                        <span className="text-green-800 dark:text-green-300 font-medium">Valeur à terme (Est.)</span>
+                                                        <span className="font-bold text-green-700 dark:text-green-400">
+                                                            {formatCurrency(selectedVault.userBalance * (1 + (parseFloat(selectedVault.apr)/100) * (calculateDaysRemaining(selectedVault.maturityDate)/365)))}
+                                                        </span>
+                                                    </div>
+                                                    <div className="text-right mt-1">
+                                                        <span className="text-[10px] text-green-600 dark:text-green-500 font-medium">
+                                                            Basé sur {calculateDaysRemaining(selectedVault.maturityDate)} jours restants
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
+
                                         <div className={`bg-white dark:bg-slate-800 rounded-2xl p-6 border shadow-xl ${selectedVault.status === 'TRIGGERED' ? 'border-red-200 dark:border-red-800 shadow-red-100 dark:shadow-none' : 'border-slate-200 dark:border-slate-700 shadow-slate-100 dark:shadow-none'}`}>
                                             <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
                                                 <Wallet className="h-5 w-5" />
@@ -1204,7 +1280,7 @@
 
                                                     <div className="space-y-3 pt-2">
                                                         <div className="flex justify-between text-sm">
-                                                            <span className="text-slate-500 dark:text-slate-400">APY Estimé</span>
+                                                            <span className="text-slate-500 dark:text-slate-400">APR Estimé</span>
                                                             <span className="font-bold text-green-600 dark:text-green-400">{selectedVault.apr}%</span>
                                                         </div>
                                                         <div className="flex justify-between text-sm">
@@ -1757,7 +1833,7 @@
                                     </div>
                                     <p className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Valeur Estimée (Fin)</p>
                                     <p className="text-2xl font-mono font-bold text-green-600 dark:text-green-400">
-                                      {formatCurrency(vault.userBalance * (1 + (parseFloat(vault.apr)/100) * (30/365)))}
+                                      {formatCurrency(vault.userBalance * (1 + (parseFloat(vault.apr)/100) * (calculateDaysRemaining(vault.maturityDate)/365)))}
                                     </p>
                                   </div>
                                 </div>
