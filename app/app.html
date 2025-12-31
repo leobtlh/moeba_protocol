@@ -264,54 +264,54 @@
 
         // --- DONNÉES MOCK AVEC CHAINES ET ASSETS ---
         const INITIAL_VAULTS = [
-          {
-            id: "0x742...d439",
-            name: "Florida Wind Season 2026",
-            description: "Couverture contre les ouragans de catégorie 4 ou plus frappant la côte de Floride.",
-            insurer: "State Farm Re",
-            totalCapacity: 40330000,
-            claimAmount: 40000000,
-            currentAssets: 4330000,
-            juniorCapital: 4000000,
-            premium: 330000,
-            maturityDate: "18 Jan 2026",
-            apr: 25.4,
-            riskProb: 12.5,
-            status: "OPEN",
-            userBalance: 0,
-            triggerValue: 250,
-            oracleType: 'WIND',
-            chain: 'Base',
-            asset: 'USDC',
-            triggers: [
-                { id: 'windSpeed', name: 'Vitesse Vent', unit: 'km/h', color: '#3b82f6', threshold: 250 }
-            ],
-            history: generateMockHistory('WIND')
-          },
-          {
-            id: "0x891...a122",
-            name: "Tokyo Earthquake Bond",
-            description: "Obligation catastrophe liée au risque sismique dans la région métropolitaine de Tokyo.",
-            insurer: "Japan Post Insurance",
-            totalCapacity: 100000000,
-            claimAmount: 100000000,
-            currentAssets: 0,
-            juniorCapital: 10000000,
-            premium: 0,
-            maturityDate: "En attente",
-            apr: 0,
-            riskProb: 4.2,
-            status: "PENDING",
-            userBalance: 0,
-            triggerValue: 7.5,
-            oracleType: 'EARTHQUAKE',
-            chain: 'Ethereum',
-            asset: 'USDT',
-            triggers: [
-                { id: 'magnitude', name: 'Magnitude', unit: 'Richter', color: '#8b5cf6', threshold: 7.5 }
-            ],
-            history: generateMockHistory('EARTHQUAKE')
-          }
+//           {
+//             id: "0x742...d439",
+//             name: "Florida Wind Season 2026",
+//             description: "Couverture contre les ouragans de catégorie 4 ou plus frappant la côte de Floride.",
+//             insurer: "State Farm Re",
+//             totalCapacity: 40330000,
+//             claimAmount: 40000000,
+//             currentAssets: 4330000,
+//             juniorCapital: 4000000,
+//             premium: 330000,
+//             maturityDate: "18 Jan 2026",
+//             apr: 25.4,
+//             riskProb: 12.5,
+//             status: "OPEN",
+//             userBalance: 0,
+//             triggerValue: 250,
+//             oracleType: 'WIND',
+//             chain: 'Base',
+//             asset: 'USDC',
+//             triggers: [
+//                 { id: 'windSpeed', name: 'Vitesse Vent', unit: 'km/h', color: '#3b82f6', threshold: 250 }
+//             ],
+//             history: generateMockHistory('WIND')
+//           },
+//           {
+//             id: "0x891...a122",
+//             name: "Tokyo Earthquake Bond",
+//             description: "Obligation catastrophe liée au risque sismique dans la région métropolitaine de Tokyo.",
+//             insurer: "Japan Post Insurance",
+//             totalCapacity: 100000000,
+//             claimAmount: 100000000,
+//             currentAssets: 0,
+//             juniorCapital: 10000000,
+//             premium: 0,
+//             maturityDate: "En attente",
+//             apr: 0,
+//             riskProb: 4.2,
+//             status: "PENDING",
+//             userBalance: 0,
+//             triggerValue: 7.5,
+//             oracleType: 'EARTHQUAKE',
+//             chain: 'Ethereum',
+//             asset: 'USDT',
+//             triggers: [
+//                 { id: 'magnitude', name: 'Magnitude', unit: 'Richter', color: '#8b5cf6', threshold: 7.5 }
+//             ],
+//             history: generateMockHistory('EARTHQUAKE')
+//           }
         ];
 
         const MONTHS = [
