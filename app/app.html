@@ -268,30 +268,30 @@
 
         // --- DONNÉES MOCK AVEC CHAINES ET ASSETS ---
         const INITIAL_VAULTS = [
-         {
-            id: "0x742...d439",
-            name: "Florida Wind Season 2025",
-            description: "Couverture contre les ouragans de catégorie 4 ou plus frappant la côte de Floride.",
-            insurer: "State Farm Re",
-            totalCapacity: 40330000,
-            claimAmount: 40000000,
-            currentAssets: 40330000, // COMPLET (Capacity = Assets)
-            juniorCapital: 4000000,
-            premium: 330000,
-            maturityDate: "1 Jan 2026", // DATE PASSÉE
-            apr: 25.4,
-            riskProb: 12.5,
-            status: "MATURED", // STATUT TERMINÉ
-            userBalance: 5000, // L'utilisateur a investi
-            triggerValue: 250,
-            oracleType: 'WIND',
-            chain: 'Base',
-            asset: 'USDC',
-            triggers: [
-                { id: 'windSpeed', name: 'Vitesse Vent', unit: 'km/h', color: '#3b82f6', threshold: 250 }
-            ],
-            history: generateMockHistory('WIND')
-          },
+//          {
+//             id: "0x742...d439",
+//             name: "Florida Wind Season 2025",
+//             description: "Couverture contre les ouragans de catégorie 4 ou plus frappant la côte de Floride.",
+//             insurer: "State Farm Re",
+//             totalCapacity: 40330000,
+//             claimAmount: 40000000,
+//             currentAssets: 40330000, // COMPLET (Capacity = Assets)
+//             juniorCapital: 4000000,
+//             premium: 330000,
+//             maturityDate: "1 Jan 2026", // DATE PASSÉE
+//             apr: 25.4,
+//             riskProb: 12.5,
+//             status: "MATURED", // STATUT TERMINÉ
+//             userBalance: 5000, // L'utilisateur a investi
+//             triggerValue: 250,
+//             oracleType: 'WIND',
+//             chain: 'Base',
+//             asset: 'USDC',
+//             triggers: [
+//                 { id: 'windSpeed', name: 'Vitesse Vent', unit: 'km/h', color: '#3b82f6', threshold: 250 }
+//             ],
+//             history: generateMockHistory('WIND')
+//           },
 //           {
 //             id: "0x891...a122",
 //             name: "Tokyo Earthquake Bond",
@@ -1103,6 +1103,16 @@
                                                         </div>
                                                     </div>
                                                 </div>
+
+                                                <div className="pl-6 pr-28">
+                                                  <div className="w-full bg-slate-100 dark:bg-slate-700 rounded-full h-3 mb-6 overflow-hidden">
+                                                    <div
+                                                      className={`h-full rounded-full transition-all duration-1000 ${vault.status === 'TRIGGERED' ? 'bg-red-500' : isFull ? 'bg-slate-500' : 'bg-blue-600'}`}
+                                                      style={{ width: `${(vault.currentAssets / vault.totalCapacity) * 100}%` }}
+                                                    ></div>
+                                                  </div>
+                                                </div>
+
                                             </div>
                                         );
                                     }
