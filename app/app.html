@@ -311,6 +311,7 @@
         };
 
         // --- DONNÉES MOCK AVEC CHAINES ET ASSETS ---
+        // Vous pouvez décommenter ces données pour voir des exemples
         const INITIAL_VAULTS = [
 //          {
 //             id: "0x742...d439",
@@ -505,7 +506,7 @@
           // INSURER REGISTRATION MODAL
           const [showInsurerRegistration, setShowInsurerRegistration] = useState(false);
           const [isRegistering, setIsRegistering] = useState(false);
-          const [registrationStatus, setRegistrationStatus] = useState('none'); // 'none', 'pending'
+          const [registrationStatus, setRegistrationStatus] = useState('none'); // 'none', 'pending', 'approved', 'rejected'
 
           // État pour le solde du token spécifique au vault sélectionné
           const [assetBalance, setAssetBalance] = useState(0);
@@ -589,13 +590,39 @@
                       // VERIFICATION LOCALE (MODE SIMULATION)
                       // On utilise le tableau JS hardcodé pour le whitelist
                       const isLocalListed = INSURER_WHITELIST_LOCAL.includes(userFullAddress.toLowerCase());
-                      setIsInsurerWhitelisted(isLocalListed);
+                      if (isLocalListed) {
+                          setIsInsurerWhitelisted(true);
+                      } else {
+                          // CORRECTION : Utilisation de localStorage pour le partage cross-files (simili DB)
+                          // Récupérer la liste globale des requêtes
+                          const storedRequests = localStorage.getItem('moeba_insurer_requests');
+                          if (storedRequests) {
+                              try {
+                                  const requests = JSON.parse(storedRequests);
+                                  const myRequest = requests.find(r => r.address.toLowerCase() === userFullAddress.toLowerCase());
 
-                      // Simulation de demande en attente stockée en mémoire locale de session
-                      if (!isLocalListed) {
-                          const simStatus = sessionStorage.getItem(`insurer_req_${userFullAddress}`);
-                          if (simStatus === 'pending') setRegistrationStatus('pending');
-                          else setRegistrationStatus('none');
+                                  if (myRequest) {
+                                      if (myRequest.status === 2) { // 2 = Approved
+                                           setIsInsurerWhitelisted(true);
+                                           setRegistrationStatus('approved');
+                                      } else if (myRequest.status === 1) { // 1 = Pending
+                                           setIsInsurerWhitelisted(false);
+                                           setRegistrationStatus('pending');
+                                      } else if (myRequest.status === 3) { // 3 = Rejected
+                                           setIsInsurerWhitelisted(false);
+                                           setRegistrationStatus('rejected');
+                                      }
+                                  } else {
+                                      setIsInsurerWhitelisted(false);
+                                      setRegistrationStatus('none');
+                                  }
+                              } catch(e) {
+                                  console.error("Erreur parsing requests", e);
+                              }
+                          } else {
+                              setIsInsurerWhitelisted(false);
+                              setRegistrationStatus('none');
+                          }
                       }
                   }
               };
@@ -861,12 +888,39 @@
                       showNotification("Erreur Blockchain: " + (err.reason || err.message), 'error');
                   }
               } else {
-                  // SIMULATION
+                  // SIMULATION AVEC LOCALSTORAGE POUR VISIBILITÉ BACKOFFICE
                   await new Promise(resolve => setTimeout(resolve, 1500)); // Fake delay
-                  sessionStorage.setItem(`insurer_req_${userFullAddress}`, 'pending');
+
+                  // 1. Lire le stockage existant
+                  const existing = localStorage.getItem('moeba_insurer_requests');
+                  let requests = [];
+                  if (existing) {
+                      try { requests = JSON.parse(existing); } catch(e) {}
+                  }
+
+                  // 2. Créer l'objet demande
+                  const newRequest = {
+                      address: userFullAddress,
+                      companyName: data.companyName,
+                      kybHash: data.kybLink,
+                      status: 1, // 1 = Pending
+                      date: Date.now()
+                  };
+
+                  // 3. Ajouter ou Mettre à jour (si rejeté avant)
+                  const existingIndex = requests.findIndex(r => r.address.toLowerCase() === userFullAddress.toLowerCase());
+                  if (existingIndex >= 0) {
+                      requests[existingIndex] = newRequest;
+                  } else {
+                      requests.push(newRequest);
+                  }
+
+                  // 4. Sauvegarder
+                  localStorage.setItem('moeba_insurer_requests', JSON.stringify(requests));
+
                   setRegistrationStatus('pending');
                   setShowInsurerRegistration(false);
-                  showNotification("Demande simulée envoyée avec succès (Pending Local)", 'success');
+                  showNotification("Demande simulée envoyée avec succès (Stockée Local)", 'success');
               }
               setIsRegistering(false);
           };
@@ -1909,7 +1963,7 @@
                            </div>
                       </div>
                   ) :
-                  /* ETAT 3: WALLET CONNECTÉ ET WHITELISTÉ -> AFFICHAGE DASHBOARD ORIGINAL */
+                  /* ETAT 3: WALLET CONNECTÉ ET WHITELISTÉ -> AFFICHAGE DASHBOARD ASSUREUR */
                   (
                   <div className="flex flex-col lg:flex-row gap-8 animate-in fade-in duration-500">
                     <div className={`transition-all duration-500 ease-in-out min-w-0 ${isFormExpanded ? 'lg:flex-[2]' : 'lg:flex-1'} space-y-6`}>
@@ -1937,10 +1991,9 @@
                         </div>
 
                         <form onSubmit={(e) => { handleCreateVault(e); setIsFormExpanded(false); }} className="space-y-4">
-                          {/* WRAPPER DU CONTENU DU FORMULAIRE POUR LE GRILLE QUAND AGRANDI */}
-                          <div className={isFormExpanded ? "grid grid-cols-2 gap-4" : "space-y-4"}>
-
-                              <div className={isFormExpanded ? "col-span-2" : ""}>
+                           {/* ... Formulaire identique ... */}
+                           <div className={isFormExpanded ? "grid grid-cols-2 gap-4" : "space-y-4"}>
+                               <div className={isFormExpanded ? "col-span-2" : ""}>
                                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Nom du Risque</label>
                                 <input
                                   type="text"
@@ -2131,7 +2184,7 @@
                           </div>
 
                           <button type="submit" className="w-full mt-4 bg-slate-900 dark:bg-white text-white dark:text-slate-900 py-3.5 rounded-xl font-bold hover:bg-slate-800 dark:hover:bg-slate-200 transition-all shadow-lg shadow-slate-200 dark:shadow-none">
-                            Déployer le Contrat
+                            Déployer le Contrat (Simulation)
                           </button>
                         </form>
                       </div>
