@@ -13,6 +13,25 @@
                 extend: {
                     colors: {
                         slate: { 850: '#1e293b', 950: '#020617' }
+                    },
+                    animation: {
+                        'slide-up': 'slideUp 0.3s ease-out forwards',
+                        'fade-in': 'fadeIn 0.2s ease-out forwards',
+                        'zoom-in': 'zoomIn 0.2s ease-out forwards',
+                    },
+                    keyframes: {
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        zoomIn: {
+                            '0%': { transform: 'scale(0.95)', opacity: '0' },
+                            '100%': { transform: 'scale(1)', opacity: '1' },
+                        }
                     }
                 }
             }
@@ -42,11 +61,10 @@
         // --- WHITELIST ADMIN ---
         // Seules ces adresses peuvent accéder au backoffice
         const ADMIN_WHITELIST = [
-            "0x5B757b308b8842698035C53b8ea0844240ac485B",
-            "0xdE5af5438218d283D6AD4656091379097Cf56d52"
+            "0x5B757b308b8842698035C53b8ea0844240ac485B"
         ].map(a => a.toLowerCase());
 
-        // ICONS
+        // --- ICONS GENERIQUES ---
         const IconWrapper = ({ children, className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>{children}</svg>);
         const Shield = ({ className }) => <IconWrapper className={className}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></IconWrapper>;
         const Check = ({ className }) => <IconWrapper className={className}><polyline points="20 6 9 17 4 12"/></IconWrapper>;
@@ -54,6 +72,40 @@
         const ExternalLink = ({ className }) => <IconWrapper className={className}><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></IconWrapper>;
         const Loader = ({ className }) => <IconWrapper className={className}><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/></IconWrapper>;
         const Lock = ({ className }) => <IconWrapper className={className}><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></IconWrapper>;
+        const Trash2 = ({ className }) => <IconWrapper className={className}><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></IconWrapper>;
+        const ChevronDown = ({ className }) => <IconWrapper className={className}><polyline points="6 9 12 15 18 9"/></IconWrapper>;
+        const Wallet = ({ className }) => <IconWrapper className={className}><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></IconWrapper>;
+        const LogOut = ({ className }) => <IconWrapper className={className}><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></IconWrapper>;
+
+        // --- ICONS WALLETS SPECIFIQUES ---
+        const RabbyIcon = () => (
+            <svg viewBox="0 0 32 32" className="w-8 h-8 rounded-lg" fill="none">
+                <rect width="32" height="32" rx="8" fill="#8B93FF"/>
+                <path d="M10 16c0-4 3-7 6-7s6 3 6 7-3 7-6 7-6-3-6-7z" fill="white"/>
+                <circle cx="14" cy="15" r="1" fill="#8B93FF"/>
+                <circle cx="18" cy="15" r="1" fill="#8B93FF"/>
+                <path d="M15 19h2" stroke="#8B93FF" strokeLinecap="round"/>
+            </svg>
+        );
+        const ZerionIcon = () => (
+            <svg viewBox="0 0 32 32" className="w-8 h-8 rounded-lg" fill="none">
+                 <rect width="32" height="32" rx="8" fill="#2962FF"/>
+                 <path d="M10 22L22 10M10 10h12v12" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+        );
+        const MetaMaskIcon = () => (
+            <svg viewBox="0 0 32 32" className="w-8 h-8 rounded-lg" fill="none">
+                <rect width="32" height="32" rx="8" fill="#F6851B" fillOpacity="0.1"/>
+                <path d="M26 11l-3 6-5-1-2 5-2-5-5 1-3-6 5-3 5-5 5 3z" fill="#F6851B" stroke="#E2761B" strokeWidth="1.5" strokeLinejoin="round"/>
+            </svg>
+        );
+        const WalletConnectIcon = () => (
+             <svg viewBox="0 0 32 32" className="w-8 h-8 rounded-lg" fill="none">
+                <rect width="32" height="32" rx="8" fill="#3B99FC"/>
+                <path d="M8 14c4-4 12-4 16 0" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+                <path d="M16 19v.01" stroke="white" strokeWidth="3" strokeLinecap="round"/>
+             </svg>
+        );
 
         function BackofficeApp() {
             const [account, setAccount] = useState('');
@@ -62,45 +114,96 @@
             const [requests, setRequests] = useState([]);
             const [loading, setLoading] = useState(false);
 
+            // GESTION MODALE WALLET
+            const [showWalletSelector, setShowWalletSelector] = useState(false);
+            const [showOtherWallets, setShowOtherWallets] = useState(false);
+            const [showWalletMenu, setShowWalletMenu] = useState(false);
+
             // Mock Data par défaut
             const [mockRequests, setMockRequests] = useState([
-                { address: "0x123...abc", companyName: "Zurich Insurance Group", kybHash: "ipfs://Qmb...", status: 1, date: Date.now() },
-                { address: "0x456...def", companyName: "Allianz Global", kybHash: "https://doc...", status: 3, date: Date.now() - 86400000 }
+//                 { address: "0x123...abc", companyName: "Zurich Insurance Group", kybHash: "ipfs://Qmb...", status: 1, date: Date.now() },
+//                 { address: "0x456...def", companyName: "Allianz Global", kybHash: "https://doc...", status: 3, date: Date.now() - 86400000 }
             ]);
 
-            const connectWallet = async () => {
-                if (!window.ethereum) return alert("MetaMask requis");
-                try {
-                    const provider = new ethers.providers.Web3Provider(window.ethereum);
-                    const accounts = await provider.send("eth_requestAccounts", []);
-                    const connectedAccount = accounts[0].toLowerCase();
-                    setAccount(connectedAccount);
-                    setIsConnected(true);
+            // --- NOUVELLE LOGIQUE CONNEXION (IDENTIQUE APP) ---
+            const handleWalletSelect = async (walletType) => {
+                 setShowWalletSelector(false);
 
-                    // VÉRIFICATION WHITELIST ADMIN
-                    if (ADMIN_WHITELIST.includes(connectedAccount)) {
-                        setIsAuthorized(true);
-                        fetchRequests();
-                    } else {
-                        setIsAuthorized(false);
-                    }
+                 if (!window.ethers) {
+                      alert("Erreur technique : Librairie Web3 non chargée.");
+                      return;
+                 }
 
-                } catch (err) {
-                    console.error(err);
-                }
+                 let providerInput = null;
+
+                 // Logique de sélection du provider
+                 if (walletType === 'zerion') {
+                     if (window.zerionWallet) providerInput = window.zerionWallet;
+                     else if (window.ethereum && window.ethereum.isZerion) providerInput = window.ethereum;
+                     else providerInput = window.ethereum;
+                 } else if (walletType === 'rabby') {
+                     if (window.ethereum && window.ethereum.isRabby) providerInput = window.ethereum;
+                     else providerInput = window.ethereum;
+                 } else if (walletType === 'metamask') {
+                     if (window.ethereum) providerInput = window.ethereum;
+                 } else if (walletType === 'walletconnect') {
+                     alert("Intégration WalletConnect complète à venir.");
+                     if (window.ethereum) providerInput = window.ethereum;
+                 } else {
+                     providerInput = window.ethereum;
+                 }
+
+                 if (!providerInput) {
+                     alert("Aucun wallet compatible détecté.");
+                     return;
+                 }
+
+                 try {
+                      const accounts = await providerInput.request({ method: 'eth_requestAccounts' });
+
+                      if (!accounts || accounts.length === 0) {
+                          alert("Aucun compte sélectionné.");
+                          return;
+                      }
+
+                      const provider = new ethers.providers.Web3Provider(providerInput);
+                      const signer = provider.getSigner();
+                      const address = await signer.getAddress();
+                      const connectedAccount = address.toLowerCase();
+
+                      setAccount(connectedAccount);
+                      setIsConnected(true);
+
+                      // VÉRIFICATION WHITELIST ADMIN
+                      if (ADMIN_WHITELIST.includes(connectedAccount)) {
+                          setIsAuthorized(true);
+                          fetchRequests();
+                      } else {
+                          setIsAuthorized(false);
+                      }
+
+                 } catch (error) {
+                      console.error("Erreur connexion:", error);
+                      alert(`Echec connexion: ${error.message || error}`);
+                 }
+            };
+
+            const disconnectWallet = () => {
+                 setIsConnected(false);
+                 setAccount('');
+                 setIsAuthorized(false);
+                 setShowWalletMenu(false);
             };
 
             const fetchRequests = async () => {
                 setLoading(true);
                 // Simulation récupération LocalStorage (pour démo partagée)
-                // App.html écrit dans 'moeba_insurer_requests'
                 const storedRequests = localStorage.getItem('moeba_insurer_requests');
                 let localRequests = [];
 
                 if (storedRequests) {
                     try {
                         localRequests = JSON.parse(storedRequests);
-                        // On normalise les données si nécessaire
                         localRequests = localRequests.map(req => ({
                             ...req,
                             date: req.date || Date.now()
@@ -111,7 +214,6 @@
                 }
 
                 // Fusion mock + local
-                // On dé-doublonne par adresse pour la propreté (priorité au local qui est 'live')
                 const combined = [...localRequests];
                 mockRequests.forEach(mock => {
                     if (!combined.find(c => c.address === mock.address)) {
@@ -119,35 +221,28 @@
                     }
                 });
 
-                setRequests(combined.sort((a,b) => b.date - a.date)); // Tri décroissant
+                setRequests(combined.sort((a,b) => b.date - a.date));
                 setLoading(false);
             };
 
             const handleDecision = async (reqAddress, decision) => {
-                // decision: true = accept, false = reject
                 if (!confirm(`Confirmer ${decision ? 'l\'approbation' : 'le rejet'} de ${reqAddress} ?`)) return;
 
                 setLoading(true);
                 try {
-                    // 1. Simulation Blockchain Call (désactivée pour demo)
-                    // const tx = await contract.setInsurerStatus(reqAddress, decision);
-                    // await tx.wait();
-
-                    console.log(`Decision pour ${reqAddress}: ${decision}`);
-
-                    // 2. Mise à jour LOCALE (LocalStorage) pour que l'App le voit
+                    // Update LocalStorage
                     const storedRequests = localStorage.getItem('moeba_insurer_requests');
                     if (storedRequests) {
                         let localRequests = JSON.parse(storedRequests);
                         const index = localRequests.findIndex(r => r.address.toLowerCase() === reqAddress.toLowerCase());
 
                         if (index >= 0) {
-                            localRequests[index].status = decision ? 2 : 3; // 2=Approved, 3=Rejected
+                            localRequests[index].status = decision ? 2 : 3;
                             localStorage.setItem('moeba_insurer_requests', JSON.stringify(localRequests));
                         }
                     }
 
-                    // 3. Mise à jour UI Backoffice
+                    // Update UI
                     setRequests(requests.map(r => {
                         if (r.address.toLowerCase() === reqAddress.toLowerCase()) {
                             return { ...r, status: decision ? 2 : 3 };
@@ -155,7 +250,6 @@
                         return r;
                     }));
 
-                    alert("Statut mis à jour !");
                 } catch (err) {
                     console.error(err);
                     alert("Erreur transaction");
@@ -163,22 +257,107 @@
                 setLoading(false);
             };
 
+            // --- NOUVELLE FONCTION RESET MEMORY ---
+            const resetMemory = () => {
+                if (confirm("ATTENTION (DEV) : Vous allez effacer toutes les demandes d'inscription simulées stockées dans le navigateur. Cela permet de recommencer les tests avec la même adresse.\n\nContinuer ?")) {
+                    localStorage.removeItem('moeba_insurer_requests');
+                    alert("Mémoire locale effacée.");
+                    // On recharge les données (ce qui ne gardera que les mocks hardcodés)
+                    fetchRequests();
+                }
+            };
+
             return (
                 <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans p-8">
+
+                    {/* MODAL SELECTEUR WALLET */}
+                    {showWalletSelector && (
+                        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in" onClick={() => setShowWalletSelector(false)}>
+                            <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-sm border border-slate-200 dark:border-slate-700 overflow-hidden animate-zoom-in" onClick={e => e.stopPropagation()}>
+                                <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
+                                    <h3 className="font-bold text-lg text-slate-900 dark:text-white">Connecter Admin</h3>
+                                    <button onClick={() => setShowWalletSelector(false)} className="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
+                                        <X className="h-5 w-5 text-slate-500" />
+                                    </button>
+                                </div>
+
+                                <div className="p-4 space-y-3">
+                                    <button onClick={() => handleWalletSelect('rabby')} className="w-full flex items-center gap-4 p-4 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors border border-transparent hover:border-slate-200 dark:hover:border-slate-700 group">
+                                        <RabbyIcon />
+                                        <span className="font-bold text-slate-700 dark:text-slate-200 group-hover:text-blue-600 dark:group-hover:text-blue-400">Rabby Wallet</span>
+                                    </button>
+
+                                    <button onClick={() => handleWalletSelect('zerion')} className="w-full flex items-center gap-4 p-4 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors border border-transparent hover:border-slate-200 dark:hover:border-slate-700 group">
+                                        <ZerionIcon />
+                                        <span className="font-bold text-slate-700 dark:text-slate-200 group-hover:text-blue-600 dark:group-hover:text-blue-400">Zerion Wallet</span>
+                                    </button>
+
+                                    <div className="border-t border-slate-100 dark:border-slate-800 pt-2 mt-2">
+                                        <button onClick={() => setShowOtherWallets(!showOtherWallets)} className="w-full flex items-center justify-between p-3 rounded-lg text-sm font-medium text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 transition-colors">
+                                            <span>Autres Wallets</span>
+                                            <ChevronDown className={`h-4 w-4 transition-transform duration-300 ${showOtherWallets ? 'rotate-180' : ''}`} />
+                                        </button>
+
+                                        {showOtherWallets && (
+                                            <div className="space-y-2 mt-2 animate-slide-up">
+                                                <button onClick={() => handleWalletSelect('metamask')} className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors group">
+                                                    <MetaMaskIcon />
+                                                    <span className="font-medium text-slate-700 dark:text-slate-300">MetaMask</span>
+                                                </button>
+                                                <button onClick={() => handleWalletSelect('walletconnect')} className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors group">
+                                                    <WalletConnectIcon />
+                                                    <span className="font-medium text-slate-700 dark:text-slate-300">WalletConnect</span>
+                                                </button>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
                     <header className="flex justify-between items-center mb-10 max-w-6xl mx-auto">
                         <div className="flex items-center gap-4">
                              <img src="../img/homeMadeLogo.png" alt="Logo" className="h-10 w-auto" />
                              <h1 className="text-2xl font-bold">Backoffice Protocol</h1>
                         </div>
-                        <div>
+                        <div className="flex items-center gap-4">
+                            {/* BOUTON RESET MEMORY (DEV ONLY) */}
+                            <button
+                                onClick={resetMemory}
+                                className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors flex items-center gap-2 text-sm font-medium border border-transparent hover:border-red-200 dark:hover:border-red-800"
+                                title="Effacer la mémoire locale pour les tests"
+                            >
+                                <Trash2 className="h-4 w-4" /> Reset Data (Dev)
+                            </button>
+
                             {!isConnected ? (
-                                <button onClick={connectWallet} className="px-6 py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-lg font-bold hover:opacity-90 transition-opacity">
-                                    Connecter Admin
+                                <button
+                                    onClick={() => setShowWalletSelector(true)}
+                                    className="px-6 py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-lg font-bold hover:opacity-90 transition-opacity flex items-center gap-2"
+                                >
+                                    <Wallet className="h-4 w-4" /> Connecter Admin
                                 </button>
                             ) : (
-                                <div className={`px-4 py-2 rounded-lg font-mono text-sm border flex items-center gap-2 ${isAuthorized ? 'bg-green-100 text-green-800 border-green-200' : 'bg-red-100 text-red-800 border-red-200'}`}>
-                                    {isAuthorized ? <Shield className="h-4 w-4"/> : <Lock className="h-4 w-4"/>}
-                                    {account.substring(0,6)}...{account.substring(38)}
+                                <div className="relative">
+                                    <button
+                                        onClick={() => setShowWalletMenu(!showWalletMenu)}
+                                        className={`px-4 py-2 rounded-lg font-mono text-sm border flex items-center gap-2 ${isAuthorized ? 'bg-green-100 text-green-800 border-green-200' : 'bg-red-100 text-red-800 border-red-200'}`}
+                                    >
+                                        {isAuthorized ? <Shield className="h-4 w-4"/> : <Lock className="h-4 w-4"/>}
+                                        {account.substring(0,6)}...{account.substring(account.length - 4)}
+                                    </button>
+
+                                    {showWalletMenu && (
+                                      <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 p-2 z-50 flex flex-col gap-1">
+                                        <button
+                                            onClick={disconnectWallet}
+                                            className="flex items-center gap-2 px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors w-full text-left"
+                                        >
+                                            <LogOut className="h-4 w-4" /> <span>Disconnect</span>
+                                        </button>
+                                      </div>
+                                    )}
                                 </div>
                             )}
                         </div>
