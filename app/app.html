@@ -121,9 +121,11 @@
         // Adresse fictive pour la démo, à remplacer par l'adresse déployée du HPIVFactory
         const FACTORY_ADDRESS_LIVE = "0x0000000000000000000000000000000000000000";
 
-        // ABI pour vérifier le status Whitelist sur la Factory
-        const FACTORY_ABI_WHITELIST = [
-            "function isWhitelistedInsurer(address insurer) view returns (bool)"
+        // ABI pour vérifier le status Whitelist sur la Factory + Register
+        const FACTORY_ABI_EXTENDED = [
+            "function isWhitelistedInsurer(address insurer) view returns (bool)",
+            "function registerInsurer(string companyName, string kybHash) external",
+            "function insurerRequests(address insurer) view returns (string companyName, string kybHash, uint8 status, uint256 requestDate)"
         ];
 
         // --- WHITELIST ASSUREURS LOCALE (SIMULATION) ---
@@ -424,6 +426,70 @@
             );
         };
 
+        // --- COMPOSANT FORMULAIRE ENREGISTREMENT ASSUREUR ---
+        const InsurerRegistrationModal = ({ isOpen, onClose, onSubmit, isSubmitting }) => {
+            const [formData, setFormData] = useState({ companyName: '', kybLink: '' });
+
+            if (!isOpen) return null;
+
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                onSubmit(formData);
+            };
+
+            return (
+                <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in" onClick={onClose}>
+                    <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-lg border border-slate-200 dark:border-slate-700 overflow-hidden animate-zoom-in" onClick={e => e.stopPropagation()}>
+                         <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
+                            <h3 className="font-bold text-lg text-slate-900 dark:text-white flex items-center gap-2">
+                                <Shield className="h-5 w-5 text-indigo-600" /> Inscription Assureur
+                            </h3>
+                            <button onClick={onClose} className="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
+                                <X className="h-5 w-5 text-slate-500" />
+                            </button>
+                        </div>
+                        <div className="p-6">
+                            <div className="mb-6 p-4 bg-indigo-50 dark:bg-indigo-900/20 rounded-xl border border-indigo-100 dark:border-indigo-800/50 text-sm text-indigo-800 dark:text-indigo-300">
+                                Pour être whitelisté, vous devez fournir une preuve d'existence légale (KYB) et un certificat d'assurance valide.
+                            </div>
+                            <form onSubmit={handleSubmit} className="space-y-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Nom de la Compagnie</label>
+                                    <input
+                                        type="text"
+                                        required
+                                        value={formData.companyName}
+                                        onChange={e => setFormData({...formData, companyName: e.target.value})}
+                                        className="w-full p-3 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-950 text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none"
+                                        placeholder="Ex: Axa Corporate Solutions"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Preuve KYB (Lien IPFS/URL)</label>
+                                    <input
+                                        type="text"
+                                        required
+                                        value={formData.kybLink}
+                                        onChange={e => setFormData({...formData, kybLink: e.target.value})}
+                                        className="w-full p-3 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-950 text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none font-mono text-sm"
+                                        placeholder="ipfs://..."
+                                    />
+                                    <p className="text-xs text-slate-500 mt-1">Lien vers le certificat hébergé de manière décentralisée.</p>
+                                </div>
+                                <button
+                                    type="submit"
+                                    disabled={isSubmitting}
+                                    className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold shadow-lg shadow-indigo-200 dark:shadow-none transition-all flex justify-center items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    {isSubmitting ? "Envoi de la demande..." : "Soumettre la demande"}
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
         // --- APP COMPONENT ---
         function App() {
           const [activeRole, setActiveRole] = useState('investor');
@@ -435,6 +501,11 @@
           // WALLET SELECTOR MODAL STATE
           const [showWalletSelector, setShowWalletSelector] = useState(false);
           const [showOtherWallets, setShowOtherWallets] = useState(false);
+
+          // INSURER REGISTRATION MODAL
+          const [showInsurerRegistration, setShowInsurerRegistration] = useState(false);
+          const [isRegistering, setIsRegistering] = useState(false);
+          const [registrationStatus, setRegistrationStatus] = useState('none'); // 'none', 'pending'
 
           // État pour le solde du token spécifique au vault sélectionné
           const [assetBalance, setAssetBalance] = useState(0);
@@ -472,42 +543,60 @@
               }, 4000);
           };
 
-          // --- LOGIQUE DE VÉRIFICATION WHITELIST (LOCALE OU ON-CHAIN) ---
+          // --- LOGIQUE DE VÉRIFICATION WHITELIST & STATUS DEMANDE ---
           useEffect(() => {
               const checkWhitelistStatus = async () => {
                   if (!walletConnected || !userFullAddress) {
                       setIsInsurerWhitelisted(false);
+                      setRegistrationStatus('none');
                       return;
                   }
 
                   if (isLiveMode) {
                       // VERIFICATION ON-CHAIN (MODE LIVE)
-                      // Si l'utilisateur est connecté, on interroge le Smart Contract Factory
                       try {
                           const provider = new window.ethers.providers.Web3Provider(window.ethereum);
 
-                          // Note: FACTORY_ADDRESS_LIVE doit être défini et déployé.
-                          // Si l'adresse est 0x0...0, on bloque car pas de contrat à interroger
                           if (FACTORY_ADDRESS_LIVE === "0x0000000000000000000000000000000000000000") {
-                              console.warn("Factory Address not set for Live Mode");
+                              // Mode démo sans contrat déployé
                               setIsInsurerWhitelisted(false);
                               return;
                           }
 
-                          const factoryContract = new window.ethers.Contract(FACTORY_ADDRESS_LIVE, FACTORY_ABI_WHITELIST, provider);
+                          const factoryContract = new window.ethers.Contract(FACTORY_ADDRESS_LIVE, FACTORY_ABI_EXTENDED, provider);
                           const isWhitelisted = await factoryContract.isWhitelistedInsurer(userFullAddress);
                           setIsInsurerWhitelisted(isWhitelisted);
 
+                          // Si pas whitelisté, on vérifie s'il y a une demande en attente
+                          if (!isWhitelisted) {
+                              try {
+                                const request = await factoryContract.insurerRequests(userFullAddress);
+                                // status: 0=None, 1=Pending, 2=Approved, 3=Rejected
+                                if (request.status === 1) setRegistrationStatus('pending');
+                                else if (request.status === 3) setRegistrationStatus('rejected');
+                                else setRegistrationStatus('none');
+                              } catch(e) {
+                                  // La fonction insurerRequests peut ne pas exister sur une vieille version du contrat
+                                  console.log("Impossible de lire le statut de la demande");
+                              }
+                          }
+
                       } catch (error) {
                           console.error("Erreur vérification Whitelist On-Chain:", error);
-                          // En cas d'erreur réseau ou contrat inexistant, on refuse l'accès par sécurité
                           setIsInsurerWhitelisted(false);
                       }
                   } else {
                       // VERIFICATION LOCALE (MODE SIMULATION)
-                      // On utilise le tableau JS hardcodé
+                      // On utilise le tableau JS hardcodé pour le whitelist
                       const isLocalListed = INSURER_WHITELIST_LOCAL.includes(userFullAddress.toLowerCase());
                       setIsInsurerWhitelisted(isLocalListed);
+
+                      // Simulation de demande en attente stockée en mémoire locale de session
+                      if (!isLocalListed) {
+                          const simStatus = sessionStorage.getItem(`insurer_req_${userFullAddress}`);
+                          if (simStatus === 'pending') setRegistrationStatus('pending');
+                          else setRegistrationStatus('none');
+                      }
                   }
               };
 
@@ -733,6 +822,7 @@
              setUserAddress('');
              setUserFullAddress('');
              setUserBalance('0.00');
+             setRegistrationStatus('none');
              showNotification("Déconnecté de l'application.", 'info');
           };
 
@@ -742,6 +832,43 @@
               } else {
                   openWalletSelector();
               }
+          };
+
+          // --- GESTION ENREGISTREMENT ASSUREUR ---
+          const handleInsurerRegistration = async (data) => {
+              setIsRegistering(true);
+
+              if (isLiveMode) {
+                  try {
+                      const provider = new window.ethers.providers.Web3Provider(window.ethereum);
+                      const signer = provider.getSigner();
+
+                      // Instance du contrat Factory
+                      const factoryContract = new window.ethers.Contract(FACTORY_ADDRESS_LIVE, FACTORY_ABI_EXTENDED, signer);
+
+                      showNotification("Envoi de la demande sur la Blockchain...", 'info');
+                      // Appel de la fonction registerInsurer
+                      const tx = await factoryContract.registerInsurer(data.companyName, data.kybLink);
+                      showNotification("Transaction envoyée. En attente de confirmation...", 'info');
+                      await tx.wait();
+
+                      setRegistrationStatus('pending');
+                      setShowInsurerRegistration(false);
+                      showNotification("Demande d'enregistrement envoyée avec succès !", 'success');
+
+                  } catch (err) {
+                      console.error(err);
+                      showNotification("Erreur Blockchain: " + (err.reason || err.message), 'error');
+                  }
+              } else {
+                  // SIMULATION
+                  await new Promise(resolve => setTimeout(resolve, 1500)); // Fake delay
+                  sessionStorage.setItem(`insurer_req_${userFullAddress}`, 'pending');
+                  setRegistrationStatus('pending');
+                  setShowInsurerRegistration(false);
+                  showNotification("Demande simulée envoyée avec succès (Pending Local)", 'success');
+              }
+              setIsRegistering(false);
           };
 
           const updateJunior = (cap, percent) => {
@@ -964,6 +1091,13 @@
             <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans animate-fade-in transition-colors duration-300 relative">
 
               <NotificationToast message={notification.message} type={notification.type} onClose={() => setNotification({message:'', type:'info'})} />
+
+              <InsurerRegistrationModal
+                  isOpen={showInsurerRegistration}
+                  onClose={() => setShowInsurerRegistration(false)}
+                  onSubmit={handleInsurerRegistration}
+                  isSubmitting={isRegistering}
+              />
 
               {/* --- MODAL SELECTEUR DE WALLET --- */}
               {showWalletSelector && (
@@ -1734,23 +1868,44 @@
                               <UserCheck className="h-20 w-20 text-red-500 dark:text-red-400" />
                            </div>
                            <h2 className="text-3xl font-bold text-slate-900 dark:text-white">Accès Non Autorisé</h2>
-                           <p className="text-lg text-slate-500 dark:text-slate-400">
-                              L'adresse <span className="font-mono font-bold text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded">{userAddress}</span> n'est pas reconnue comme un assureur certifié.
-                              {isLiveMode && <span className="block mt-1 text-sm text-red-600 dark:text-red-400 font-bold">(Vérification via Smart Contract Factory)</span>}
-                           </p>
-                           <div className="flex gap-4 mt-2">
+
+                           {/* Message selon le statut de la demande */}
+                           {registrationStatus === 'pending' ? (
+                               <div className="mt-4 p-4 bg-amber-50 dark:bg-amber-900/30 rounded-xl border border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-200 max-w-md">
+                                   <div className="flex items-center gap-2 font-bold mb-1">
+                                       <Activity className="h-5 w-5" /> Demande en cours d'analyse
+                                   </div>
+                                   <p className="text-sm">Votre dossier KYB a bien été reçu et est en cours de traitement par l'équipe du protocole. Vous recevrez l'accès dès validation.</p>
+                               </div>
+                           ) : registrationStatus === 'rejected' ? (
+                               <div className="mt-4 p-4 bg-red-50 dark:bg-red-900/30 rounded-xl border border-red-200 dark:border-red-800 text-red-800 dark:text-red-200 max-w-md">
+                                   <div className="flex items-center gap-2 font-bold mb-1">
+                                       <X className="h-5 w-5" /> Demande Refusée
+                                   </div>
+                                   <p className="text-sm">Votre demande a été rejetée. Veuillez contacter le support pour plus d'informations ou soumettre une nouvelle demande.</p>
+                               </div>
+                           ) : (
+                               <p className="text-lg text-slate-500 dark:text-slate-400">
+                                  L'adresse <span className="font-mono font-bold text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded">{userAddress}</span> n'est pas reconnue comme un assureur certifié.
+                               </p>
+                           )}
+
+                           <div className="flex gap-4 mt-6">
                                <button
                                  onClick={disconnectWallet}
                                  className="px-6 py-3 border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 rounded-xl font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
                                >
                                   Changer de Wallet
                                </button>
-                               <a
-                                 href="#"
-                                 className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold transition-all shadow-lg hover:shadow-indigo-200 dark:hover:shadow-none"
-                               >
-                                  S'enregistrer comme Assureur
-                               </a>
+
+                               {registrationStatus !== 'pending' && (
+                                   <button
+                                     onClick={() => setShowInsurerRegistration(true)}
+                                     className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold transition-all shadow-lg hover:shadow-indigo-200 dark:hover:shadow-none"
+                                   >
+                                      S'enregistrer comme Assureur
+                                   </button>
+                               )}
                            </div>
                       </div>
                   ) :

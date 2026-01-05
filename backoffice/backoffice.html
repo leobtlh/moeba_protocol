@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mœba Protocol | Backoffice</title>
+    <link rel="icon" href="../img/homeMadeLogo.png" type="image/png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        slate: { 850: '#1e293b', 950: '#020617' }
+                    }
+                }
+            }
+        }
+    </script>
+    <script crossorigin src="https://unpkg.com/react@18.2.0/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.development.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 transition-colors duration-300">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // Configuration Similaire
+        const FACTORY_ADDRESS_LIVE = "0x0000000000000000000000000000000000000000";
+        const FACTORY_ABI_ADMIN = [
+            "function owner() view returns (address)",
+            "function pendingRequestAddresses(uint256 index) view returns (address)",
+            "function getPendingRequests() view returns (address[])",
+            "function insurerRequests(address insurer) view returns (string companyName, string kybHash, uint8 status, uint256 requestDate)",
+            "function setInsurerStatus(address insurer, bool status) external"
+        ];
+
+        // ICONS
+        const IconWrapper = ({ children, className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>{children}</svg>);
+        const Shield = ({ className }) => <IconWrapper className={className}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></IconWrapper>;
+        const Check = ({ className }) => <IconWrapper className={className}><polyline points="20 6 9 17 4 12"/></IconWrapper>;
+        const X = ({ className }) => <IconWrapper className={className}><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></IconWrapper>;
+        const ExternalLink = ({ className }) => <IconWrapper className={className}><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></IconWrapper>;
+        const Loader = ({ className }) => <IconWrapper className={className}><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/></IconWrapper>;
+
+        function BackofficeApp() {
+            const [account, setAccount] = useState('');
+            const [isConnected, setIsConnected] = useState(false);
+            const [isAdmin, setIsAdmin] = useState(false);
+            const [requests, setRequests] = useState([]);
+            const [loading, setLoading] = useState(false);
+
+            // Mock Data pour la simulation
+            const [mockRequests, setMockRequests] = useState([
+                { address: "0x123...abc", companyName: "Zurich Insurance Group", kybHash: "ipfs://Qmb...", status: 1, date: Date.now() },
+                { address: "0x456...def", companyName: "Allianz Global", kybHash: "https://doc...", status: 3, date: Date.now() - 86400000 }
+            ]);
+
+            const connectWallet = async () => {
+                if (!window.ethereum) return alert("MetaMask requis");
+                try {
+                    const provider = new ethers.providers.Web3Provider(window.ethereum);
+                    const accounts = await provider.send("eth_requestAccounts", []);
+                    setAccount(accounts[0]);
+                    setIsConnected(true);
+
+                    // Simple check mock admin
+                    setIsAdmin(true);
+                    fetchRequests(new ethers.Contract(FACTORY_ADDRESS_LIVE, FACTORY_ABI_ADMIN, provider.getSigner()));
+                } catch (err) {
+                    console.error(err);
+                }
+            };
+
+            const fetchRequests = async (contract) => {
+                setLoading(true);
+                // Simulation de chargement des données depuis la blockchain ou localstorage simulé
+                // Dans la réalité, on appellerait `contract.getPendingRequests()`
+
+                // On check s'il y a une demande pending dans le sessionStorage (venant de app.html)
+                // Note: Ceci est un hack pour la démo cross-file locale
+                const keys = Object.keys(sessionStorage);
+                const localRequests = [];
+                keys.forEach(key => {
+                    if (key.startsWith('insurer_req_')) {
+                        const addr = key.replace('insurer_req_', '');
+                        if (sessionStorage.getItem(key) === 'pending') {
+                            localRequests.push({
+                                address: addr,
+                                companyName: "Nouvel Assureur (Demo)",
+                                kybHash: "ipfs://demo-kyb-document",
+                                status: 1, // Pending
+                                date: Date.now()
+                            });
+                        }
+                    }
+                });
+
+                setRequests([...mockRequests, ...localRequests]);
+                setLoading(false);
+            };
+
+            const handleDecision = async (reqAddress, decision) => {
+                // decision: true = accept, false = reject
+                if (!confirm(`Confirmer ${decision ? 'l\'approbation' : 'le rejet'} de ${reqAddress} ?`)) return;
+
+                setLoading(true);
+                try {
+                    // Simulation Blockchain Call
+                    // const tx = await contract.setInsurerStatus(reqAddress, decision);
+                    // await tx.wait();
+
+                    console.log(`Decision pour ${reqAddress}: ${decision}`);
+
+                    // Mise à jour locale pour la démo
+                    if (sessionStorage.getItem(`insurer_req_${reqAddress}`)) {
+                        sessionStorage.setItem(`insurer_req_${reqAddress}`, decision ? 'approved' : 'rejected');
+                        // Pour simuler la whitelist dans app.html (le tableau hardcodé ne peut pas changer, mais le user verra le changement de statut)
+                    }
+
+                    // Mise à jour UI
+                    setRequests(requests.map(r => {
+                        if (r.address === reqAddress) {
+                            return { ...r, status: decision ? 2 : 3 };
+                        }
+                        return r;
+                    }));
+
+                    alert("Statut mis à jour sur la Blockchain !");
+                } catch (err) {
+                    console.error(err);
+                    alert("Erreur transaction");
+                }
+                setLoading(false);
+            };
+
+            return (
+                <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans p-8">
+                    <header className="flex justify-between items-center mb-10 max-w-6xl mx-auto">
+                        <div className="flex items-center gap-4">
+                             <img src="../img/homeMadeLogo.png" alt="Logo" className="h-10 w-auto" />
+                             <h1 className="text-2xl font-bold">Backoffice Protocol</h1>
+                        </div>
+                        <div>
+                            {!isConnected ? (
+                                <button onClick={connectWallet} className="px-6 py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-lg font-bold">
+                                    Connecter Admin
+                                </button>
+                            ) : (
+                                <div className="px-4 py-2 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 rounded-lg font-mono text-sm border border-green-200 dark:border-green-800">
+                                    Admin: {account.substring(0,6)}...{account.substring(38)}
+                                </div>
+                            )}
+                        </div>
+                    </header>
+
+                    <main className="max-w-6xl mx-auto">
+                        {!isConnected ? (
+                            <div className="text-center py-20 text-slate-500">Veuillez vous connecter pour accéder au panneau d'administration.</div>
+                        ) : (
+                            <div className="space-y-8">
+                                <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
+                                    <div className="p-6 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-900/50">
+                                        <h2 className="font-bold text-lg flex items-center gap-2">
+                                            <Shield className="h-5 w-5 text-indigo-600" /> Demandes d'Enregistrement (KYB)
+                                        </h2>
+                                        {loading && <span className="flex items-center gap-2 text-sm text-slate-500"><Loader className="h-4 w-4 animate-spin" /> Traitement...</span>}
+                                    </div>
+
+                                    <div className="overflow-x-auto">
+                                        <table className="w-full text-left">
+                                            <thead>
+                                                <tr className="border-b border-slate-100 dark:border-slate-700 text-sm text-slate-500 dark:text-slate-400">
+                                                    <th className="p-4 font-medium">Date</th>
+                                                    <th className="p-4 font-medium">Assureur (Adresse)</th>
+                                                    <th className="p-4 font-medium">Société</th>
+                                                    <th className="p-4 font-medium">Documents (KYB)</th>
+                                                    <th className="p-4 font-medium">Statut</th>
+                                                    <th className="p-4 font-medium text-right">Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
+                                                {requests.map((req, i) => (
+                                                    <tr key={i} className="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
+                                                        <td className="p-4 text-sm text-slate-500">{new Date(req.date).toLocaleDateString()}</td>
+                                                        <td className="p-4 font-mono text-sm">{req.address}</td>
+                                                        <td className="p-4 font-bold">{req.companyName}</td>
+                                                        <td className="p-4">
+                                                            <a href="#" className="flex items-center gap-1 text-blue-600 hover:underline text-sm">
+                                                                Voir Docs <ExternalLink className="h-3 w-3" />
+                                                            </a>
+                                                        </td>
+                                                        <td className="p-4">
+                                                            {req.status === 1 && <span className="px-2 py-1 bg-amber-100 text-amber-700 rounded text-xs font-bold">PENDING</span>}
+                                                            {req.status === 2 && <span className="px-2 py-1 bg-green-100 text-green-700 rounded text-xs font-bold">APPROVED</span>}
+                                                            {req.status === 3 && <span className="px-2 py-1 bg-red-100 text-red-700 rounded text-xs font-bold">REJECTED</span>}
+                                                        </td>
+                                                        <td className="p-4 text-right">
+                                                            {req.status === 1 && (
+                                                                <div className="flex justify-end gap-2">
+                                                                    <button
+                                                                        onClick={() => handleDecision(req.address, true)}
+                                                                        className="p-2 bg-green-100 hover:bg-green-200 text-green-700 rounded-lg transition-colors" title="Valider">
+                                                                        <Check className="h-4 w-4" />
+                                                                    </button>
+                                                                    <button
+                                                                        onClick={() => handleDecision(req.address, false)}
+                                                                        className="p-2 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg transition-colors" title="Rejeter">
+                                                                        <X className="h-4 w-4" />
+                                                                    </button>
+                                                                </div>
+                                                            )}
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                                {requests.length === 0 && (
+                                                    <tr>
+                                                        <td colSpan="6" className="p-8 text-center text-slate-500">Aucune demande en attente.</td>
+                                                    </tr>
+                                                )}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </main>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<BackofficeApp />);
+    </script>
+</body>
+</html>
+
+
+//          {
+//             id: "0x742...d439",
+//             name: "Florida Wind Season 2025",
+//             description: "Couverture contre les ouragans de catégorie 4 ou plus frappant la côte de Floride.",
+//             insurer: "State Farm Re",
+//             totalCapacity: 40330000,
+//             claimAmount: 40000000,
+//             currentAssets: 40330000, // COMPLET (Capacity = Assets)
+//             juniorCapital: 4000000,
+//             premium: 330000,
+//             maturityDate: "1 Jan 2026", // DATE PASSÉE
+//             apr: 25.4,
+//             riskProb: 12.5,
+//             status: "MATURED", // STATUT TERMINÉ
+//             userBalance: 5000, // L'utilisateur a investi
+//             triggerValue: 250,
+//             oracleType: 'WIND',
+//             chain: 'Base',
+//             asset: 'USDC',
+//             triggers: [
+//                 { id: 'windSpeed', name: 'Vitesse Vent', unit: 'km/h', color: '#3b82f6', threshold: 250 }
+//             ],
+//             history: generateMockHistory('WIND')
+//           },
+//           {
+//             id: "0x891...a122",
+//             name: "Tokyo Earthquake Bond",
+//             description: "Obligation catastrophe liée au risque sismique dans la région métropolitaine de Tokyo.",
+//             insurer: "Japan Post Insurance",
+//             totalCapacity: 100000000,
+//             claimAmount: 100000000,
+//             currentAssets: 0,
+//             juniorCapital: 10000000,
+//             premium: 0,
+//             maturityDate: "En attente",
+//             apr: 0,
+//             riskProb: 4.2,
+//             status: "PENDING",
+//             userBalance: 0,
+//             triggerValue: 7.5,
+//             oracleType: 'EARTHQUAKE',
+//             chain: 'Ethereum',
+//             asset: 'USDT',
+//             triggers: [
+//                 { id: 'magnitude', name: 'Magnitude', unit: 'Richter', color: '#8b5cf6', threshold: 7.5 }
+//             ],
+//             history: generateMockHistory('EARTHQUAKE')
+//           }
