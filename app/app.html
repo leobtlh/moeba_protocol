@@ -25,11 +25,21 @@
                     },
                     animation: {
                         'slide-up': 'slideUp 0.3s ease-out forwards',
+                        'fade-in': 'fadeIn 0.2s ease-out forwards',
+                        'zoom-in': 'zoomIn 0.2s ease-out forwards',
                     },
                     keyframes: {
                         slideUp: {
                             '0%': { transform: 'translateY(20px)', opacity: '0' },
                             '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        zoomIn: {
+                            '0%': { transform: 'scale(0.95)', opacity: '0' },
+                            '100%': { transform: 'scale(1)', opacity: '1' },
                         }
                     }
                 }
@@ -118,7 +128,8 @@
 
         // --- WHITELIST ASSUREURS LOCALE (SIMULATION) ---
         const INSURER_WHITELIST_LOCAL = [
-            '0x912f9886fb676750943fdefc4c30d3ca927c3a72'
+            '0x912f9886fb676750943fdefc4c30d3ca927c3a72',
+            '0x5B757b308b8842698035C53b8ea0844240ac485B'
         ].map(addr => addr.toLowerCase());
 
         // ABI Minimal pour lire les balances ERC20
@@ -183,9 +194,40 @@
         const Globe = ({ className }) => <IconWrapper className={className}><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1 4-10z"/></IconWrapper>;
         const UserCheck = ({ className }) => <IconWrapper className={className}><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><polyline points="17 11 19 13 23 9"/></IconWrapper>;
         const Minimize2 = ({ className }) => <IconWrapper className={className}><polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="14" y1="10" x2="21" y2="3"/><line x1="3" y1="21" x2="10" y2="14"/></IconWrapper>;
-        // NOUVELLES ICÔNES POUR LE TOGGLE LISTE/GRILLE
         const LayoutGrid = ({ className }) => <IconWrapper className={className}><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></IconWrapper>;
         const List = ({ className }) => <IconWrapper className={className}><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></IconWrapper>;
+        const ChevronDown = ({ className }) => <IconWrapper className={className}><polyline points="6 9 12 15 18 9"/></IconWrapper>;
+
+
+        // Icônes Wallet Spécifiques (SVG Inline Simplifiés)
+        const RabbyIcon = () => (
+            <svg viewBox="0 0 32 32" className="w-8 h-8 rounded-lg" fill="none">
+                <rect width="32" height="32" rx="8" fill="#8B93FF"/>
+                <path d="M10 16c0-4 3-7 6-7s6 3 6 7-3 7-6 7-6-3-6-7z" fill="white"/>
+                <circle cx="14" cy="15" r="1" fill="#8B93FF"/>
+                <circle cx="18" cy="15" r="1" fill="#8B93FF"/>
+                <path d="M15 19h2" stroke="#8B93FF" strokeLinecap="round"/>
+            </svg>
+        );
+        const ZerionIcon = () => (
+            <svg viewBox="0 0 32 32" className="w-8 h-8 rounded-lg" fill="none">
+                 <rect width="32" height="32" rx="8" fill="#2962FF"/>
+                 <path d="M10 22L22 10M10 10h12v12" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+        );
+        const MetaMaskIcon = () => (
+            <svg viewBox="0 0 32 32" className="w-8 h-8 rounded-lg" fill="none">
+                <rect width="32" height="32" rx="8" fill="#F6851B" fillOpacity="0.1"/>
+                <path d="M26 11l-3 6-5-1-2 5-2-5-5 1-3-6 5-3 5-5 5 5 5 3z" fill="#F6851B" stroke="#E2761B" strokeWidth="1.5" strokeLinejoin="round"/>
+            </svg>
+        );
+        const WalletConnectIcon = () => (
+             <svg viewBox="0 0 32 32" className="w-8 h-8 rounded-lg" fill="none">
+                <rect width="32" height="32" rx="8" fill="#3B99FC"/>
+                <path d="M8 14c4-4 12-4 16 0" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+                <path d="M16 19v.01" stroke="white" strokeWidth="3" strokeLinecap="round"/>
+             </svg>
+        );
 
 
         // Icônes Thème
@@ -390,6 +432,10 @@
           const [userFullAddress, setUserFullAddress] = useState(''); // Ajout de l'adresse complète pour les appels RPC
           const [userBalance, setUserBalance] = useState('0.00'); // Solde NATIF (ETH)
 
+          // WALLET SELECTOR MODAL STATE
+          const [showWalletSelector, setShowWalletSelector] = useState(false);
+          const [showOtherWallets, setShowOtherWallets] = useState(false);
+
           // État pour le solde du token spécifique au vault sélectionné
           const [assetBalance, setAssetBalance] = useState(0);
           const [assetBalanceFormatted, setAssetBalanceFormatted] = useState('0.00');
@@ -583,55 +629,103 @@
           });
 
           // --- CONNEXION WALLET ---
-          const connectWallet = async () => {
-            if (!window.ethers) {
-                showNotification("Erreur technique : Librairie Web3 non chargée.", 'error');
-                return;
-            }
+          const openWalletSelector = () => {
+             setShowWalletSelector(true);
+             setShowOtherWallets(false); // Reset view
+          };
 
-            if (typeof window.ethereum !== 'undefined') {
-                try {
-                    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+          const handleWalletSelect = async (walletType) => {
+             setShowWalletSelector(false); // Close modal
 
-                    if (!accounts || accounts.length === 0) {
-                        showNotification("Aucun compte sélectionné.", 'error');
-                        return;
-                    }
+             if (!window.ethers) {
+                  showNotification("Erreur technique : Librairie Web3 non chargée.", 'error');
+                  return;
+             }
 
-                    const provider = new window.ethers.providers.Web3Provider(window.ethereum);
-                    const signer = provider.getSigner();
-                    const address = await signer.getAddress();
+             let providerInput = null;
 
-                    try {
-                        const messageToSign = `Connexion Mœba Protocol\n\nWallet: ${address}\nNonce: ${Date.now()}`;
-                        showNotification("Veuillez signer la demande dans votre wallet...", 'info');
-                        await signer.signMessage(messageToSign);
-                        showNotification("Signature valide. Connexion autorisée.", 'success');
-                    } catch (signErr) {
-                        console.error("Erreur signature:", signErr);
-                        showNotification("Connexion annulée : Signature refusée par l'utilisateur.", 'error');
-                        return;
-                    }
+             // Logique de sélection du provider selon le choix utilisateur
+             if (walletType === 'zerion') {
+                 // ORDRE DE PRIORITE CRITIQUE POUR ZERION
+                 if (window.zerionWallet) {
+                     providerInput = window.zerionWallet;
+                 } else if (window.ethereum && window.ethereum.isZerion) {
+                     providerInput = window.ethereum;
+                 } else {
+                     showNotification("Zerion n'est pas détecté. Utilisation du provider par défaut.", 'info');
+                     providerInput = window.ethereum;
+                 }
+             } else if (walletType === 'rabby') {
+                 if (window.ethereum && window.ethereum.isRabby) {
+                     providerInput = window.ethereum;
+                 } else if (window.ethereum) {
+                     // Fallback si l'utilisateur croit utiliser Rabby mais que c'est le défaut
+                     providerInput = window.ethereum;
+                 }
+             } else if (walletType === 'metamask') {
+                 if (window.ethereum) {
+                     providerInput = window.ethereum;
+                 }
+             } else if (walletType === 'walletconnect') {
+                 showNotification("Intégration WalletConnect complète à venir.", 'info');
+                 // Tentative générique
+                 if (window.ethereum) providerInput = window.ethereum;
+             } else {
+                 // Defaut
+                 providerInput = window.ethereum;
+             }
 
-                    const balanceBig = await provider.getBalance(address);
-                    const balanceFmt = window.ethers.utils.formatEther(balanceBig);
+             if (!providerInput) {
+                 showNotification("Aucun wallet compatible détecté.", 'error');
+                 return;
+             }
 
-                    const shortAddress = `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
-                    setWalletConnected(true);
-                    setUserAddress(shortAddress);
-                    setUserFullAddress(address); // Stockage de l'adresse complète
-                    setUserBalance(parseFloat(balanceFmt).toFixed(4));
+             // Lancement de la connexion
+             try {
+                  const accounts = await providerInput.request({ method: 'eth_requestAccounts' });
 
-                    const isRabby = window.ethereum.isRabby;
-                    showNotification(`Connecté: ${shortAddress} (${isRabby ? 'Rabby' : 'Wallet'})`, 'success');
+                  if (!accounts || accounts.length === 0) {
+                      showNotification("Aucun compte sélectionné.", 'error');
+                      return;
+                  }
 
-                } catch (error) {
-                    console.error("Erreur connexion:", error);
-                    showNotification(`Echec connexion: ${error.message || error}`, 'error');
-                }
-            } else {
-                showNotification("Aucun wallet détecté. Veuillez installer Rabby ou MetaMask.", 'error');
-            }
+                  const provider = new window.ethers.providers.Web3Provider(providerInput);
+                  const signer = provider.getSigner();
+                  const address = await signer.getAddress();
+
+                  try {
+                      const messageToSign = `Connexion Mœba Protocol\n\nWallet: ${address}\nNonce: ${Date.now()}`;
+                      showNotification("Veuillez signer la demande dans votre wallet...", 'info');
+                      await signer.signMessage(messageToSign);
+                      showNotification("Signature valide. Connexion autorisée.", 'success');
+                  } catch (signErr) {
+                      console.error("Erreur signature:", signErr);
+                      showNotification("Connexion annulée : Signature refusée par l'utilisateur.", 'error');
+                      return;
+                  }
+
+                  const balanceBig = await provider.getBalance(address);
+                  const balanceFmt = window.ethers.utils.formatEther(balanceBig);
+
+                  const shortAddress = `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
+                  setWalletConnected(true);
+                  setUserAddress(shortAddress);
+                  setUserFullAddress(address);
+                  setUserBalance(parseFloat(balanceFmt).toFixed(4));
+
+                  // Détection du nom pour l'affichage final
+                  let walletName = 'Wallet';
+                  // On vérifie le providerInput utilisé OU les flags globaux si providerInput est générique
+                  if (walletType === 'zerion' || providerInput.isZerion || window.zerionWallet) walletName = 'Zerion';
+                  else if (walletType === 'rabby' || providerInput.isRabby) walletName = 'Rabby';
+                  else if (walletType === 'metamask' || providerInput.isMetaMask) walletName = 'MetaMask';
+
+                  showNotification(`Connecté avec ${walletName}`, 'success');
+
+             } catch (error) {
+                  console.error("Erreur connexion:", error);
+                  showNotification(`Echec connexion: ${error.message || error}`, 'error');
+             }
           };
 
           const disconnectWallet = () => {
@@ -646,7 +740,7 @@
               if (walletConnected) {
                   if(confirm("Voulez-vous vous déconnecter ?")) disconnectWallet();
               } else {
-                  connectWallet();
+                  openWalletSelector();
               }
           };
 
@@ -867,9 +961,58 @@
 
           // RENDER
           return (
-            <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans animate-fade-in transition-colors duration-300">
+            <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans animate-fade-in transition-colors duration-300 relative">
 
               <NotificationToast message={notification.message} type={notification.type} onClose={() => setNotification({message:'', type:'info'})} />
+
+              {/* --- MODAL SELECTEUR DE WALLET --- */}
+              {showWalletSelector && (
+                  <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in" onClick={() => setShowWalletSelector(false)}>
+                      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-sm border border-slate-200 dark:border-slate-700 overflow-hidden animate-zoom-in" onClick={e => e.stopPropagation()}>
+                          <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
+                              <h3 className="font-bold text-lg text-slate-900 dark:text-white">Connecter Wallet</h3>
+                              <button onClick={() => setShowWalletSelector(false)} className="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
+                                  <X className="h-5 w-5 text-slate-500" />
+                              </button>
+                          </div>
+
+                          <div className="p-4 space-y-3">
+                              {/* RABBY */}
+                              <button onClick={() => handleWalletSelect('rabby')} className="w-full flex items-center gap-4 p-4 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors border border-transparent hover:border-slate-200 dark:hover:border-slate-700 group">
+                                  <RabbyIcon />
+                                  <span className="font-bold text-slate-700 dark:text-slate-200 group-hover:text-blue-600 dark:group-hover:text-blue-400">Rabby Wallet</span>
+                              </button>
+
+                              {/* ZERION */}
+                              <button onClick={() => handleWalletSelect('zerion')} className="w-full flex items-center gap-4 p-4 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors border border-transparent hover:border-slate-200 dark:hover:border-slate-700 group">
+                                  <ZerionIcon />
+                                  <span className="font-bold text-slate-700 dark:text-slate-200 group-hover:text-blue-600 dark:group-hover:text-blue-400">Zerion Wallet</span>
+                              </button>
+
+                              {/* AUTRES WALLETS (DROPDOWN) */}
+                              <div className="border-t border-slate-100 dark:border-slate-800 pt-2 mt-2">
+                                  <button onClick={() => setShowOtherWallets(!showOtherWallets)} className="w-full flex items-center justify-between p-3 rounded-lg text-sm font-medium text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 transition-colors">
+                                      <span>Autres Wallets</span>
+                                      <ChevronDown className={`h-4 w-4 transition-transform duration-300 ${showOtherWallets ? 'rotate-180' : ''}`} />
+                                  </button>
+
+                                  {showOtherWallets && (
+                                      <div className="space-y-2 mt-2 animate-slide-up">
+                                          <button onClick={() => handleWalletSelect('metamask')} className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors group">
+                                              <MetaMaskIcon />
+                                              <span className="font-medium text-slate-700 dark:text-slate-300">MetaMask</span>
+                                          </button>
+                                          <button onClick={() => handleWalletSelect('walletconnect')} className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors group">
+                                              <WalletConnectIcon />
+                                              <span className="font-medium text-slate-700 dark:text-slate-300">WalletConnect</span>
+                                          </button>
+                                      </div>
+                                  )}
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              )}
 
               {/* NAVBAR */}
               <nav className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-50 shadow-sm transition-colors duration-300">
@@ -902,7 +1045,7 @@
 
                       <div className="relative">
                           <button
-                            onClick={() => walletConnected ? setShowWalletMenu(!showWalletMenu) : connectWallet()}
+                            onClick={() => walletConnected ? setShowWalletMenu(!showWalletMenu) : openWalletSelector()}
                             className={`flex items-center gap-2 px-4 py-2 rounded-full font-medium transition-colors border ${walletConnected ? 'bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800' : 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-200 border-transparent'}`}
                           >
                             <Wallet className="h-4 w-4" />
@@ -1577,7 +1720,7 @@
                               L'espace assureur est restreint aux entités accréditées VUSA. Veuillez connecter votre portefeuille pour vérifier vos droits d'accès.
                            </p>
                            <button
-                             onClick={connectWallet}
+                             onClick={openWalletSelector}
                              className="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold transition-all shadow-lg hover:shadow-blue-200 dark:hover:shadow-none flex items-center gap-2"
                            >
                              <Wallet className="h-5 w-5" /> Connecter Wallet
@@ -1941,8 +2084,6 @@
                   </>
                 )}
 
-                {/*--------------------------------------------------------------------------------------------------------------------------------------------*/}
-
                 {/* --- VUE DASHBOARD --- */}
                 {activeRole === 'dashboard' && (
                   !walletConnected ? (
@@ -1955,7 +2096,7 @@
                               Connectez votre portefeuille pour visualiser vos positions et gérer vos investissements.
                            </p>
                            <button
-                             onClick={connectWallet}
+                             onClick={openWalletSelector}
                              className="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold transition-all shadow-lg hover:shadow-blue-200 dark:hover:shadow-none flex items-center gap-2"
                            >
                              <Wallet className="h-5 w-5" /> Connecter Wallet
@@ -2130,8 +2271,6 @@
                   </div>
                   )
                 )}
-
-                {/*--------------------------------------------------------------------------------------------------------------------------------------------*/}
 
                 {/* --- VUE ORACLE --- */}
                 {activeRole === 'oracle' && (
