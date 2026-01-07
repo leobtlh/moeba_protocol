@@ -40,7 +40,7 @@ function smoothScrollTo(targetY, duration = 1500) {
   requestAnimationFrame(step);
 }
 
-
+// GESTION WHEEL (MOLETTE)
 window.addEventListener("wheel", (e) => {
   // Si une carte est ouverte, on désactive le scroll automatique des sections
   if (document.body.classList.contains('modal-open')) return;
@@ -60,6 +60,40 @@ window.addEventListener("wheel", (e) => {
   setTimeout(() => {
     isScrolling = false;
   }, 800);
+});
+
+// --- GESTION DES CLICS MENU (NAVIGATION FLUIDE) ---
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const targetId = this.getAttribute('href');
+
+        // Si href est juste "#", on ne fait rien ou on remonte
+        if(targetId === '#') return;
+
+        const targetSection = document.querySelector(targetId);
+
+        if (targetSection) {
+            // 1. Mettre à jour currentSection pour que le prochain coup de molette
+            // reparte bien de cette nouvelle position (et non de l'ancienne)
+            sections.forEach((section, index) => {
+                if(section === targetSection) {
+                    currentSection = index;
+                }
+            });
+
+            // 2. Lancer le scroll fluide
+            // On force isScrolling à true pour éviter que la molette n'interfère
+            // pendant le trajet
+            isScrolling = true;
+            smoothScrollTo(targetSection.offsetTop, 1000);
+
+            // 3. Relâcher le verrou un peu après la fin
+            setTimeout(() => {
+                isScrolling = false;
+            }, 1000);
+        }
+    });
 });
 
 

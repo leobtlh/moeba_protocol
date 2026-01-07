@@ -5,15 +5,12 @@
         <meta name="viewport" content="width=device-width,initial-scale=1">
         <title>Mœba Protocol - Parametric Insurance</title>
 
-        <!-- Favicon (Chemin local rétabli) -->
-        <link rel="icon" href="img/homeMadeLogo.png" type="image/jpeg">
-
         <!-- Fonts Google (Inter) -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
 
-        <!-- CSS (Chemin static/css/ rétabli) -->
+        <!-- CSS -->
         <link rel="stylesheet" href="static/css/index.css">
     </head>
 
@@ -22,14 +19,28 @@
         <div class="modal-overlay" id="modalOverlay"></div>
 
         <!-- PAGE 1 : HERO & ACCROCHE -->
-        <section class="page page-hero">
+        <section id="home" class="page page-hero">
             <header class="site-header">
                 <nav class="nav">
                     <div class="nav-brand">
-                        <a href="#" class="nav-logo">
-                            <img src="img/homeMadeLogo.png" alt="MOEBA" class="logo-img"/>
+                        <a href="#home" class="nav-logo">
+                            <img src="img/homeMadeLogo.png" alt="MOEBA" class="logo-img" onerror="this.src='https://placehold.co/48x48?text=M'"/>
                             <span class="logo-text">Mœba Protocol</span>
                         </a>
+
+                        <div class="menu-container">
+                        <button class="menu-toggle nav-link">| Menu</button>
+
+                        <div class="hide-menu">
+                            <a class="stick" href="#">|</a>
+                            <a class="nav-link" href="#home">Accueil</a><span class="stick"> · </span>
+                            <a class="nav-link" href="#concepts">Concepts</a><span class="stick"> · </span>
+                            <a class="nav-link" href="#mechanics">Mécanismes</a><span class="stick"> · </span>
+                            <a class="nav-link" href="#regulation">Régulation</a><span class="stick"> · </span>
+                            <a class="nav-link" href="#ecosystem">Écosystème</a>
+                        </div>
+                    </div>
+
                     </div>
 
                     <div class="nav-actions">
@@ -69,7 +80,7 @@
         </section>
 
         <!-- PAGE 2 : LE MÉCANISME DE BASE -->
-        <section class="page page-tech">
+        <section id="concepts" class="page page-tech">
             <main class="content-wrapper">
                 <h2 class="section-title">Architecture "Soft Default"</h2>
                 <p class="section-desc">Fini le risque binaire "Tout ou Rien". Notre architecture en tranches protège votre capital.</p>
@@ -78,7 +89,7 @@
                     <!-- Carte 1 : Tranches -->
                     <article class="card card-large" data-card="1">
                         <div class="card-header">
-                            <div class="card-icon"><img src="img/greenShield.png" alt="GREEN_SHIELD" class="logo-img"/></div>
+                            <div class="card-icon"><img src="img/greenShield.png" alt="GREEN_SHIELD" class="logo-img" onerror="this.src='https://placehold.co/50?text=S'"/></div>
                             <button class="close-btn" aria-label="Fermer">×</button>
                         </div>
                         <h3>Skin in the Game</h3>
@@ -94,7 +105,7 @@
                     <!-- Carte 2 : Simulation -->
                     <article class="card" data-card="2">
                         <div class="card-header">
-                            <div class="card-icon"><img src="img/blueGraph.png" alt="BLUE_GRAPH" class="logo-img"/></div>
+                            <div class="card-icon"><img src="img/blueGraph.png" alt="BLUE_GRAPH" class="logo-img" onerror="this.src='https://placehold.co/50?text=G'"/></div>
                             <button class="close-btn" aria-label="Fermer">×</button>
                         </div>
                         <h3>Protection Capital</h3>
@@ -116,7 +127,7 @@
                     <!-- Carte 3 : Yield -->
                     <article class="card" data-card="3">
                         <div class="card-header">
-                            <div class="card-icon"><img src="img/yellowGold.png" alt="YELLOW_GOLD" class="logo-img"/></div>
+                            <div class="card-icon"><img src="img/yellowGold.png" alt="YELLOW_GOLD" class="logo-img" onerror="this.src='https://placehold.co/50?text=Y'"/></div>
                             <button class="close-btn" aria-label="Fermer">×</button>
                         </div>
                         <h3>Double Yield</h3>
@@ -137,10 +148,10 @@
         </section>
 
         <!-- PAGE 3 (NOUVELLE) : MÉCANISMES AVANCÉS & DUAL TRIGGER -->
-        <section class="page page-advanced">
-            <!-- DÉCORATION MOUTONS (Ajout demandé) -->
-            <img src="img/sheep.png" class="bg-sheep bg-sheep-left" alt="" />
-            <img src="img/croco.png" class="bg-sheep bg-croco-right" alt="" />
+        <section id="mechanics" class="page page-advanced">
+            <!-- DÉCORATION MOUTONS -->
+            <img src="img/sheep.png" class="bg-sheep bg-sheep-left" alt="" onerror="this.style.display='none'" />
+            <img src="img/croco.png" class="bg-sheep bg-croco-right" alt="" onerror="this.style.display='none'" />
 
             <main class="content-wrapper">
                 <h2 class="section-title">Mécanique Financière</h2>
@@ -150,7 +161,7 @@
                     <!-- Carte 7 : Risque de Base & Dual Trigger (Large) -->
                     <article class="card card-large" data-card="7">
                         <div class="card-header">
-                            <div class="card-icon"><img src="img/pinkLaw.png" alt="DUAL_TRIGGER" class="logo-img"/></div>
+                            <div class="card-icon"><img src="img/pinkLaw.png" alt="DUAL_TRIGGER" class="logo-img" onerror="this.src='https://placehold.co/50?text=D'"/></div>
                             <button class="close-btn" aria-label="Fermer">×</button>
                         </div>
                         <h3>Dual Trigger & Indemnité</h3>
@@ -182,7 +193,7 @@
                     <!-- Carte 8 : Mécanisme des Primes (Yield Reserve) -->
                     <article class="card" data-card="8">
                         <div class="card-header">
-                            <div class="card-icon"><img src="img/yellowGold.png" alt="PREMIUMS" class="logo-img"/></div>
+                            <div class="card-icon"><img src="img/yellowGold.png" alt="PREMIUMS" class="logo-img" onerror="this.src='https://placehold.co/50?text=P'"/></div>
                             <button class="close-btn" aria-label="Fermer">×</button>
                         </div>
                         <h3>Sanctuarisation des Primes</h3>
@@ -203,7 +214,7 @@
         </section>
 
         <!-- PAGE 4 : RÉGULATION -->
-        <section class="page page-trust">
+        <section id="regulation" class="page page-trust">
             <main class="content-wrapper">
                 <h2 class="section-title">Cadre Réglementaire Suisse</h2>
                 <p class="section-desc">Construit pour durer sous la supervision des standards les plus stricts.</p>
@@ -211,7 +222,7 @@
                 <div class="bento-grid">
                     <article class="card card-wide" data-card="4">
                         <div class="card-header">
-                            <div class="card-icon"><img src="img/swissFlag.jpeg" alt="SWISS_FLAG" class="logo-img"/></div>
+                            <div class="card-icon"><img src="img/swissFlag.jpeg" alt="SWISS_FLAG" class="logo-img" onerror="this.src='https://placehold.co/50?text=CH'"/></div>
                             <button class="close-btn" aria-label="Fermer">×</button>
                         </div>
                         <h3>Véhicule VUSA (ISPV)</h3>
@@ -226,7 +237,7 @@
 
                     <article class="card" data-card="5">
                         <div class="card-header">
-                            <div class="card-icon"><img src="img/pinkLaw.png" alt="PINK_LAW" class="logo-img"/></div>
+                            <div class="card-icon"><img src="img/pinkLaw.png" alt="PINK_LAW" class="logo-img" onerror="this.src='https://placehold.co/50?text=L'"/></div>
                             <button class="close-btn" aria-label="Fermer">×</button>
                         </div>
                         <h3>Conformité DLT</h3>
@@ -241,7 +252,7 @@
 
                     <article class="card" data-card="6">
                         <div class="card-header">
-                            <div class="card-icon"><img src="img/blueLoop.png" alt="BLUE_LOOP" class="logo-img"/></div>
+                            <div class="card-icon"><img src="img/blueLoop.png" alt="BLUE_LOOP" class="logo-img" onerror="this.src='https://placehold.co/50?text=O'"/></div>
                             <button class="close-btn" aria-label="Fermer">×</button>
                         </div>
                         <h3>Oracles Certifiés</h3>
@@ -262,7 +273,7 @@
         </section>
 
         <!-- PAGE 5 : FOOTER / LIENS -->
-        <section class="page page-trust">
+        <section id="ecosystem" class="page page-trust">
             <main class="content-wrapper">
                 <h2 class="section-title">Écosystème & Conformité</h2>
                 <p class="section-desc">Une infrastructure transparente, documentée et régulée.</p>
@@ -296,7 +307,7 @@
                         <ul class="link-list">
                             <li><a href="#">Téléphone : +41 78 302 50 85</a></li>
                             <li><a href="#">Mail : info@moeba.ch</a></li>
-                            <li><a href="#">Discord</a></li>
+                            <li><a href="https://discord.com/channels/1458362167744139370/1458362169002561660" target="_blank">Discord</a></li>
                         </ul>
                     </div>
 
@@ -321,7 +332,7 @@
             </main>
         </section>
 
-        <!-- JS (Chemin static/js/ rétabli) -->
+        <!-- JS -->
         <script src="static/js/index.js"></script>
     </body>
 </html>

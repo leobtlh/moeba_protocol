@@ -35,7 +35,7 @@ body {
   background-color: var(--bg-main);
   color: var(--text-main);
   height: 100vh;
-  overflow: hidden; /* Nécessaire pour ton script de scroll */
+  overflow: hidden; /* Nécessaire pour le script de scroll */
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
@@ -74,6 +74,12 @@ a { text-decoration: none; color: inherit; }
 
 .nav-actions { display: flex; align-items: center; gap: 1.5rem; }
 
+.stick {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    transition: color 0.2s;
+}
 .nav-link {
     font-size: 0.9rem;
     font-weight: 500;
@@ -98,6 +104,39 @@ a { text-decoration: none; color: inherit; }
     color: var(--text-main);
     cursor: pointer;
     font-size: 1.2rem;
+}
+
+.hide-menu {
+    display: none;
+}
+
+.menu-toggle {
+    color: var(--text-muted);
+    transition: color 0.2s;
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    cursor: pointer;
+}
+
+.menu-container:hover .hide-menu {
+    display: block;
+}
+
+.menu-container:hover .menu-toggle {
+    display: none;
+}
+
+.hide-menu {
+    display: none;
+    animation: fadeIn 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .btn-primary {
