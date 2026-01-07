@@ -1,23 +1,8 @@
-// Thème : on applique la classe sur <body>
-(function(){
-    const switchBtn = document.getElementById('themeSwitch');
-    const saved = localStorage.getItem('theme');
-    if(saved === 'dark') document.body.classList.add('dark-theme');
-
-
-    if(!switchBtn) return;
-    switchBtn.addEventListener('click', (e)=>{
-        e.preventDefault();
-        document.body.classList.toggle('dark-theme');
-        localStorage.setItem('theme', document.body.classList.contains('dark-theme') ? 'dark' : 'light');
-    });
-})();
-
+// --- GESTION SCROLL FLUIDE & NAVIGATION ---
 const sections = document.querySelectorAll(".page");
 let currentSection = 0;
 let isScrolling = false;
 
-// --- GESTION SCROLL ---
 function smoothScrollTo(targetY, duration = 1500) {
   const startY = window.scrollY;
   const diff = targetY - startY;
@@ -74,8 +59,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         const targetSection = document.querySelector(targetId);
 
         if (targetSection) {
-            // 1. Mettre à jour currentSection pour que le prochain coup de molette
-            // reparte bien de cette nouvelle position (et non de l'ancienne)
+            // 1. Mettre à jour currentSection pour la synchronisation molette
             sections.forEach((section, index) => {
                 if(section === targetSection) {
                     currentSection = index;
@@ -83,8 +67,6 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             });
 
             // 2. Lancer le scroll fluide
-            // On force isScrolling à true pour éviter que la molette n'interfère
-            // pendant le trajet
             isScrolling = true;
             smoothScrollTo(targetSection.offsetTop, 1000);
 
@@ -119,7 +101,7 @@ cards.forEach(card => {
             return;
         }
 
-        // Si la carte est déjà ouverte, on ne fait rien (ou on pourrait fermer)
+        // Si la carte est déjà ouverte, on ne fait rien
         if (card.classList.contains('expanded')) return;
 
         // Fermer les autres d'abord
@@ -128,14 +110,73 @@ cards.forEach(card => {
         // Ouvrir celle-ci
         card.classList.add('expanded');
         overlay.classList.add('active');
-        document.body.classList.add('modal-open'); // Désactive le scroll page (utile pour wheel)
+        document.body.classList.add('modal-open'); // Désactive le scroll page
     });
 });
 
 // Fermeture via Overlay
-overlay.addEventListener('click', closeAllCards);
+if(overlay) overlay.addEventListener('click', closeAllCards);
 
 // Fermeture via Echap
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') closeAllCards();
 });
+
+// --- GESTION DU THÈME (MOON/SUN) ---
+(function(){
+    const switchBtn = document.getElementById('themeSwitch');
+
+    // Définition des icônes SVG
+    const sunIcon = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41-1.41"/><path d="m19.07 4.93-1.41 1.41"/>
+        </svg>`;
+
+    const moonIcon = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>`;
+
+    // Fonction pour mettre à jour l'icône selon le thème
+    function updateIcon(isDark) {
+        // Si Dark Mode actif, on affiche le Soleil (pour pouvoir repasser en clair)
+        // Sinon on affiche la Lune
+        if(switchBtn) switchBtn.innerHTML = isDark ? sunIcon : moonIcon;
+    }
+
+    // Initialisation au chargement
+    const saved = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+    // Logique CSS :
+    // .dark-theme PRÉSENT = Dark Mode
+    // .dark-theme ABSENT = Light Mode (via body:not(.dark-theme))
+
+    const isDarkInitial = saved === 'dark' || (!saved && prefersDark);
+
+    if (isDarkInitial) {
+        document.body.classList.add('dark-theme');
+    } else {
+        document.body.classList.remove('dark-theme');
+    }
+
+    // Mise à jour de l'icône initiale
+    updateIcon(isDarkInitial);
+
+    if(switchBtn) {
+        switchBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            // Bascule la classe
+            document.body.classList.toggle('dark-theme');
+
+            // Vérifie le nouvel état
+            const isDarkNow = document.body.classList.contains('dark-theme');
+
+            // Sauvegarde
+            localStorage.setItem('theme', isDarkNow ? 'dark' : 'light');
+
+            // Mise à jour de l'icône
+            updateIcon(isDarkNow);
+        });
+    }
+})();
