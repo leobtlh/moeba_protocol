@@ -199,6 +199,7 @@
         const LayoutGrid = ({ className }) => <IconWrapper className={className}><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></IconWrapper>;
         const List = ({ className }) => <IconWrapper className={className}><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></IconWrapper>;
         const ChevronDown = ({ className }) => <IconWrapper className={className}><polyline points="6 9 12 15 18 9"/></IconWrapper>;
+        const Search = ({ className }) => <IconWrapper className={className}><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></IconWrapper>;
 
 
         // Icônes Wallet Spécifiques (SVG Inline Simplifiés)
@@ -516,8 +517,11 @@
           const [selectedVault, setSelectedVault] = useState(null);
           const [depositAmount, setDepositAmount] = useState('');
 
-          // FILTRES
+          // FILTRES & TRI
           const [selectedChains, setSelectedChains] = useState([]); // Stocke les chaînes sélectionnées
+          const [searchQuery, setSearchQuery] = useState(''); // Recherche
+          const [aprSort, setAprSort] = useState('neutral'); // neutral, desc, asc
+          const [maturitySort, setMaturitySort] = useState('neutral'); // neutral, asc, desc
 
           // --- MODE LISTE / GRILLE ---
           const [viewMode, setViewMode] = useState('grid'); // 'grid' | 'list'
@@ -738,11 +742,57 @@
               }
           };
 
-          // Filtrage des vaults
+          const parseDateForSort = (dateStr) => {
+              if (!dateStr || dateStr === "En attente") return new Date(9999, 11, 31);
+              const monthMap = { 'Janvier': '01', 'Février': '02', 'Mars': '03', 'Avril': '04', 'Mai': '05', 'Juin': '06', 'Juillet': '07', 'Août': '08', 'Septembre': '09', 'Octobre': '10', 'Novembre': '11', 'Décembre': '12' };
+              const parts = dateStr.split(' ');
+              if (parts.length === 3) {
+                  const engMonthMap = {
+                      'Janvier': 'January', 'Février': 'February', 'Mars': 'March',
+                      'Avril': 'April', 'Mai': 'May', 'Juin': 'June',
+                      'Juillet': 'July', 'Août': 'August', 'Septembre': 'September',
+                      'Octobre': 'October', 'Novembre': 'November', 'Décembre': 'December'
+                  };
+                  const engMonth = engMonthMap[parts[1]] || parts[1];
+                  return new Date(`${engMonth} ${parts[0]}, ${parts[2]}`);
+              }
+              return new Date(dateStr);
+          };
+
           const filteredVaults = vaults.filter(vault => {
-              if (selectedChains.length === 0) return true; // Aucun filtre = tout afficher
-              return selectedChains.includes(vault.chain);
+              if (selectedChains.length > 0 && !selectedChains.includes(vault.chain)) return false;
+              if (searchQuery) {
+                  const q = searchQuery.toLowerCase();
+                  return vault.asset.toLowerCase().includes(q) || vault.name.toLowerCase().includes(q);
+              }
+              return true;
+          }).sort((a, b) => {
+              if (aprSort !== 'neutral') {
+                  const valA = parseFloat(a.apr);
+                  const valB = parseFloat(b.apr);
+                  return aprSort === 'desc' ? valB - valA : valA - valB;
+              }
+              if (maturitySort !== 'neutral') {
+                  const dateA = parseDateForSort(a.maturityDate);
+                  const dateB = parseDateForSort(b.maturityDate);
+                  return maturitySort === 'asc' ? dateA - dateB : dateB - dateA;
+              }
+              return 0;
           });
+
+          const toggleAprSort = () => {
+              setMaturitySort('neutral');
+              if (aprSort === 'neutral') setAprSort('desc');
+              else if (aprSort === 'desc') setAprSort('asc');
+              else setAprSort('neutral');
+          };
+
+          const toggleMaturitySort = () => {
+              setAprSort('neutral');
+              if (maturitySort === 'neutral') setMaturitySort('asc');
+              else if (maturitySort === 'asc') setMaturitySort('desc');
+              else setMaturitySort('neutral');
+          };
 
           // --- CONNEXION WALLET ---
           const openWalletSelector = () => {
@@ -1321,13 +1371,61 @@
                                       </button>
                                   </div>
 
-                                  {selectedChains.length > 0 && (
-                                      <button onClick={() => setSelectedChains([])} className="px-2 py-1 text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                                  {(selectedChains.length > 0 || searchQuery || aprSort !== 'neutral' || maturitySort !== 'neutral') && (
+                                      <button onClick={() => { setSelectedChains([]); setSearchQuery(''); setAprSort('neutral'); setMaturitySort('neutral'); }} className="px-2 py-1 text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
                                           Reset Filtres
                                       </button>
                                   )}
                                 </div>
                               </div>
+
+                              {/* BARRE DE FILTRES APR CROISSANT/DECROISSANT & MATURITE & SEARCH */}
+                              <div className="flex flex-wrap items-center gap-3">
+                                  {/* BOUTON TRI APR */}
+                                  <button
+                                    onClick={toggleAprSort}
+                                    className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all border select-none ${
+                                        aprSort !== 'neutral'
+                                        ? 'bg-blue-50 dark:bg-blue-900/30 border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-300 shadow-sm'
+                                        : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'
+                                    }`}
+                                  >
+                                      <span className="font-bold text-sm">APR</span>
+                                      {aprSort === 'neutral' && <span className="text-slate-300">⇅</span>}
+                                      {aprSort === 'desc' && <span>(Max) ↓</span>}
+                                      {aprSort === 'asc' && <span>(Min) ↑</span>}
+                                  </button>
+
+                                  {/* BOUTON TRI MATURITE */}
+                                  <button
+                                    onClick={toggleMaturitySort}
+                                    className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all border select-none ${
+                                        maturitySort !== 'neutral'
+                                        ? 'bg-indigo-50 dark:bg-indigo-900/30 border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 shadow-sm'
+                                        : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'
+                                    }`}
+                                  >
+                                      <span className="font-bold text-sm">Maturité</span>
+                                      {maturitySort === 'neutral' && <span className="text-slate-300">⇅</span>}
+                                      {maturitySort === 'asc' && <span>(Proche) →</span>}
+                                      {maturitySort === 'desc' && <span>(Loin) ←</span>}
+                                  </button>
+
+                                  {/* CHAMP RECHERCHE */}
+                                  <div className="relative flex-1 min-w-[200px] max-w-sm">
+                                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                          <Search className="h-4 w-4 text-slate-400" />
+                                      </div>
+                                      <input
+                                          type="text"
+                                          value={searchQuery}
+                                          onChange={(e) => setSearchQuery(e.target.value)}
+                                          className="block w-full pl-10 pr-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm"
+                                          placeholder="Rechercher (ex: USDC, Florida...)"
+                                      />
+                                  </div>
+                              </div>
+
                             </div>
 
                             {/* CONTENEUR GRILLE / LISTE */}
@@ -1335,7 +1433,7 @@
                               {/* UTILISATION DE FILTEREDVAULTS AU LIEU DE VAULTS */}
                               {filteredVaults.length === 0 ? (
                                   <div className="col-span-full py-12 text-center text-slate-400 bg-slate-50 dark:bg-slate-900/50 rounded-2xl border border-dashed border-slate-200 dark:border-slate-700">
-                                      Aucun vault trouvé sur les réseaux sélectionnés.
+                                      Aucun vault trouvé avec ces critères.
                                   </div>
                               ) : (
                                   filteredVaults.map((vault) => {
