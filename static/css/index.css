@@ -1,6 +1,7 @@
 :root {
   /* Palette de base (Mode Sombre par défaut pour l'impact) */
   --bg-main: #0f172a;       /* Dark Blue/Slate */
+  --bg-nav: #0F1B2A;       /* Dark Blue/Slate */
   --bg-secondary: #1e293b;  /* Lighter Slate */
   --accent: #A1C740;        /* MOEBA Green */
   --accent-hover: #b4d652;
@@ -17,6 +18,7 @@
 /* Light Mode Override (activé par JS) */
 body:not(.dark-theme) {
     --bg-main: #f0f9ff;
+    --bg-nav: #F2FFFC;
     --bg-secondary: #e0f2fe;
     --text-main: #0f172a;
     --text-muted: #475569;
@@ -44,6 +46,7 @@ a { text-decoration: none; color: inherit; }
 /* --- HEADER --- */
 .site-header {
     position: fixed;
+    background-color: var(--bg-nav);
     top: 0;
     left: 0;
     width: 100%;
