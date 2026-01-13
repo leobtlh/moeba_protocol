@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/utils/math/Math.sol";
 
 /**
  * @title IStrategy
- * @dev Interface standard pour connecter le Vault à des protocoles de rendement (Aave, Compound, Ondo...)
+ * @dev Interface standard pour connecter le Vault à des protocoles de rendement.
  */
 interface IStrategy {
     function invest(uint256 amount) external;
@@ -18,8 +18,8 @@ interface IStrategy {
 }
 
 /**
- * @title HPIV Vault (Hybrid Parametric Insurance Vault) - Version Active Float
- * @dev Intègre la gestion de trésorerie (80% investis / 20% cash) et la gouvernance DAO.
+ * @title HPIV Vault (Hybrid Parametric Insurance Vault)
+ * @dev Version alignée avec app.html : Gestion précise des dates de Start et Maturity.
  */
 contract HPIVVault is ERC4626, AccessControl {
     using Math for uint256;
@@ -27,19 +27,21 @@ contract HPIVVault is ERC4626, AccessControl {
     // --- RÔLES ---
     bytes32 public constant ORACLE_ROLE = keccak256("ORACLE_ROLE");
     bytes32 public constant INSURER_ROLE = keccak256("INSURER_ROLE");
-    bytes32 public constant DAO_ROLE = keccak256("DAO_ROLE"); // Nouveau rôle pour la Gouvernance
+    bytes32 public constant DAO_ROLE = keccak256("DAO_ROLE");
 
     // --- CONFIGURATION METIER ---
     string public riskName;
     string public description;
     uint256 public immutable MAX_VAULT_CAPACITY;
     uint256 public immutable MAX_COVERAGE_AMOUNT;
-    uint256 public immutable MATURITY_DATE;
-    uint256 public constant LOCK_WINDOW = 5 days;
+
+    // UPDATE: Gestion temporelle stricte
+    uint256 public immutable START_DATE;    // Fin souscription / Début Risque
+    uint256 public immutable MATURITY_DATE; // Fin Risque / Début Retraits
 
     // --- GESTION DU FLOAT (INVESTISSEMENT) ---
-    IStrategy public strategy;                 // Le contrat de stratégie (ex: Aave Adapter)
-    uint256 public targetFloatPercent = 8000;  // 80.00% des fonds doivent être investis (Base 10000)
+    IStrategy public strategy;
+    uint256 public targetFloatPercent = 8000; // 80% Investi
     uint256 public constant MAX_BPS = 10000;
 
     // --- ÉTAT FINANCIER ---
@@ -66,60 +68,48 @@ contract HPIVVault is ERC4626, AccessControl {
         address _insurer,
         uint256 _capTotal,
         uint256 _maxCoverage,
-        uint256 _durationInDays,
+        uint256 _startDate,     // Timestamp absolu
+        uint256 _maturityDate,  // Timestamp absolu
         string memory _riskName,
         string memory _description
     ) ERC4626(_asset) ERC20("HPIV Insurance Vault", "HPIV-LP") {
-        // L'assureur est Admin par défaut, mais idéalement ce rôle devrait être transféré à un Multisig/DAO ensuite
+        require(_maturityDate > _startDate, "HPIV: Maturity must be after Start");
+        // Optionnel : require(_startDate > block.timestamp, "HPIV: Start date in past");
+
         _grantRole(DEFAULT_ADMIN_ROLE, _insurer);
         _grantRole(INSURER_ROLE, _insurer);
-        _grantRole(DAO_ROLE, _insurer); // Pour le setup initial
+        _grantRole(DAO_ROLE, _insurer);
 
         complianceModule = _compliance;
         riskName = _riskName;
         description = _description;
         MAX_VAULT_CAPACITY = _capTotal;
         MAX_COVERAGE_AMOUNT = _maxCoverage;
-        MATURITY_DATE = block.timestamp + (_durationInDays * 1 days);
+        START_DATE = _startDate;
+        MATURITY_DATE = _maturityDate;
     }
 
     // =============================================================
     // 1. GOUVERNANCE & STRATÉGIE
     // =============================================================
 
-    /**
-     * @dev Définit le contrat de stratégie (ex: Adapter Aave).
-     * Doit être approuvé par la DAO.
-     */
     function setStrategy(address _strategy) external onlyRole(DAO_ROLE) {
         require(_strategy != address(0), "Invalid strategy address");
-        // Si une ancienne stratégie existe, on rappelle tout les fonds par sécurité
         if (address(strategy) != address(0)) {
             strategy.withdrawAll();
         }
         strategy = IStrategy(_strategy);
-
-        // Approuver le transfert de tokens vers la nouvelle stratégie
         IERC20(asset()).approve(_strategy, type(uint256).max);
-
         emit StrategyUpdated(_strategy);
     }
 
-    /**
-     * @dev Ajuste le % de fonds investis (ex: passer de 80% à 50% en cas de volatilité).
-     */
     function setFloatRatio(uint256 _ratio) external onlyRole(DAO_ROLE) {
         require(_ratio <= MAX_BPS, "Ratio too high");
         targetFloatPercent = _ratio;
         emit FloatRatioUpdated(_ratio);
-        // On rééquilibre immédiatement
         _manageFloat();
     }
 
-    /**
-     * @dev SURCHARGE CRITIQUE : La valeur totale inclut le cash + l'argent investi.
-     * Sans ça, déposer de l'argent dans la stratégie ferait chuter le prix de la part.
-     */
     function totalAssets() public view override returns (uint256) {
         uint256 cashBalance = IERC20(asset()).balanceOf(address(this));
         uint256 investedBalance = address(strategy) != address(0) ? strategy.totalValue() : 0;
@@ -130,9 +120,6 @@ contract HPIVVault is ERC4626, AccessControl {
     // 2. GESTION LIQUIDITÉ INTERNE
     // =============================================================
 
-    /**
-     * @dev Envoie le surplus de cash vers la stratégie selon le targetFloatPercent.
-     */
     function _manageFloat() internal {
         if (address(strategy) == address(0)) return;
 
@@ -143,8 +130,6 @@ contract HPIVVault is ERC4626, AccessControl {
         if (currentInvested < targetInvested) {
             uint256 toInvest = targetInvested - currentInvested;
             uint256 cashBalance = IERC20(asset()).balanceOf(address(this));
-
-            // On ne peut investir que ce qu'on a en cash
             uint256 amount = Math.min(toInvest, cashBalance);
             if (amount > 0) {
                 strategy.invest(amount);
@@ -153,9 +138,6 @@ contract HPIVVault is ERC4626, AccessControl {
         }
     }
 
-    /**
-     * @dev Rappelle des fonds de la stratégie si le cash est insuffisant pour un retrait.
-     */
     function _ensureLiquidity(uint256 amountNeeded) internal {
         uint256 cashBalance = IERC20(asset()).balanceOf(address(this));
         if (cashBalance < amountNeeded) {
@@ -167,30 +149,63 @@ contract HPIVVault is ERC4626, AccessControl {
     }
 
     // =============================================================
-    // 3. OPÉRATIONS UTILISATEUR (Surcharges)
+    // 3. OPÉRATIONS UTILISATEUR (Surcharges Sécurisées)
     // =============================================================
 
+    /**
+     * @dev Dépôt autorisé UNIQUEMENT pendant la période de souscription (Avant START_DATE).
+     */
     function deposit(uint256 assets, address receiver) public override returns (uint256) {
         require(isVaultInitialized, "HPIV: Vault waiting for Insurer funding");
         require(totalAssets() + assets <= MAX_VAULT_CAPACITY, "HPIV: Vault full");
-        require(block.timestamp < MATURITY_DATE, "HPIV: Too late");
+
+        // SECURITY UPDATE: Empêche les dépôts une fois le risque démarré
+        require(block.timestamp < START_DATE, "HPIV: Subscription period ended (Risk Started)");
 
         uint256 shares = super.deposit(assets, receiver);
-
-        // Après dépôt, on investit le surplus
         _manageFloat();
-
         return shares;
     }
 
+    function mint(uint256 shares, address receiver) public override returns (uint256) {
+        require(isVaultInitialized, "HPIV: Vault waiting for Insurer funding");
+        // Conversion approximative pour vérifier la capacité, moins précis que deposit
+        require(block.timestamp < START_DATE, "HPIV: Subscription period ended (Risk Started)");
+
+        uint256 assets = super.mint(shares, receiver);
+        require(totalAssets() <= MAX_VAULT_CAPACITY, "HPIV: Vault full");
+
+        _manageFloat();
+        return assets;
+    }
+
+    /**
+     * @dev Retrait (Withdraw/Redeem) autorisé UNIQUEMENT :
+     * 1. Avant START_DATE (Annulation souscription)
+     * 2. Après MATURITY_DATE (Récupération finale)
+     * 3. Si Catastrophe (Récupération partielle via Soft Default)
+     */
     function withdraw(uint256 assets, address receiver, address owner) public override returns (uint256) {
-        bool isLockPeriod = block.timestamp >= (MATURITY_DATE - LOCK_WINDOW) && block.timestamp < MATURITY_DATE;
-        require(!isLockPeriod, "HPIV: Locked period");
-
-        // Avant retrait, on s'assure d'avoir le cash
+        _checkWithdrawalEligibility();
         _ensureLiquidity(assets);
-
         return super.withdraw(assets, receiver, owner);
+    }
+
+    function redeem(uint256 shares, address receiver, address owner) public override returns (uint256) {
+        _checkWithdrawalEligibility();
+        // Pour redeem, on doit calculer les assets nécessaires
+        uint256 assets = previewRedeem(shares);
+        _ensureLiquidity(assets);
+        return super.redeem(shares, receiver, owner);
+    }
+
+    function _checkWithdrawalEligibility() internal view {
+        bool isSubscriptionPeriod = block.timestamp < START_DATE;
+        bool isMatured = block.timestamp >= MATURITY_DATE;
+        bool isDistressed = isCatastropheTriggered;
+
+        // Si on est DANS la période de risque (Entre Start et Maturity) ET pas de crash, c'est bloqué.
+        require(isSubscriptionPeriod || isMatured || isDistressed, "HPIV: Funds locked during risk period");
     }
 
     // =============================================================
@@ -211,10 +226,7 @@ contract HPIVVault is ERC4626, AccessControl {
         }
 
         isVaultInitialized = true;
-
-        // On essaie d'investir dès l'initialisation si une stratégie est présente
         _manageFloat();
-
         emit VaultInitialized(_juniorAmount, _premiumAmount, block.timestamp);
     }
 
@@ -225,30 +237,26 @@ contract HPIVVault is ERC4626, AccessControl {
     function triggerCatastrophe(uint256 measuredValue) external onlyRole(ORACLE_ROLE) {
         require(isVaultInitialized, "HPIV: Not initialized");
         require(!isCatastropheTriggered, "HPIV: Already triggered");
+        // On autorise le trigger même après maturité si le sinistre a eu lieu juste avant (décalage oracle)
 
         isCatastropheTriggered = true;
 
-        // EMERGENCY UNWIND: Rappel de TOUS les fonds de la stratégie pour payer les sinistres
         if (address(strategy) != address(0)) {
             try strategy.withdrawAll() {
-                // Succès du rapatriement
+                // Succès
             } catch {
-                // Si échec (ex: protocole DeFi pausé), on continue avec ce qu'on a
-                // Dans un vrai protocole, cela déclencherait un état de "Distressed Vault"
+                // Echec silencieux pour ne pas bloquer l'état de catastrophe
             }
         }
 
         uint256 actualClaimAmount = MAX_COVERAGE_AMOUNT;
 
-        // --- LOGIQUE JUNIOR/SENIOR ---
         uint256 investorLossAmount = 0;
         if (actualClaimAmount > insurerJuniorCapital) {
             investorLossAmount = actualClaimAmount - insurerJuniorCapital;
         }
 
-        uint256 currentTotalAssets = totalAssets(); // Note: utilise maintenant le total combiné
-
-        // Calcul des pertes...
+        uint256 currentTotalAssets = totalAssets();
         uint256 riskCapitalAssets = currentTotalAssets > insurerPremiumPaid ? currentTotalAssets - insurerPremiumPaid : 0;
         uint256 seniorEquity = riskCapitalAssets > insurerJuniorCapital ? riskCapitalAssets - insurerJuniorCapital : 0;
 
@@ -273,14 +281,14 @@ contract HPIVVault is ERC4626, AccessControl {
             return grossAssets;
         }
 
+        // Application du haircut (perte) en cas de sinistre
         uint256 principalLoss = (grossAssets * seniorLossRatio) / 1e18;
 
         if (principalLoss > grossAssets) return 0;
         return grossAssets - principalLoss;
     }
 
-    // Ajout nécéssaire pour le factory qui lit les infos
-    function getDetails() external view returns (string memory, string memory) {
-        return (riskName, description);
+    function getDetails() external view returns (string memory, string memory, uint256, uint256) {
+        return (riskName, description, START_DATE, MATURITY_DATE);
     }
 }

@@ -6,8 +6,8 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 /**
  * @title HPIV Factory
- * @dev Usine à Smart Contracts. Gère le déploiement des Vaults et désormais
- * le processus d'onboarding (Whitelist) des assureurs avec vérification KYB.
+ * @dev Usine à Smart Contracts. Gère le déploiement des Vaults et l'onboarding (Whitelist) des assureurs.
+ * Mise à jour : Support des dates précises (Start/Maturity) pour correspondre à l'App.
  */
 contract HPIVFactory is Ownable {
 
@@ -16,24 +16,17 @@ contract HPIVFactory is Ownable {
 
     // --- WHITELIST ASSUREURS & KYB ---
 
-    // Statut d'une demande
     enum RequestStatus { None, Pending, Approved, Rejected }
 
-    // Structure des données de la demande d'un assureur
     struct InsurerRequest {
         string companyName;  // Nom de l'entité légale
-        string kybHash;      // Hash IPFS ou lien vers le dossier de conformité (Certificat, Kbis...)
+        string kybHash;      // Hash IPFS ou lien vers le dossier de conformité
         RequestStatus status;
         uint256 requestDate;
     }
 
-    // Mapping principal des statuts (True = Whitelisted/Approved)
     mapping(address => bool) public isWhitelistedInsurer;
-
-    // Mapping des détails de la demande
     mapping(address => InsurerRequest) public insurerRequests;
-
-    // Liste des adresses ayant fait une demande (pour itération dans le Backoffice)
     address[] public pendingRequestAddresses;
 
     // --- EVENTS ---
@@ -41,7 +34,9 @@ contract HPIVFactory is Ownable {
         address indexed vaultAddress,
         address indexed insurer,
         string riskName,
-        uint256 capTotal
+        uint256 capTotal,
+        uint256 startDate,
+        uint256 maturityDate
     );
 
     event InsurerStatusChanged(address indexed insurer, bool status);
@@ -54,10 +49,8 @@ contract HPIVFactory is Ownable {
     );
 
     constructor() Ownable(msg.sender) {
-        // Ajout de l'adresse de démo comme whitelisted par défaut
+        // Démo : Whitelist par défaut pour faciliter les tests
         isWhitelistedInsurer[0x912F9886Fb676750943fDeFC4c30d3cA927C3a72] = true;
-
-        // On initialise aussi la struct pour la démo pour que ce soit propre
         insurerRequests[0x912F9886Fb676750943fDeFC4c30d3cA927C3a72] = InsurerRequest({
             companyName: "Moeha Demo Insurer",
             kybHash: "ipfs://QmDemoHash...",
@@ -67,15 +60,12 @@ contract HPIVFactory is Ownable {
     }
 
     /**
-     * @dev Permet à un assureur de soumettre une demande d'enregistrement.
-     * @param _companyName Le nom de la compagnie d'assurance.
-     * @param _kybHash Le lien/hash vers les documents de preuve (KYB).
+     * @dev Soumettre une demande d'enregistrement (KYB).
      */
     function registerInsurer(string memory _companyName, string memory _kybHash) external {
         require(!isWhitelistedInsurer[msg.sender], "HPIV: Already whitelisted");
         require(insurerRequests[msg.sender].status == RequestStatus.None || insurerRequests[msg.sender].status == RequestStatus.Rejected, "HPIV: Request pending or already processed");
 
-        // Enregistrement de la demande
         insurerRequests[msg.sender] = InsurerRequest({
             companyName: _companyName,
             kybHash: _kybHash,
@@ -83,27 +73,19 @@ contract HPIVFactory is Ownable {
             requestDate: block.timestamp
         });
 
-        // Ajout à la liste pour le backoffice
-        // Note: Dans une version optimisée gas, on pourrait gérer des index pour éviter les doublons si rejeté puis ré-soumis,
-        // mais ici on ajoute simplement pour l'historique. Le backoffice filtrera.
         pendingRequestAddresses.push(msg.sender);
-
         emit RegistrationRequested(msg.sender, _companyName, _kybHash, block.timestamp);
     }
 
     /**
-     * @dev Fonction Admin pour valider ou rejeter une demande.
-     * Met à jour le mapping boolean (pour les accès) et le statut de la struct (pour l'affichage).
+     * @dev Admin : Valider ou rejeter un assureur.
      */
     function setInsurerStatus(address _insurer, bool _status) external onlyOwner {
-        // 1. Mise à jour de l'accès fonctionnel (Whitelist)
         isWhitelistedInsurer[_insurer] = _status;
 
-        // 2. Mise à jour du statut administratif
         if (insurerRequests[_insurer].status != RequestStatus.None) {
             insurerRequests[_insurer].status = _status ? RequestStatus.Approved : RequestStatus.Rejected;
         } else {
-            // Cas où l'admin whitelist manuellement sans demande préalable
             insurerRequests[_insurer].status = _status ? RequestStatus.Approved : RequestStatus.Rejected;
             insurerRequests[_insurer].companyName = "Manually Added";
         }
@@ -111,24 +93,32 @@ contract HPIVFactory is Ownable {
         emit InsurerStatusChanged(_insurer, _status);
     }
 
+    /**
+     * @dev Création d'un Vault avec Dates Explicites (Start & End).
+     * @param _startDate Timestamp du début de la couverture (Fin de souscription / Début Lock).
+     * @param _maturityDate Timestamp de fin de couverture (Déblocage des fonds).
+     */
     function createVault(
         IERC20 _asset,
         address _compliance,
         uint256 _capTotal,
         uint256 _maxCoverage,
-        uint256 _durationInDays,
+        uint256 _startDate,     // UPDATE: Remplacement de durationInDays
+        uint256 _maturityDate,  // UPDATE: Remplacement de durationInDays
         string memory _riskName,
         string memory _description
     ) external returns (address) {
         require(isWhitelistedInsurer[msg.sender], "HPIV: Caller is not a whitelisted Insurer");
+        require(_maturityDate > _startDate, "HPIV: Maturity must be after Start");
 
         HPIVVault newVault = new HPIVVault(
             _asset,
             _compliance,
-            msg.sender, // L'assureur reçoit le rôle Admin & DAO initialement
+            msg.sender,
             _capTotal,
             _maxCoverage,
-            _durationInDays,
+            _startDate,
+            _maturityDate,
             _riskName,
             _description
         );
@@ -137,7 +127,7 @@ contract HPIVFactory is Ownable {
         allVaults.push(vaultAddr);
         isValidVault[vaultAddr] = true;
 
-        emit VaultCreated(vaultAddr, msg.sender, _riskName, _capTotal);
+        emit VaultCreated(vaultAddr, msg.sender, _riskName, _capTotal, _startDate, _maturityDate);
 
         return vaultAddr;
     }
@@ -146,19 +136,12 @@ contract HPIVFactory is Ownable {
         return allVaults.length;
     }
 
-    // --- HELPERS POUR LE FRONT-END ---
+    // --- HELPERS FRONT-END ---
 
-    /**
-     * @dev Retourne la liste complète des adresses ayant fait une demande.
-     * Le backoffice itérera sur cette liste pour afficher le tableau.
-     */
     function getPendingRequests() external view returns (address[] memory) {
         return pendingRequestAddresses;
     }
 
-    /**
-     * @dev Retourne les détails d'une demande spécifique.
-     */
     function getRequestDetails(address _insurer) external view returns (InsurerRequest memory) {
         return insurerRequests[_insurer];
     }
