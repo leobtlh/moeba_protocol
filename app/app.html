@@ -635,6 +635,32 @@
             fetchAssetBalance();
           }, [selectedVault, walletConnected, userFullAddress]);
 
+          // --- EFFET CHANGEMENT COMPTE : MISE A JOUR DES SOLDES (MULTI-WALLET) ---
+          useEffect(() => {
+              setVaults(prevVaults => prevVaults.map(v => {
+                  const bals = v.balances || {};
+                  // Si un wallet est connecté, on cherche son solde, sinon 0
+                  const specificBalance = userFullAddress ? (bals[userFullAddress] || 0) : 0;
+
+                  // Optimisation : on ne met à jour que si différent
+                  if (v.userBalance !== specificBalance) {
+                      return { ...v, userBalance: specificBalance };
+                  }
+                  return v;
+              }));
+          }, [userFullAddress]);
+
+          // --- SYNC SELECTED VAULT ---
+          useEffect(() => {
+              if (selectedVault) {
+                  const current = vaults.find(v => v.id === selectedVault.id);
+                  // Update only if relevant data changed
+                  if (current && (current.userBalance !== selectedVault.userBalance || current.status !== selectedVault.status || current.currentAssets !== selectedVault.currentAssets)) {
+                      setSelectedVault(current);
+                  }
+              }
+          }, [vaults, selectedVault]);
+
           useEffect(() => {
             const isDark = document.documentElement.classList.contains('dark');
             setIsDarkMode(isDark);
@@ -900,6 +926,7 @@
                 riskProb: simulatedRisk,
                 status: "PENDING",
                 userBalance: 0,
+                balances: {}, // AJOUT MULTI-WALLET
                 triggerValue: 0,
                 oracleType: 'WIND',
                 chain: newVaultData.chain,
@@ -964,10 +991,16 @@
                 return;
             }
 
+            // MODIFICATION: Gestion Multi-Wallet via 'balances'
+            const currentBalances = selectedVault.balances || {};
+            const newUserBalance = (currentBalances[userFullAddress] || 0) + amount;
+            const newBalances = { ...currentBalances, [userFullAddress]: newUserBalance };
+
             const updatedVault = {
                  ...selectedVault,
                  currentAssets: selectedVault.currentAssets + amount,
-                 userBalance: selectedVault.userBalance + amount
+                 userBalance: newUserBalance,
+                 balances: newBalances
             };
             setSelectedVault(updatedVault);
             setVaults(vaults.map(v => v.id === selectedVault.id ? updatedVault : v));
@@ -981,10 +1014,16 @@
              const amount = parseFloat(withdrawAmount);
              if (amount <= 0 || amount > selectedVault.userBalance) { showNotification("Montant invalide ou solde insuffisant.", 'error'); return; }
 
+             // MODIFICATION: Gestion Multi-Wallet via 'balances'
+             const currentBalances = selectedVault.balances || {};
+             const newUserBalance = (currentBalances[userFullAddress] || 0) - amount;
+             const newBalances = { ...currentBalances, [userFullAddress]: newUserBalance };
+
              const updatedVault = {
                  ...selectedVault,
                  currentAssets: selectedVault.currentAssets - amount,
-                 userBalance: selectedVault.userBalance - amount
+                 userBalance: newUserBalance,
+                 balances: newBalances
             };
             setSelectedVault(updatedVault);
             setVaults(vaults.map(v => v.id === selectedVault.id ? updatedVault : v));
@@ -1035,7 +1074,16 @@
           const handleClaim = (vault) => {
               const details = calculatePayoutDetails(vault);
               showNotification(`Réclamation de ${formatCurrency(details.totalPayout)} versée.`, 'success');
-              const updatedVault = { ...vault, userBalance: 0 };
+
+              // MODIFICATION: Mise à jour balance utilisateur courant
+              const currentBalances = vault.balances || {};
+              const newBalances = { ...currentBalances, [userFullAddress]: 0 };
+
+              const updatedVault = {
+                  ...vault,
+                  userBalance: 0,
+                  balances: newBalances
+              };
               setSelectedVault(updatedVault);
               setVaults(vaults.map(v => v.id === vault.id ? updatedVault : v));
           };
