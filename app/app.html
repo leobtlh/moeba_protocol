@@ -310,7 +310,64 @@
         };
 
         // --- DONNÉES MOCK AVEC CHAINES ET ASSETS ---
-        const INITIAL_VAULTS = [];
+        const INITIAL_VAULTS = [
+            {
+                id: '0x8f2a...e12b',
+                name: 'Atlantic Hurricane 2025',
+                description: 'Couverture paramétrique contre les ouragans de catégorie 4+ en Floride. Déclenchement si la vitesse du vent dépasse 210 km/h sur les stations certifiées NOAA.',
+                insurer: 'Axa Climate',
+                totalCapacity: 10000000,
+                claimAmount: 10000000,
+                currentAssets: 10000000, // 100% Funded
+                juniorCapital: 1000000,
+                premium: 800000,
+                startDate: '01 Janvier 2025',
+                maturityDate: '31 Décembre 2025', // Date passée = Status MATURED
+                apr: '12.50',
+                riskProb: '5.2',
+                status: 'MATURED', // Statut Terminé
+                chain: 'Ethereum',
+                asset: 'USDC',
+                userBalance: 5000, // Simulation : L'utilisateur a investi et peut réclamer
+                balances: { '0x...': 5000 },
+                triggers: [
+                    { id: 'windSpeed', name: 'Vent', unit: 'km/h', color: '#8884d8' }
+                ],
+                history: [
+                    { date: '01/08', risk: 10, windSpeed: 45 },
+                    { date: '15/09', risk: 45, windSpeed: 160 }, // Pic de saison
+                    { date: '30/10', risk: 5, windSpeed: 60 }
+                ]
+            },
+            {
+                id: '0x3c4d...9a12',
+                name: 'California Quake 2026',
+                description: 'Protection contre les séismes > 7.0 Richter en Californie du Sud. Oracle USGS avec redondance Chainlink. Période de souscription ouverte.',
+                insurer: 'Munich Re',
+                totalCapacity: 5000000,
+                claimAmount: 5000000,
+                currentAssets: 1500000, // 30% Funded
+                juniorCapital: 500000,
+                premium: 450000,
+                startDate: '01 Janvier 2026', // Date future = Status OPEN (Période souscription)
+                maturityDate: '31 Mars 2026',
+                apr: '8.75',
+                riskProb: '3.1',
+                status: 'OPEN', // Statut En cours
+                chain: 'Base',
+                asset: 'USDC',
+                userBalance: 0,
+                balances: {},
+                triggers: [
+                    { id: 'magnitude', name: 'Magnitude', unit: 'R', color: '#82ca9d' }
+                ],
+                history: [
+                    { date: '01/01', risk: 1.5, magnitude: 2.1 },
+                    { date: '05/01', risk: 1.8, magnitude: 2.4 },
+                    { date: '10/01', risk: 1.2, magnitude: 1.9 }
+                ]
+            }
+        ];
 
         const MONTHS = [
             { name: 'Janvier', days: 31 }, { name: 'Février', days: 29 }, { name: 'Mars', days: 31 },
@@ -1495,7 +1552,7 @@
                                                 <div className="pl-6 pr-28">
                                                   <div className="w-full bg-slate-100 dark:bg-slate-700 rounded-full h-3 mb-6 overflow-hidden">
                                                     <div
-                                                      className={`h-full rounded-full transition-all duration-1000 ${vault.status === 'TRIGGERED' ? 'bg-red-500' : isFull ? 'bg-slate-500' : 'bg-blue-600'}`}
+                                                      className={`h-full rounded-full transition-all duration-1000 ${vault.status === 'TRIGGERED' ? 'bg-red-500' : vault.status === 'MATURED' ? 'bg-green-500' : isFull ? 'bg-slate-500' : 'bg-blue-600'}`}
                                                       style={{ width: `${(vault.currentAssets / vault.totalCapacity) * 100}%` }}
                                                     ></div>
                                                   </div>
@@ -1570,7 +1627,7 @@
 
                                         <div className="w-full bg-slate-100 dark:bg-slate-700 rounded-full h-3 mb-6 overflow-hidden">
                                           <div
-                                            className={`h-full rounded-full transition-all duration-1000 ${vault.status === 'TRIGGERED' ? 'bg-red-500' : isFull ? 'bg-slate-500' : 'bg-blue-600'}`}
+                                            className={`h-full rounded-full transition-all duration-1000 ${vault.status === 'TRIGGERED' ? 'bg-red-500' : vault.status === 'MATURED' ? 'bg-green-500' : isFull ? 'bg-slate-500' : 'bg-blue-600'}`}
                                             style={{ width: `${(vault.currentAssets / vault.totalCapacity) * 100}%` }}
                                           ></div>
                                         </div>
@@ -1611,7 +1668,7 @@
                             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                                 <div className="lg:col-span-2 space-y-6">
 
-                                    <div className={`p-8 rounded-2xl border ${selectedVault.status === 'TRIGGERED' ? 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700'}`}>
+                                    <div className={`p-8 rounded-2xl border ${selectedVault.status === 'TRIGGERED' ? 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800' : selectedVault.status === 'MATURED' ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700'}`}>
                                         <div className="flex justify-between items-start">
                                             <div>
                                                 <div className="flex gap-2 mb-3">
@@ -1623,13 +1680,13 @@
                                                     </span>
                                                 </div>
                                                 <div className="flex items-center gap-3 mb-2">
-                                                    <h1 className={`text-3xl font-bold ${selectedVault.status === 'TRIGGERED' ? 'text-red-700 dark:text-red-400' : 'text-slate-900 dark:text-white'}`}>
+                                                    <h1 className={`text-3xl font-bold ${selectedVault.status === 'TRIGGERED' ? 'text-red-700 dark:text-red-400' : selectedVault.status === 'MATURED' ? 'text-green-700 dark:text-green-400' : 'text-slate-900 dark:text-white'}`}>
                                                         {selectedVault.status === 'TRIGGERED' && "⚠ "}{selectedVault.name}
                                                     </h1>
                                                     {isVaultStarted(selectedVault) && selectedVault.status !== 'MATURED' && selectedVault.status !== 'TRIGGERED' &&
                                                         <span className="px-3 py-1 rounded-full text-xs font-bold bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 flex items-center gap-1"><Lock className="h-3 w-3" /> PÉRIODE ACTIVE</span>
                                                     }
-                                                    {selectedVault.status === 'MATURED' && <span className="px-3 py-1 rounded-full text-xs font-bold bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-400 flex items-center gap-1">TERMINÉ</span>}
+                                                    {selectedVault.status === 'MATURED' && <span className="px-3 py-1 rounded-full text-xs font-bold bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-400 flex items-center gap-1">TERMINÉ</span>}
                                                     {selectedVault.status === 'TRIGGERED' && <span className="px-3 py-1 rounded-full text-xs font-bold bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-400 flex items-center gap-1">CATASTROPHE</span>}
                                                 </div>
                                                 <p className="text-sm text-slate-500 dark:text-slate-400 flex items-center gap-2 mt-1">
@@ -1749,7 +1806,7 @@
                                             </div>
                                         )}
 
-                                        <div className={`bg-white dark:bg-slate-800 rounded-2xl p-6 border shadow-xl ${selectedVault.status === 'TRIGGERED' ? 'border-red-200 dark:border-red-800 shadow-red-100 dark:shadow-none' : 'border-slate-200 dark:border-slate-700 shadow-slate-100 dark:shadow-none'}`}>
+                                        <div className={`bg-white dark:bg-slate-800 rounded-2xl p-6 border shadow-xl ${selectedVault.status === 'TRIGGERED' ? 'border-red-200 dark:border-red-800 shadow-red-100 dark:shadow-none' : selectedVault.status === 'MATURED' ? 'border-green-200 dark:border-green-800 shadow-green-100 dark:shadow-none' : 'border-slate-200 dark:border-slate-700 shadow-slate-100 dark:shadow-none'}`}>
                                             <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
                                                 <Wallet className="h-5 w-5" /> Gestion Position
                                             </h3>
@@ -1988,7 +2045,7 @@
                            <div className="flex gap-4 mt-6">
                                <button onClick={disconnectWallet} className="px-6 py-3 border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 rounded-xl font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">Changer de Wallet</button>
                                {registrationStatus !== 'pending' && (
-                                   <button onClick={() => setShowInsurerRegistration(true)} className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold transition-all shadow-lg hover:shadow-indigo-200 dark:hover:shadow-none">S'enregistrer comme Assureur</button>
+                                   <button onClick={() => setShowInsurerRegistration(true)} className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold transition-all shadow-lg hover:shadow-indigo-200 dark:shadow-none">S'enregistrer comme Assureur</button>
                                )}
                            </div>
                       </div>
@@ -2197,6 +2254,7 @@
                         {vaults.filter(v => v.userBalance > 0).map(vault => {
 
                           // SI LE VAULT EST TERMINÉ AVEC SUCCÈS (MATURED)
+                          // COPIE EXACTE DU BLOC TRIGGERED MAIS EN VERT
                           if (vault.status === 'MATURED') {
                               const details = calculatePayoutDetails(vault);
                               return (
