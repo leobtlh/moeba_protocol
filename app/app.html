@@ -310,33 +310,7 @@
         };
 
         // --- DONNÉES MOCK AVEC CHAINES ET ASSETS ---
-        const INITIAL_VAULTS = [
-         // {
-         //    id: "0x742...d439",
-         //    name: "Florida Wind Season 2025",
-         //    description: "Couverture contre les ouragans de catégorie 4 ou plus frappant la côte de Floride.",
-         //    insurer: "State Farm Re",
-         //    totalCapacity: 40330000,
-         //    claimAmount: 40000000,
-         //    currentAssets: 40330000, // COMPLET (Capacity = Assets)
-         //    juniorCapital: 4000000,
-         //    premium: 330000,
-         //    startDate: "1 Jan 2025", // DATE PASSEE (Démarré)
-         //    maturityDate: "1 Jan 2026", // DATE PASSÉE
-         //    apr: 25.4,
-         //    riskProb: 12.5,
-         //    status: "MATURED", // STATUT TERMINÉ
-         //    userBalance: 5000, // L'utilisateur a investi
-         //    triggerValue: 250,
-         //    oracleType: 'WIND',
-         //    chain: 'Base',
-         //    asset: 'USDC',
-         //    triggers: [
-         //        { id: 'windSpeed', name: 'Vitesse Vent', unit: 'km/h', color: '#3b82f6', threshold: 250 }
-         //    ],
-         //    history: generateMockHistory('WIND')
-         //  }
-        ];
+        const INITIAL_VAULTS = [];
 
         const MONTHS = [
             { name: 'Janvier', days: 31 }, { name: 'Février', days: 29 }, { name: 'Mars', days: 31 },
@@ -344,6 +318,15 @@
             { name: 'Juillet', days: 31 }, { name: 'Août', days: 31 }, { name: 'Septembre', days: 30 },
             { name: 'Octobre', days: 31 }, { name: 'Novembre', days: 30 }, { name: 'Décembre', days: 31 }
         ];
+
+        // --- HELPER FUNCTION : VALIDATION JOURS DANS MOIS ---
+        const isValidDayInMonth = (day, monthName, year) => {
+            const mIndex = MONTHS.findIndex(m => m.name === monthName);
+            if (mIndex === -1) return false;
+            // new Date(year, monthIndex + 1, 0) donne le dernier jour du mois
+            const daysInMonth = new Date(year, mIndex + 1, 0).getDate();
+            return day > 0 && day <= daysInMonth;
+        };
 
         // --- COMPOSANT GRAPHIQUE ---
         const RiskChart = ({ data, triggers }) => {
@@ -436,7 +419,7 @@
                                         required
                                         value={formData.companyName}
                                         onChange={e => setFormData({...formData, companyName: e.target.value})}
-                                        className="w-full p-3 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-950 text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none"
+                                        className="w-full p-3 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none"
                                         placeholder="Ex: Axa Corporate Solutions"
                                     />
                                 </div>
@@ -447,7 +430,7 @@
                                         required
                                         value={formData.kybLink}
                                         onChange={e => setFormData({...formData, kybLink: e.target.value})}
-                                        className="w-full p-3 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-950 text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none font-mono text-sm"
+                                        className="w-full p-3 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none font-mono text-sm"
                                         placeholder="ipfs://..."
                                     />
                                     <p className="text-xs text-slate-500 mt-1">Lien vers le certificat hébergé de manière décentralisée.</p>
@@ -882,63 +865,132 @@
               return m ? m.days : 31;
           };
 
-          // --- CREATION VAULT (Avec logique de date de début de app.html) ---
+          // --- NOUVELLE LOGIQUE : CORRECTION IMMÉDIATE SUR BLUR (CHANGE DE CASE) ---
+          const handleDateBlur = () => {
+                setNewVaultData(current => {
+                    const today = new Date();
+                    today.setHours(0,0,0,0);
+                    const currentYear = today.getFullYear();
+
+                    // Helper: Crée une date valide (Clamp jour/mois)
+                    const getValidDateObj = (d, mName, y) => {
+                         const mIndex = MONTHS.findIndex(m => m.name === mName);
+                         // Année minimum = Année courante (pour éviter 1900 par ex)
+                         const safeY = Math.max(parseInt(y) || currentYear, currentYear);
+                         // Check nb jours dans le mois
+                         const daysInMonth = new Date(safeY, mIndex + 1, 0).getDate();
+                         // Force le jour entre 1 et max
+                         const safeD = Math.min(Math.max(1, parseInt(d) || 1), daysInMonth);
+                         return new Date(safeY, mIndex, safeD);
+                    };
+
+                    // 1. Calcul Date Début Safe
+                    let sDate = getValidDateObj(current.startDay, current.startMonth, current.startYear);
+
+                    // Règle: Début doit être > Aujourd'hui. Sinon -> Demain.
+                    if (sDate <= today) {
+                        sDate = new Date(today);
+                        sDate.setDate(today.getDate() + 1);
+                    }
+
+                    // 2. Calcul Date Fin Safe
+                    let eDate = getValidDateObj(current.day, current.month, current.year);
+
+                    // Règle: Fin doit être > Début. Sinon -> Début + 1 jour.
+                    if (eDate <= sDate) {
+                        eDate = new Date(sDate);
+                        eDate.setDate(sDate.getDate() + 1);
+                    }
+
+                    return {
+                        ...current,
+                        startDay: sDate.getDate(),
+                        startMonth: MONTHS[sDate.getMonth()].name,
+                        startYear: sDate.getFullYear(),
+                        day: eDate.getDate(),
+                        month: MONTHS[eDate.getMonth()].name,
+                        year: eDate.getFullYear()
+                    };
+                });
+          };
+
+          const handleCapBlur = () => {
+                setNewVaultData(prev => {
+                    let val = parseFloat(prev.cap);
+                    if (isNaN(val) || val <= 0) val = 1000;
+                    // On recalcule aussi le junior car il dépend de la capacité
+                    const updatedJunior = updateJunior(val, prev.juniorPercent);
+                    return { ...prev, cap: val, junior: updatedJunior };
+                });
+          };
+
+          // --- CREATION VAULT (Avec logique de validation SILENCIEUSE) ---
           const handleCreateVault = async (e) => {
-            e.preventDefault();
-            const capVal = parseFloat(newVaultData.cap);
-            const premiumVal = parseFloat(newVaultData.premium);
-            const claimVal = isOvercollateralized ? parseFloat(newVaultData.coverage) : capVal;
+              e.preventDefault();
 
-            if (capVal <= 0) { showNotification("Erreur: La capacité doit être supérieure à 0.", 'error'); return; }
-            if (claimVal <= 0) { showNotification("Erreur: Le montant assuré doit être supérieur à 0.", 'error'); return; }
-            if (!newVaultData.description) { showNotification("Erreur: Description manquante.", 'error'); return; }
+              // Validation finale silencieuse (au cas où on submit sans sortir des cases)
+              // On réutilise la même logique mais en local pour construire l'objet final
 
-            const monthIndexEnd = MONTHS.findIndex(m => m.name === newVaultData.month);
-            const endDate = new Date(newVaultData.year, monthIndexEnd, newVaultData.day);
+              // Sanitization numérique
+              let capVal = parseFloat(newVaultData.cap);
+              if (isNaN(capVal) || capVal <= 0) capVal = 1000;
+              let premiumVal = parseFloat(newVaultData.premium) || 0;
+              if (premiumVal < 0) premiumVal = 0;
+              let claimVal = isOvercollateralized ? (parseFloat(newVaultData.coverage) || capVal) : capVal;
 
-            // GESTION DATE DEBUT
-            const monthIndexStart = MONTHS.findIndex(m => m.name === newVaultData.startMonth);
-            const startDate = new Date(newVaultData.startYear, monthIndexStart, newVaultData.startDay);
+              // Description
+              const finalDescription = newVaultData.description && newVaultData.description.trim() !== ""
+                  ? newVaultData.description
+                  : "Protection Paramétrique (Générée automatiquement)";
 
-            if (endDate <= startDate) { showNotification("Erreur: La date de fin doit être après la date de début.", 'error'); return; }
-            if (startDate < new Date()) { showNotification("Attention: La date de début est dans le passé.", 'info'); }
+              // Dates Finales (Safe check)
+              const today = new Date(); today.setHours(0,0,0,0);
+              const currentYear = today.getFullYear();
+              const mIndexStart = MONTHS.findIndex(m => m.name === newVaultData.startMonth);
+              const safeYStart = Math.max(parseInt(newVaultData.startYear) || currentYear, currentYear);
+              let startDate = new Date(safeYStart, mIndexStart, Math.min(Math.max(1, parseInt(newVaultData.startDay)||1), 31));
+              if(startDate <= today) { startDate = new Date(today); startDate.setDate(today.getDate() + 1); }
 
-            const formattedStartDate = `${newVaultData.startDay} ${newVaultData.startMonth} ${newVaultData.startYear}`;
-            const formattedEndDate = `${newVaultData.day} ${newVaultData.month} ${newVaultData.year}`;
+              const mIndexEnd = MONTHS.findIndex(m => m.name === newVaultData.month);
+              const safeYEnd = Math.max(parseInt(newVaultData.year) || currentYear, currentYear);
+              let endDate = new Date(safeYEnd, mIndexEnd, Math.min(Math.max(1, parseInt(newVaultData.day)||1), 31));
+              if(endDate <= startDate) { endDate = new Date(startDate); endDate.setDate(startDate.getDate() + 1); }
 
-            const simulatedRisk = (Math.random() * 19 + 1).toFixed(1);
-            const totalCapacityCalculated = capVal + premiumVal;
+              const formatDateStr = (date) => `${date.getDate()} ${MONTHS[date.getMonth()].name} ${date.getFullYear()}`;
 
-            const newVault = {
-                id: `0x${Math.floor(Math.random()*10000)}...new`,
-                name: newVaultData.name || "Nouveau Cat Bond",
-                description: newVaultData.description,
-                insurer: "Moi (Assureur)",
-                totalCapacity: totalCapacityCalculated,
-                claimAmount: claimVal,
-                currentAssets: 0,
-                juniorCapital: parseFloat(newVaultData.junior || 0),
-                premium: 0,
-                // STOCKAGE DES DEUX DATES
-                startDate: formattedStartDate,
-                maturityDate: formattedEndDate,
-                apr: 0,
-                riskProb: simulatedRisk,
-                status: "PENDING",
-                userBalance: 0,
-                balances: {}, // AJOUT MULTI-WALLET
-                triggerValue: 0,
-                oracleType: 'WIND',
-                chain: newVaultData.chain,
-                asset: newVaultData.asset,
-                triggers: [{ id: 'windSpeed', name: 'Paramètre', unit: 'unit', color: '#3b82f6' }],
-                history: generateMockHistory('WIND')
-            };
-            setVaults([...vaults, newVault]);
-            showNotification(`Vault créé ! Période: ${formattedStartDate} - ${formattedEndDate}`, 'success');
+              const newVault = {
+                  id: `0x${Math.floor(Math.random() * 10000)}...new`,
+                  name: newVaultData.name || "Nouveau Cat Bond",
+                  description: finalDescription,
+                  insurer: "Moi (Assureur)",
+                  totalCapacity: capVal + premiumVal,
+                  claimAmount: claimVal,
+                  currentAssets: 0,
+                  juniorCapital: parseFloat(newVaultData.junior || 0),
+                  premium: premiumVal,
+                  startDate: formatDateStr(startDate),
+                  maturityDate: formatDateStr(endDate),
+                  apr: (Math.random() * 5 + 2).toFixed(2),
+                  riskProb: (Math.random() * 19 + 1).toFixed(1),
+                  status: "PENDING",
+                  chain: newVaultData.chain,
+                  asset: newVaultData.asset,
+                  history: generateMockHistory('WIND')
+              };
 
-            setNewVaultData({ ...newVaultData, name: '', description: '', day: '', month: 'Janvier', year: new Date().getFullYear(), coverage: capVal });
-            setIsOvercollateralized(false);
+              setVaults([...vaults, newVault]);
+              showNotification(`Vault créé avec succès !`, 'success');
+
+              // Reset formulaire (avec dates valides par défaut)
+              setNewVaultData(prev => ({
+                  ...prev,
+                  name: '',
+                  description: '',
+                  cap: '',
+                  startDay: startDate.getDate(),
+                  startMonth: MONTHS[startDate.getMonth()].name,
+                  startYear: startDate.getFullYear()
+              }));
           };
 
           // --- INITIALISATION (Calcul APR avec Dates de app.html) ---
@@ -1990,22 +2042,22 @@
                               <div className={isFormExpanded ? "col-span-2 p-3 bg-blue-50 dark:bg-blue-900/10 rounded-xl border border-blue-100 dark:border-blue-800" : "p-3 bg-blue-50 dark:bg-blue-900/10 rounded-xl border border-blue-100 dark:border-blue-800"}>
                                    <label className="block text-sm font-bold text-blue-800 dark:text-blue-300 mb-2 flex items-center gap-2"><Calendar className="h-4 w-4"/> Date de Début (Lock)</label>
                                    <div className="grid grid-cols-3 gap-2">
-                                       <input type="number" min="1" max="31" value={newVaultData.startDay} onChange={e => setNewVaultData({...newVaultData, startDay: e.target.value})} className="p-2 rounded-lg border dark:bg-slate-900 dark:border-slate-600" placeholder="JJ" />
-                                       <select value={newVaultData.startMonth} onChange={e => setNewVaultData({...newVaultData, startMonth: e.target.value})} className="p-2 rounded-lg border dark:bg-slate-900 dark:border-slate-600">
+                                       <input type="number" min="1" max="31" value={newVaultData.startDay} onBlur={handleDateBlur} onChange={e => setNewVaultData({...newVaultData, startDay: e.target.value})} className="p-2 rounded-lg border dark:bg-slate-900 dark:border-slate-600" placeholder="JJ" />
+                                       <select value={newVaultData.startMonth} onBlur={handleDateBlur} onChange={e => setNewVaultData({...newVaultData, startMonth: e.target.value})} className="p-2 rounded-lg border dark:bg-slate-900 dark:border-slate-600">
                                          {MONTHS.map(m => <option key={m.name} value={m.name}>{m.name}</option>)}
                                        </select>
-                                       <input type="number" min="2024" value={newVaultData.startYear} onChange={e => setNewVaultData({...newVaultData, startYear: e.target.value})} className="p-2 rounded-lg border dark:bg-slate-900 dark:border-slate-600" placeholder="AAAA" />
+                                       <input type="number" min="2024" value={newVaultData.startYear} onBlur={handleDateBlur} onChange={e => setNewVaultData({...newVaultData, startYear: e.target.value})} className="p-2 rounded-lg border dark:bg-slate-900 dark:border-slate-600" placeholder="AAAA" />
                                    </div>
                                </div>
 
                               <div className={isFormExpanded ? "grid grid-cols-3 gap-4 col-span-2" : "grid grid-cols-3 gap-4"}>
-                                <div><label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Jour Fin</label><input type="number" min="1" max={getMaxDays(newVaultData.month)} value={newVaultData.day} onChange={e => setNewVaultData({...newVaultData, day: e.target.value})} className="w-full p-3 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="JJ" /></div>
-                                <div><label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Mois Fin</label><select value={newVaultData.month} onChange={e => setNewVaultData({...newVaultData, month: e.target.value})} className="w-full p-3 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all">{MONTHS.map(m => (<option key={m.name} value={m.name}>{m.name}</option>))}</select></div>
-                                <div><label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Année Fin</label><input type="number" min={new Date().getFullYear()} value={newVaultData.year} onChange={e => setNewVaultData({...newVaultData, year: e.target.value})} className="w-full p-3 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="AAAA" /></div>
+                                <div><label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Jour Fin</label><input type="number" min="1" max={getMaxDays(newVaultData.month)} value={newVaultData.day} onBlur={handleDateBlur} onChange={e => setNewVaultData({...newVaultData, day: e.target.value})} className="w-full p-3 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="JJ" /></div>
+                                <div><label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Mois Fin</label><select value={newVaultData.month} onBlur={handleDateBlur} onChange={e => setNewVaultData({...newVaultData, month: e.target.value})} className="w-full p-3 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all">{MONTHS.map(m => (<option key={m.name} value={m.name}>{m.name}</option>))}</select></div>
+                                <div><label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Année Fin</label><input type="number" min={new Date().getFullYear()} value={newVaultData.year} onBlur={handleDateBlur} onChange={e => setNewVaultData({...newVaultData, year: e.target.value})} className="w-full p-3 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="AAAA" /></div>
                               </div>
 
                               <div className={isFormExpanded ? "grid grid-cols-2 gap-4 col-span-2" : "grid grid-cols-2 gap-4"}>
-                                <div><label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Capacité</label><input type="number" min="0" value={newVaultData.cap} onChange={e => { const val = e.target.value; setNewVaultData({...newVaultData, cap: val, junior: updateJunior(val, newVaultData.juniorPercent)}); }} className="w-full p-3 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none" /></div>
+                                <div><label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Capacité</label><input type="number" min="0" value={newVaultData.cap} onBlur={handleCapBlur} onChange={e => { const val = e.target.value; setNewVaultData({...newVaultData, cap: val, junior: updateJunior(val, newVaultData.juniorPercent)}); }} className="w-full p-3 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none" /></div>
                                 <div><label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Junior (%)</label><div className="relative"><input type="number" min="0" max="100" value={newVaultData.juniorPercent} onChange={e => { const val = e.target.value; setNewVaultData({...newVaultData, juniorPercent: val, junior: updateJunior(newVaultData.cap, val)}); }} className="w-full p-3 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none" /><span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 font-bold">%</span></div></div>
                               </div>
 
