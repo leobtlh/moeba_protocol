@@ -1471,7 +1471,7 @@
                                                     'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 hover:border-blue-300 dark:hover:border-blue-500'}`}
                                             >
                                                 {/* PADDING AUGMENTÉ (p-6 au lieu de p-4) */}
-                                                <div className="p-6 flex flex-col md:flex-row md:items-center gap-6">
+                                                <div className="p-6 relative flex flex-col md:flex-row md:items-center gap-6">
 
                                                     {/* 1. MAIN INFO & BADGES */}
                                                     <div className="flex-1 min-w-0">
@@ -1494,51 +1494,65 @@
                                                         </p>
                                                     </div>
 
-                                                    {/* 2. STATS SECTION (APR + LEVÉE + INFO BOXES) */}
-                                                    <div className="flex flex-wrap items-center gap-14 justify-end">
-
-                                                        {/* APR & LEVÉE */}
-                                                        <div className="flex items-center gap-10 min-w-[240px] mr-10">
-
-                                                            {/* Levée */}
-                                                            <div>
-                                                                <span className="text-sm text-slate-400 dark:text-slate-500 block">Levée</span>
-                                                                <span className="text-ml font-bold text-slate-700 dark:text-slate-200">
-                                                                    {formatCurrency(vault.currentAssets)}
-                                                                </span>
-                                                            </div>
-
-                                                            {/* Barre verticale */}
-                                                            <div className="h-8 w-px bg-slate-200 dark:bg-slate-700"></div>
-
-                                                            {/* APR */}
-                                                            <div className="text-right">
-                                                                <span className="text-sm text-slate-400 dark:text-slate-500 block">APR</span>
-                                                                <span
-                                                                    className={`text-xl font-bold leading-none ${
-                                                                        vault.status === 'OPEN' || vault.status === 'MATURED'
-                                                                            ? 'text-green-600 dark:text-green-400'
-                                                                            : 'text-slate-400 dark:text-slate-500'
-                                                                    }`}
-                                                                >
-                                                                    {vault.apr}%
-                                                                </span>
-                                                            </div>
-
+                                                    {/* Levée */}
+                                                    <div
+                                                    className="absolute top-1/2 -translate-y-1/2 flex items-center gap-10 pointer-events-none"
+                                                    style={{ left: '40%' }}
+                                                    >
+                                                        <div className="flex flex-col items-start">
+                                                            <span className="text-sm text-slate-400 dark:text-slate-500">
+                                                            Levée
+                                                            </span>
+                                                            <span className="text-ml font-bold text-slate-700 dark:text-slate-300">
+                                                            {formatCurrency(vault.currentAssets)}
+                                                            </span>
                                                         </div>
+                                                    </div>
+
+                                                    {/* Barre */}
+                                                    <div
+                                                    className="absolute top-1/2 -translate-y-1/2 flex items-center gap-10 pointer-events-none"
+                                                    style={{ left: '50%' }}
+                                                    >
+                                                        <div className="h-8 w-px bg-slate-200 dark:bg-slate-700"></div>
+                                                    </div>
+
+                                                    {/* APR */}
+                                                    <div
+                                                    className="absolute top-1/2 -translate-y-1/2 -translate-x-full flex items-center gap-10 pointer-events-none"
+                                                    style={{ left: '58%' }}
+                                                    >
+                                                        <div className="flex flex-col items-end">
+                                                            <span className="text-sm text-slate-400 dark:text-slate-500">
+                                                            APR
+                                                            </span>
+                                                            <span
+                                                            className={`text-ml font-bold leading-none ${
+                                                                vault.status === 'OPEN' || vault.status === 'MATURED'
+                                                                ? 'text-green-600 dark:text-green-400'
+                                                                : 'text-slate-400 dark:text-slate-500'
+                                                            }`}
+                                                            >
+                                                            {vault.apr}%
+                                                            </span>
+                                                        </div>
+                                                    </div>
+
+                                                    {/* DÉBUT ET MATURITÉ */}
+                                                    <div className="flex flex-wrap items-center gap-14 justify-end">
 
                                                         {/* BOXES (DATES de app.html) */}
                                                         <div className="flex flex-col gap-4">
                                                             <div className="flex items-center gap-4 bg-slate-50 dark:bg-slate-900/50 px-4 py-4 rounded-xl border border-slate-100 dark:border-slate-700">
-                                                              <div>
-                                                                <p className="text-sm text-slate-400 dark:text-slate-500">Début</p>
-                                                                <p className="text-ml font-bold text-slate-700 dark:text-slate-300">{vault.startDate || 'N/A'}</p>
-                                                              </div>
-                                                              <div className="h-8 w-px bg-slate-200 dark:bg-slate-700"></div>
-                                                              <div className="text-right">
-                                                                <p className="text-sm text-slate-400 dark:text-slate-500">Maturité</p>
-                                                                <p className="text-ml font-bold text-slate-700 dark:text-slate-300">{vault.maturityDate}</p>
-                                                              </div>
+                                                                <div>
+                                                                    <p className="text-sm text-slate-400 dark:text-slate-500">Début</p>
+                                                                    <p className="text-sm font-bold text-slate-700 dark:text-slate-300">{vault.startDate || 'N/A'}</p>
+                                                                </div>
+                                                                <div className="h-8 w-px bg-slate-200 dark:bg-slate-700"></div>
+                                                                <div className="text-right">
+                                                                    <p className="text-sm text-slate-400 dark:text-slate-500">Maturité</p>
+                                                                    <p className="text-sm font-bold text-slate-700 dark:text-slate-300">{vault.maturityDate}</p>
+                                                                </div>
                                                             </div>
                                                         </div>
 
