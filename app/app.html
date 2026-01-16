@@ -1015,6 +1015,11 @@
 
               const formatDateStr = (date) => `${date.getDate()} ${MONTHS[date.getMonth()].name} ${date.getFullYear()}`;
 
+              // NOUVEAU: Calcul APR
+              const diffTime = Math.abs(endDate - startDate);
+              const durationInDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) || 365;
+              const juniorVal = parseFloat(newVaultData.junior || 0);
+
               const newVault = {
                   id: `0x${Math.floor(Math.random() * 10000)}...new`,
                   name: newVaultData.name || "Nouveau Cat Bond",
@@ -1023,11 +1028,11 @@
                   totalCapacity: capVal + premiumVal,
                   claimAmount: claimVal,
                   currentAssets: 0,
-                  juniorCapital: parseFloat(newVaultData.junior || 0),
+                  juniorCapital: juniorVal,
                   premium: premiumVal,
                   startDate: formatDateStr(startDate),
                   maturityDate: formatDateStr(endDate),
-                  apr: (Math.random() * 5 + 2).toFixed(2),
+                  apr: ((capVal - juniorVal) > 0 ? ((premiumVal * 100 * 365) / ((capVal - juniorVal) * durationInDays)).toFixed(2) : "0.00"),
                   riskProb: (Math.random() * 19 + 1).toFixed(1),
                   status: "PENDING",
                   chain: newVaultData.chain,
