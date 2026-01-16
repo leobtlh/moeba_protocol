@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -330,6 +331,12 @@
                 asset: 'USDC',
                 userBalance: 5000, // Simulation : L'utilisateur a investi et peut réclamer
                 balances: { '0x...': 5000 },
+                // --- NEW TRANCHE DATA ---
+                balancesJunior: {},
+                balancesSenior: { '0x...': 5000 },
+                totalJuniorDeposits: 0,
+                totalSeniorDeposits: 8200000, // (10m - 1m junior - 0.8m premium)
+                // ------------------------
                 triggers: [
                     { id: 'windSpeed', name: 'Vent', unit: 'km/h', color: '#8884d8' }
                 ],
@@ -358,6 +365,12 @@
                 asset: 'USDC',
                 userBalance: 0,
                 balances: {},
+                // --- NEW TRANCHE DATA ---
+                balancesJunior: {},
+                balancesSenior: {},
+                totalJuniorDeposits: 0,
+                totalSeniorDeposits: 550000, // (1.5m - 0.5m junior - 0.45m premium)
+                // ------------------------
                 triggers: [
                     { id: 'magnitude', name: 'Magnitude', unit: 'R', color: '#82ca9d' }
                 ],
@@ -542,6 +555,8 @@
           // NOUVEAUX STATES POUR LE RETRAIT
           const [withdrawAmount, setWithdrawAmount] = useState('');
           const [actionTab, setActionTab] = useState('deposit'); // 'deposit' | 'withdraw'
+          // NOUVEAU STATE TRANCHE (Senior vs Junior)
+          const [trancheType, setTrancheType] = useState('senior');
 
           // FILTRES & TRI
           const [selectedChains, setSelectedChains] = useState([]);
@@ -1037,6 +1052,12 @@
                   status: "PENDING",
                   chain: newVaultData.chain,
                   asset: newVaultData.asset,
+                  // --- NEW TRANCHE DATA ---
+                  balancesJunior: {},
+                  balancesSenior: {},
+                  totalJuniorDeposits: 0,
+                  totalSeniorDeposits: 0,
+                  // ------------------------
                   history: generateMockHistory('WIND')
               };
 
@@ -1105,20 +1126,38 @@
                 return;
             }
 
-            // MODIFICATION: Gestion Multi-Wallet via 'balances'
+            // MODIFICATION: Gestion Multi-Wallet via 'balances' + TRANCHES
             const currentBalances = selectedVault.balances || {};
             const newUserBalance = (currentBalances[userFullAddress] || 0) + amount;
             const newBalances = { ...currentBalances, [userFullAddress]: newUserBalance };
+
+            // TRANCHE LOGIC
+            let newTotalJunior = selectedVault.totalJuniorDeposits || 0;
+            let newTotalSenior = selectedVault.totalSeniorDeposits || 0;
+            const newBalancesJunior = { ...(selectedVault.balancesJunior || {}) };
+            const newBalancesSenior = { ...(selectedVault.balancesSenior || {}) };
+
+            if (trancheType === 'junior') {
+                newTotalJunior += amount;
+                newBalancesJunior[userFullAddress] = (newBalancesJunior[userFullAddress] || 0) + amount;
+            } else {
+                newTotalSenior += amount;
+                newBalancesSenior[userFullAddress] = (newBalancesSenior[userFullAddress] || 0) + amount;
+            }
 
             const updatedVault = {
                  ...selectedVault,
                  currentAssets: selectedVault.currentAssets + amount,
                  userBalance: newUserBalance,
-                 balances: newBalances
+                 balances: newBalances,
+                 balancesJunior: newBalancesJunior,
+                 balancesSenior: newBalancesSenior,
+                 totalJuniorDeposits: newTotalJunior,
+                 totalSeniorDeposits: newTotalSenior
             };
             setSelectedVault(updatedVault);
             setVaults(vaults.map(v => v.id === selectedVault.id ? updatedVault : v));
-            showNotification(`Dépôt de ${amount} ${selectedVault.asset} confirmé.`, 'success');
+            showNotification(`Dépôt de ${amount} ${selectedVault.asset} (${trancheType === 'junior' ? 'Junior' : 'Senior'}) confirmé.`, 'success');
             setDepositAmount('');
           };
 
@@ -1126,22 +1165,45 @@
           const handleWithdraw = async () => {
              if (!walletConnected) return;
              const amount = parseFloat(withdrawAmount);
-             if (amount <= 0 || amount > selectedVault.userBalance) { showNotification("Montant invalide ou solde insuffisant.", 'error'); return; }
+             // Verify specific tranche balance
+             const currentJunior = selectedVault.balancesJunior ? (selectedVault.balancesJunior[userFullAddress] || 0) : 0;
+             const currentSenior = selectedVault.balancesSenior ? (selectedVault.balancesSenior[userFullAddress] || 0) : 0;
+             const available = trancheType === 'junior' ? currentJunior : currentSenior;
+
+             if (amount <= 0 || amount > available) { showNotification(`Montant invalide ou solde ${trancheType} insuffisant.`, 'error'); return; }
 
              // MODIFICATION: Gestion Multi-Wallet via 'balances'
              const currentBalances = selectedVault.balances || {};
              const newUserBalance = (currentBalances[userFullAddress] || 0) - amount;
              const newBalances = { ...currentBalances, [userFullAddress]: newUserBalance };
 
+             // UPDATE TRANCHE
+             const newBalancesJunior = { ...(selectedVault.balancesJunior || {}) };
+             const newBalancesSenior = { ...(selectedVault.balancesSenior || {}) };
+             let newTotalJunior = selectedVault.totalJuniorDeposits || 0;
+             let newTotalSenior = selectedVault.totalSeniorDeposits || 0;
+
+             if (trancheType === 'junior') {
+                 newTotalJunior -= amount;
+                 newBalancesJunior[userFullAddress] = currentJunior - amount;
+             } else {
+                 newTotalSenior -= amount;
+                 newBalancesSenior[userFullAddress] = currentSenior - amount;
+             }
+
              const updatedVault = {
                  ...selectedVault,
                  currentAssets: selectedVault.currentAssets - amount,
                  userBalance: newUserBalance,
-                 balances: newBalances
+                 balances: newBalances,
+                 balancesJunior: newBalancesJunior,
+                 balancesSenior: newBalancesSenior,
+                 totalJuniorDeposits: newTotalJunior,
+                 totalSeniorDeposits: newTotalSenior
             };
             setSelectedVault(updatedVault);
             setVaults(vaults.map(v => v.id === selectedVault.id ? updatedVault : v));
-            showNotification(`Retrait de ${amount} effectué.`, 'success');
+            showNotification(`Retrait de ${amount} (${trancheType}) effectué.`, 'success');
             setWithdrawAmount('');
           };
 
@@ -1150,37 +1212,66 @@
             showNotification("⚠️ ORACLE ALERT : Catastrophe validée. Soft Default activé.", 'error');
           };
 
+          // CALCUL CASCADE DE PERTE
           const calculateClaimStats = (vault) => {
-              const totalFunds = vault.currentAssets;
-              const junior = vault.juniorCapital;
-              const premium = vault.premium || 0;
-              const riskCapital = totalFunds - premium;
-              const senior = Math.max(0, riskCapital - junior);
-              const claimNeeded = vault.claimAmount || vault.totalCapacity;
-              const juniorPayout = Math.min(junior, claimNeeded);
-              const remainingClaim = claimNeeded - juniorPayout;
-              const seniorPayout = Math.min(senior, remainingClaim);
-              const seniorRemaining = Math.max(0, senior - seniorPayout);
-              const recoveryRatio = senior > 0 ? (seniorRemaining / senior) : 0;
-              return { recoveryRatio, seniorRemaining };
+              const claimNeeded = vault.claimAmount || vault.totalCapacity; // Total Loss
+              const insurerCover = vault.juniorCapital; // First Loss (Assurance)
+
+              // 1. Insurer pays first
+              const insurerLoss = Math.min(claimNeeded, insurerCover);
+              let remainingLoss = Math.max(0, claimNeeded - insurerLoss);
+
+              // 2. Junior Investors pay second
+              const juniorPool = vault.totalJuniorDeposits || 0;
+              const juniorLoss = Math.min(remainingLoss, juniorPool);
+              remainingLoss = Math.max(0, remainingLoss - juniorLoss);
+              const juniorRecoveryRatio = juniorPool > 0 ? (juniorPool - juniorLoss) / juniorPool : 0;
+
+              // 3. Senior Investors pay last
+              const seniorPool = vault.totalSeniorDeposits || 0;
+              const seniorLoss = Math.min(remainingLoss, seniorPool);
+              // remainingLoss after senior is uncovered loss
+              const seniorRecoveryRatio = seniorPool > 0 ? (seniorPool - seniorLoss) / seniorPool : 0;
+
+              return { juniorRecoveryRatio, seniorRecoveryRatio };
           };
 
           const calculatePayoutDetails = (vault) => {
-              if (vault.status === 'MATURED') {
-                  const principalRecovered = vault.userBalance;
-                  const seniorCapacity = vault.totalCapacity - vault.juniorCapital - vault.premium;
-                  const userShare = seniorCapacity > 0 ? (vault.userBalance / seniorCapacity) : 0;
-                  const yieldPayout = vault.premium * userShare; // Part des primes
-                  const totalPayout = principalRecovered + yieldPayout;
-                  return { principalRecovered, yieldPayout, loss: 0, totalPayout };
+              const baseApr = parseFloat(vault.apr);
+              // Adjusted APRs
+              const seniorApr = baseApr * 0.8;
+              const juniorApr = baseApr * 1.2;
+
+              // Get User Balances in Tranches
+              const userJunior = vault.balancesJunior ? (vault.balancesJunior[userFullAddress] || 0) : 0;
+              const userSenior = vault.balancesSenior ? (vault.balancesSenior[userFullAddress] || 0) : 0;
+
+              // Calculate Time Duration for Yield (simplified year fraction)
+              const start = parseFrenchDate(vault.startDate) || new Date();
+              const end = parseFrenchDate(vault.maturityDate) || new Date();
+              const diffTime = Math.max(0, Math.abs(end - start));
+              const durationYear = diffTime / (1000 * 60 * 60 * 24 * 365);
+
+              // YIELD Payout (always paid based on principal unless specific terms, here we assume yield is paid on initial principal)
+              const juniorYield = userJunior * (juniorApr / 100) * durationYear;
+              const seniorYield = userSenior * (seniorApr / 100) * durationYear;
+              const totalYield = juniorYield + seniorYield;
+
+              let principalRecoveredJunior = userJunior;
+              let principalRecoveredSenior = userSenior;
+              let totalLoss = 0;
+
+              if (vault.status === 'TRIGGERED') {
+                  const { juniorRecoveryRatio, seniorRecoveryRatio } = calculateClaimStats(vault);
+                  principalRecoveredJunior = userJunior * juniorRecoveryRatio;
+                  principalRecoveredSenior = userSenior * seniorRecoveryRatio;
+                  totalLoss = (userJunior - principalRecoveredJunior) + (userSenior - principalRecoveredSenior);
               }
-              const { recoveryRatio } = calculateClaimStats(vault);
-              const principalRecovered = vault.userBalance * recoveryRatio;
-              const seniorCapacity = vault.totalCapacity - vault.juniorCapital - vault.premium;
-              const userShare = seniorCapacity > 0 ? (vault.userBalance / seniorCapacity) : 0;
-              const yieldPayout = vault.premium * userShare;
-              const totalPayout = principalRecovered + yieldPayout;
-              return { principalRecovered, yieldPayout, loss: vault.userBalance - principalRecovered, totalPayout };
+
+              const principalRecovered = principalRecoveredJunior + principalRecoveredSenior;
+              const totalPayout = principalRecovered + totalYield;
+
+              return { principalRecovered, yieldPayout: totalYield, loss: totalLoss, totalPayout };
           };
 
           const handleClaim = (vault) => {
@@ -1190,11 +1281,16 @@
               // MODIFICATION: Mise à jour balance utilisateur courant
               const currentBalances = vault.balances || {};
               const newBalances = { ...currentBalances, [userFullAddress]: 0 };
+              // Clear Tranche Balances too
+              const newBalancesJunior = { ...(vault.balancesJunior || {}), [userFullAddress]: 0 };
+              const newBalancesSenior = { ...(vault.balancesSenior || {}), [userFullAddress]: 0 };
 
               const updatedVault = {
                   ...vault,
                   userBalance: 0,
-                  balances: newBalances
+                  balances: newBalances,
+                  balancesJunior: newBalancesJunior,
+                  balancesSenior: newBalancesSenior
               };
               setSelectedVault(updatedVault);
               setVaults(vaults.map(v => v.id === vault.id ? updatedVault : v));
@@ -1872,6 +1968,26 @@
                                                             </button>
                                                         </div>
 
+                                                        {/* --- SÉLECTEUR DE TRANCHE (COMMUN AUX DEUX ACTIONS) --- */}
+                                                        <div className="mb-6 grid grid-cols-2 gap-3">
+                                                            <label className="cursor-pointer">
+                                                                <input type="radio" name="tranche" value="senior" checked={trancheType === 'senior'} onChange={() => setTrancheType('senior')} className="hidden peer" />
+                                                                <div className="p-3 rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 peer-checked:border-blue-500 peer-checked:bg-blue-50 dark:peer-checked:bg-blue-900/20 text-center transition-all h-full flex flex-col justify-center">
+                                                                    <div className="font-bold text-slate-700 dark:text-slate-200">Senior</div>
+                                                                    <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">APR { (selectedVault.apr * 0.8).toFixed(2) }%</div>
+                                                                    <div className="text-[10px] text-green-600 mt-1 font-medium">-20% risque</div>
+                                                                </div>
+                                                            </label>
+                                                            <label className="cursor-pointer">
+                                                                <input type="radio" name="tranche" value="junior" checked={trancheType === 'junior'} onChange={() => setTrancheType('junior')} className="hidden peer" />
+                                                                <div className="p-3 rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 peer-checked:border-indigo-500 peer-checked:bg-indigo-50 dark:peer-checked:bg-indigo-900/20 text-center transition-all h-full flex flex-col justify-center">
+                                                                    <div className="font-bold text-slate-700 dark:text-slate-200">Junior</div>
+                                                                    <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">APR { (selectedVault.apr * 1.2).toFixed(2) }%</div>
+                                                                    <div className="text-[10px] text-orange-500 mt-1 font-medium">+20% gain</div>
+                                                                </div>
+                                                            </label>
+                                                        </div>
+
                                                         {actionTab === 'deposit' ? (
                                                             <div className="space-y-6 animate-fade-in">
                                                                 {/* BANDEAU SI LE VAULT EST PLEIN (LOGIQUE BACKUP_APP) */}
@@ -1883,7 +1999,7 @@
 
                                                                 <div className="space-y-4">
                                                                     <div className="flex justify-between items-center mb-1">
-                                                                        <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Montant à déposer</label>
+                                                                        <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Montant à déposer ({trancheType === 'senior' ? 'Senior' : 'Junior'})</label>
                                                                         <div className="text-right">
                                                                              <span className="text-xs text-slate-500 dark:text-slate-400">
                                                                                 Solde: <span className="font-bold text-slate-700 dark:text-slate-200 cursor-pointer hover:underline" onClick={() => setDepositAmount(assetBalance.toString())}>{assetBalanceFormatted}</span> {selectedVault.asset}
@@ -1929,8 +2045,8 @@
                                                                 {/* INFO APR/FEES LOGIQUE BACKUP_APP */}
                                                                 <div className="space-y-3 pt-2">
                                                                     <div className="flex justify-between text-sm">
-                                                                        <span className="text-slate-500 dark:text-slate-400">APR Estimé</span>
-                                                                        <span className="font-bold text-green-600 dark:text-green-400">{selectedVault.apr}%</span>
+                                                                        <span className="text-slate-500 dark:text-slate-400">APR Sélectionné</span>
+                                                                        <span className={`font-bold ${trancheType === 'junior' ? 'text-indigo-600' : 'text-blue-600'}`}>{(selectedVault.apr * (trancheType === 'junior' ? 1.2 : 0.8)).toFixed(2)}%</span>
                                                                     </div>
                                                                     <div className="flex justify-between text-sm">
                                                                         <span className="text-slate-500 dark:text-slate-400">Frais d'entrée</span>
@@ -1941,16 +2057,16 @@
                                                                 <button
                                                                     onClick={handleDeposit}
                                                                     disabled={selectedVault.currentAssets >= selectedVault.totalCapacity}
-                                                                    className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold shadow-lg shadow-blue-200 dark:shadow-none transition-all flex justify-center items-center gap-2 disabled:bg-slate-400 disabled:cursor-not-allowed disabled:shadow-none"
+                                                                    className={`w-full py-4 ${trancheType === 'junior' ? 'bg-indigo-600 hover:bg-indigo-700' : 'bg-blue-600 hover:bg-blue-700'} text-white rounded-xl font-bold shadow-lg shadow-blue-200 dark:shadow-none transition-all flex justify-center items-center gap-2 disabled:bg-slate-400 disabled:cursor-not-allowed disabled:shadow-none`}
                                                                 >
-                                                                    {selectedVault.currentAssets >= selectedVault.totalCapacity ? "Capacité Atteinte" : "Confirmer Dépôt"} <ArrowRight className="h-4 w-4"/>
+                                                                    {selectedVault.currentAssets >= selectedVault.totalCapacity ? "Capacité Atteinte" : `Confirmer Dépôt ${trancheType === 'junior' ? 'Junior' : 'Senior'}`} <ArrowRight className="h-4 w-4"/>
                                                                 </button>
                                                                 <p className="text-xs text-center text-slate-400 mt-2">Période de souscription ouverte jusqu'au {selectedVault.startDate}.</p>
                                                             </div>
                                                         ) : (
                                                             <div className="space-y-4 animate-fade-in">
                                                                 <div className="flex justify-between items-center mb-1">
-                                                                    <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Montant à retirer</label>
+                                                                    <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Montant à retirer ({trancheType === 'senior' ? 'Senior' : 'Junior'})</label>
                                                                 </div>
                                                                 <div className="relative">
                                                                     <input
@@ -1963,11 +2079,11 @@
                                                                     <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 font-bold">{selectedVault.asset}</span>
                                                                 </div>
                                                                 <div className="flex justify-between text-xs text-slate-500">
-                                                                    <span>Investi: {selectedVault.userBalance} {selectedVault.asset}</span>
-                                                                    <span className="text-orange-600 dark:text-orange-400 font-bold cursor-pointer hover:underline" onClick={() => setWithdrawAmount(selectedVault.userBalance)}>Max</span>
+                                                                    <span>Investi {trancheType === 'junior' ? 'Junior' : 'Senior'}: {trancheType === 'junior' ? (selectedVault.balancesJunior?.[userFullAddress] || 0) : (selectedVault.balancesSenior?.[userFullAddress] || 0)} {selectedVault.asset}</span>
+                                                                    <span className="text-orange-600 dark:text-orange-400 font-bold cursor-pointer hover:underline" onClick={() => setWithdrawAmount(trancheType === 'junior' ? (selectedVault.balancesJunior?.[userFullAddress] || 0) : (selectedVault.balancesSenior?.[userFullAddress] || 0))}>Max</span>
                                                                 </div>
                                                                 <button onClick={handleWithdraw} className="w-full py-4 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 hover:border-orange-500 dark:hover:border-orange-500 text-slate-700 dark:text-white hover:text-orange-600 dark:hover:text-orange-400 rounded-xl font-bold transition-all">
-                                                                    Retirer Fonds
+                                                                    Retirer Fonds {trancheType}
                                                                 </button>
                                                                 <p className="text-xs text-center text-slate-400 mt-2">Le retrait est autorisé sans frais tant que le vault n'a pas démarré.</p>
                                                             </div>
