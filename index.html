@@ -35,9 +35,9 @@
                             <div class="hide-menu">
                                 <a class="stick" href="#">│</a>
                                 <a class="nav-link" href="#home">Accueil</a><span class="stick"> · </span>
-                                <a class="nav-link" href="#concepts">Concepts</a><span class="stick"> · </span>
-                                <a class="nav-link" href="#mechanics">Mécanismes</a><span class="stick"> · </span>
-                                <a class="nav-link" href="#regulation">Régulation</a><span class="stick"> · </span>
+                                <a class="nav-link" href="#concepts">Architecture</a><span class="stick"> · </span>
+                                <a class="nav-link" href="#mechanics">Mathématiques</a><span class="stick"> · </span>
+                                <a class="nav-link" href="#regulation">Conformité</a><span class="stick"> · </span>
                                 <a class="nav-link" href="#ecosystem">Écosystème</a>
                             </div>
                         </div>
@@ -55,25 +55,25 @@
 
             <main class="content-wrapper">
                 <div class="hero-content">
-                    <div class="badge">Hybrid Parametric Insurance Vault</div>
-                    <h1 class="main-title">Risque Climatique.<br>Sécurisé par la Blockchain.</h1>
+                    <div class="badge">Hybrid Parametric Insurance Vault (HPIV)</div>
+                    <h1 class="main-title" style="font-size: 3.5rem;">Infrastructure Décentralisée d'Assurance Paramétrique.</h1>
                     <p class="subtitle">
-                        Le premier protocole de Cat Bonds "Retail-Friendly".<br>
-                        Générez du rendement sur des risques paramétriques avec une protection "Soft Default".
+                        La solution au risque binaire des Cat Bonds traditionnels.<br>
+                        Une architecture multi-tranches sur ERC-4626 permettant un "Soft Default" et une solvabilité Fully Funded.
                     </p>
 
                     <div class="stats-row">
                         <div class="stat-item">
-                            <span class="stat-value">~15%</span>
-                            <span class="stat-label">Cible APR</span>
+                            <span class="stat-value">Yield Splitting</span>
+                            <span class="stat-label">Levier Junior / Sécurité Senior</span>
                         </div>
                         <div class="stat-item">
-                            <span class="stat-value">24/7</span>
-                            <span class="stat-label">Liquidité Secondaire</span>
+                            <span class="stat-value">ERC-4626</span>
+                            <span class="stat-label">Liquidité Standardisée</span>
                         </div>
                         <div class="stat-item">
-                            <span class="stat-value">100%</span>
-                            <span class="stat-label">Fully Funded</span>
+                            <span class="stat-value">VUSA</span>
+                            <span class="stat-label">Conformité Suisse (LSA)</span>
                         </div>
                     </div>
                 </div>
@@ -83,8 +83,8 @@
         <!-- PAGE 2 : LE MÉCANISME DE BASE -->
         <section id="concepts" class="page page-tech">
             <main class="content-wrapper">
-                <h2 class="section-title">Architecture "Soft Default"</h2>
-                <p class="section-desc">Fini le risque binaire "Tout ou Rien". Notre architecture en tranches protège votre capital.</p>
+                <h2 class="section-title">Architecture Multi-Tranches</h2>
+                <p class="section-desc">Le standard HPIV introduit une hiérarchie de capital pour absorber les chocs sans liquider les investisseurs.</p>
 
                 <div class="bento-grid">
                     <!-- Carte 1 : Tranches -->
@@ -93,13 +93,13 @@
                             <div class="card-icon"><img src="img/greenShield.png" alt="GREEN_SHIELD" class="logo-img" onerror="this.src='https://placehold.co/50?text=S'"/></div>
                             <button class="close-btn" aria-label="Fermer">×</button>
                         </div>
-                        <h3>Skin in the Game</h3>
-                        <p>L'assureur doit verrouiller une <strong>Tranche Junior</strong> qui absorbe les premières pertes. Les investisseurs sont en <strong>Tranche Senior</strong> protégée.</p>
+                        <h3>Capital "First Loss"</h3>
+                        <p>Segmentation via <strong>Tranche Junior (ERC-20)</strong> et <strong>Tranche Senior (ERC-4626)</strong>. L'assureur (Sponsor) engage son propre capital en priorité.</p>
 
                         <div class="card-details">
-                            <h4>Mécanisme de Tranches</h4>
-                            <p>Pour aligner les intérêts, l'assureur (Sponsor) dépose <strong>X% du capital</strong> en Tranche Junior. C'est du capital "First Loss".</p>
-                            <p>Les investisseurs apportent les <strong>Y% restants</strong> en Tranche Senior. En cas de sinistre mineur, seule la part de l'assureur est touchée. Votre capital n'est entamé que si le sinistre dépasse le coussin de sécurité de l'assureur.</p>
+                            <h4>Segmentation du Risque</h4>
+                            <p>Le protocole impose à l'assureur de déposer un <strong>Capital First Loss</strong> (Tranche Junior). Ce tampon de sécurité est sacrifié en premier lors d'un sinistre.</p>
+                            <p>Les investisseurs (LPs) se positionnent majoritairement sur la <strong>Tranche Senior</strong>. Leur liquidité n'est exposée qu'après épuisement total du capital de l'assureur et de la Tranche Junior.</p>
                         </div>
                     </article>
 
@@ -109,19 +109,19 @@
                             <div class="card-icon"><img src="img/blueGraph.png" alt="BLUE_GRAPH" class="logo-img" onerror="this.src='https://placehold.co/50?text=G'"/></div>
                             <button class="close-btn" aria-label="Fermer">×</button>
                         </div>
-                        <h3>Protection Capital</h3>
-                        <p>En cas de catastrophe majeure, le mécanisme de sur-collateralisation limite la perte.</p>
+                        <h3>Mécanisme Waterfall</h3>
+                        <p>En cas de catastrophe, la fonction <code>triggerCatastrophe</code> exécute une absorption séquentielle des pertes.</p>
 
                         <div class="card-details">
-                            <h4>Simulation de Sinistre (Soft Default)</h4>
-                            <p>Exemple concret :</p>
+                            <h4>Simulation de "Soft Default"</h4>
+                            <p>Exemple Whitepaper (Vault 40M$, Sinistre 8M$) :</p>
                             <ul>
-                                <li>Sinistre à payer : <strong>20M$</strong></li>
-                                <li>L'assureur demande : <strong>40M$</strong></li>
-                                <li>L'assureur paie les premiers <strong>4M$</strong>.</li>
-                                <li>Reste à charge pour le pool investisseurs : <strong>16M$</strong>.</li>
+                                <li><strong>1. Assureur :</strong> Perd ses 4M$ de First Loss (100% perte).</li>
+                                <li><strong>2. Buffer :</strong> La Réserve de Prime absorbe le reliquat.</li>
+                                <li><strong>3. Tranche Junior :</strong> Absorbe les 4M$ restants (80% perte).</li>
+                                <li><strong>4. Tranche Senior :</strong> Intacte (0% perte).</li>
                             </ul>
-                            <p>Sur un pool de 36M$, cela représente une perte de <strong>44.44%</strong>. Vous récupérez donc <strong>55.56%</strong> de votre mise, contrairement aux produits traditionnels où la perte serait totale.</p>
+                            <p>Résultat : Le Senior est protégé par le sacrifice des tranches inférieures.</p>
                         </div>
                     </article>
 
@@ -131,13 +131,13 @@
                             <div class="card-icon"><img src="img/yellowGold.png" alt="YELLOW_GOLD" class="logo-img" onerror="this.src='https://placehold.co/50?text=Y'"/></div>
                             <button class="close-btn" aria-label="Fermer">×</button>
                         </div>
-                        <h3>Yield</h3>
-                        <p><strong>Prime</strong> d'Assurance.</p>
+                        <h3>Yield Splitting</h3>
+                        <p>Distribution asymétrique du rendement.</p>
 
                         <div class="card-details">
-                            <h4>Composition du Rendement</h4>
-                            <p><strong>Insurance Premium :</strong> L'assureur paie une prime pour sa couverture, ajoutant ~10% APR.</p>
-                            <p>Objectif total : <strong>APR</strong> décorrélé des marchés crypto.</p>
+                            <h4>Levier de Rendement</h4>
+                            <p><strong>Senior :</strong> Reçoit 70% de l'APR de base en échange de la sécurité (Safety First).</p>
+                            <p><strong>Junior :</strong> Capte l'effet de levier sur le reliquat des primes (30% du rendement Senior redirigé), boostant mécaniquement son APR (Yield Seekers).</p>
                         </div>
                     </article>
                 </div>
@@ -151,8 +151,8 @@
             <img src="img/croco.png" class="bg-sheep bg-croco-right" alt="" onerror="this.style.display='none'" />
 
             <main class="content-wrapper">
-                <h2 class="section-title">Mécanique Financière</h2>
-                <p class="section-desc">Éliminer le Risque de Base et garantir l'équité via le "Dual Trigger".</p>
+                <h2 class="section-title">Ingénierie Financière</h2>
+                <p class="section-desc">Sécurité mathématique on-chain et intégrité des données via Oracles.</p>
 
                 <div class="bento-grid">
                     <!-- Carte 7 : Risque de Base & Dual Trigger (Large) -->
@@ -161,29 +161,19 @@
                             <div class="card-icon"><img src="img/pinkLaw.png" alt="DUAL_TRIGGER" class="logo-img" onerror="this.src='https://placehold.co/50?text=D'"/></div>
                             <button class="close-btn" aria-label="Fermer">×</button>
                         </div>
-                        <h3>Dual Trigger & Indemnité</h3>
-                        <p>Pour éviter l'enrichissement sans cause, le paiement combine un <strong>déclencheur météo</strong> (la clé) et une <strong>preuve de perte</strong> (la facture).</p>
+                        <h3>Oracles & Sécurité</h3>
+                        <p>Déclenchement automatisé par oracles chain-agnostic et protection contre les vecteurs d'attaque ERC-4626.</p>
 
                         <div class="card-details">
-                            <h4>Le Problème : Risque de Base (Basis Risk)</h4>
-                            <p>C'est l'écart entre l'indice (le vent) et la perte réelle (les dégâts). Si le vent souffle à 260km/h mais ne casse que trois tuiles (perte = 1000$), verser 20M$ serait illégal (principe indemnitaire sous FINMA/LSA).</p>
-
-                            <h4>La Solution : Le "Dual Trigger"</h4>
+                            <h4>Intégrité Technique</h4>
+                            <p>Le Vault intègre des mécanismes de défense avancés :</p>
                             <ol>
-                                <li><strong>La Clé (Paramétrique) :</strong> Condition nécessaire. Ex: Vent > 250km/h. Si non atteint, coffre verrouillé. Si atteint -> Status <em>PENDING_PAYOUT</em>.</li>
-                                <li><strong>La Facture (Proof of Loss) :</strong> L'assureur soumet une preuve de sinistre certifiée (audit ou index tiers comme PERILS).</li>
+                                <li><strong>Anti-Inflation Attack :</strong> Minting de "Dead Shares" à l'initialisation pour verrouiller le taux de change et empêcher les attaques par donation.</li>
+                                <li><strong>Oracles Certifiés :</strong> Intégration de flux de données (USGS, NOAA) pour le déclenchement objectif des sinistres.</li>
                             </ol>
 
-                            <h4>Formule de Paiement</h4>
-                            <p><code>Payout = min(Capacité du Vault, Perte Réelle Certifiée)</code></p>
-
-                            <h4>Exemple Concret</h4>
-                            <ul>
-                                <li>Capacité Vault : <strong>40M$</strong>. Trigger Météo : >250km/h.</li>
-                                <li><strong>Scénario :</strong> Vent à 260km/h (Trigger OK), mais frappe une zone peu dense. Perte réelle : <strong>5M$</strong>.</li>
-                                <li><strong>Résultat Smart Contract :</strong> <code>MIN(40M, 5M) = 5M</code>.</li>
-                                <li><strong>Conséquence :</strong> L'assureur reçoit 5M$. Les 35M$ restants sont sauvés et redistribués aux investisseurs (rendement énorme car peu de perte).</li>
-                            </ul>
+                            <h4>Sur-Collatéralisation</h4>
+                            <p>Le contrat vérifie mathématiquement <code>TotalAssets >= Capacité</code> avant tout dépôt. Le risque est toujours "Fully Funded" pour éliminer le risque de contrepartie.</p>
                         </div>
                     </article>
 
@@ -193,17 +183,13 @@
                             <div class="card-icon"><img src="img/yellowGold.png" alt="PREMIUMS" class="logo-img" onerror="this.src='https://placehold.co/50?text=P'"/></div>
                             <button class="close-btn" aria-label="Fermer">×</button>
                         </div>
-                        <h3>Sanctuarisation des Primes</h3>
-                        <p>La "Yield Reserve" est strictement séparée du capital à risque. Votre rendement est protégé.</p>
+                        <h3>Premium Reserve</h3>
+                        <p>La <code>premiumReserve</code> est sanctuarisée et isolée du capital à risque.</p>
 
                         <div class="card-details">
-                            <h4>Fonctionnement de la Yield Reserve</h4>
-                            <p>Dans la structure HPIV, les fonds sont séparés en deux poches comptables :</p>
-                            <ol>
-                                <li><strong>Capital à Risque (Risk Capital) :</strong> Junior + Senior. Utilisé pour payer les sinistres.</li>
-                                <li><strong>Réserve de Prime (Yield Reserve) :</strong> Payée par l'assureur à la création. <strong>Sanctuarisée.</strong></li>
-                            </ol>
-                            <p>Même en cas de défaut total (perte de 100% du capital), la Réserve de Prime ne sert <strong>jamais</strong> à payer le sinistre. Elle est intégralement distribuée aux investisseurs pour garantir un retour minimum ("Consolation").</p>
+                            <h4>Rendement Garanti</h4>
+                            <p>La prime versée par l'assureur est stockée dans une variable d'état distincte. Elle sert de tampon secondaire dans la Waterfall (après le capital assureur) mais ne constitue jamais le collatéral primaire du risque.</p>
+                            <p>À maturité, cette réserve est la source unique du rendement distribué aux investisseurs Senior et Junior.</p>
                         </div>
                     </article>
                 </div>
@@ -214,7 +200,7 @@
         <section id="regulation" class="page page-trust">
             <main class="content-wrapper">
                 <h2 class="section-title">Cadre Réglementaire Suisse</h2>
-                <p class="section-desc">Construit pour durer sous la supervision des standards les plus stricts.</p>
+                <p class="section-desc">Conçu selon les exigences de la LSA révisée et de la Loi DLT/TRD.</p>
 
                 <div class="bento-grid">
                     <article class="card card-wide" data-card="4">
@@ -222,13 +208,13 @@
                             <div class="card-icon"><img src="img/swissFlag.jpeg" alt="SWISS_FLAG" class="logo-img" onerror="this.src='https://placehold.co/50?text=CH'"/></div>
                             <button class="close-btn" aria-label="Fermer">×</button>
                         </div>
-                        <h3>Véhicule VUSA (ISPV)</h3>
-                        <p>Structure conforme à l'article 30e de la LSA. Le protocole agit comme un transformateur de risques entièrement financé par le marché des capitaux, sans risque de contrepartie assureur.</p>
+                        <h3>Véhicule VUSA (Art. 30e LSA)</h3>
+                        <p>Structure juridique de "Véhicule à Usage Spécifique d'Assurance" (ISPV). Transformateur de risques financé intégralement par le marché des capitaux.</p>
 
                         <div class="card-details">
-                            <h4>Innovation Réglementaire (LSA Art. 30e)</h4>
-                            <p>Le projet utilise le statut de <strong>Véhicule à Usage Spécifique d'Assurance (VUSA)</strong>. Contrairement à un assureur classique, le risque est financé à 100% par le collatéral déposé ("Fully Funded").</p>
-                            <p>Cela élimine le risque de faillite de l'institution : l'argent pour payer les sinistres est déjà dans le Smart Contract.</p>
+                            <h4>Conformité LSA Révisée</h4>
+                            <p>Le protocole respecte l'exigence de <strong>"Fully Funded"</strong> (Art. 111d AVO) : le VUSA dispose à tout moment d'actifs couvrant l'exposition maximale.</p>
+                            <p>Utilisation des exemptions pour <strong>"Preneurs d'Assurance Professionnels"</strong> (Art. 30a LSA) pour optimiser les exigences de solvabilité et de fonds d'organisation.</p>
                         </div>
                     </article>
 
@@ -237,13 +223,12 @@
                             <div class="card-icon"><img src="img/pinkLaw.png" alt="PINK_LAW" class="logo-img" onerror="this.src='https://placehold.co/50?text=L'"/></div>
                             <button class="close-btn" aria-label="Fermer">×</button>
                         </div>
-                        <h3>Conformité DLT</h3>
-                        <p>Tokens qualifiés de "Droits-Valeurs Inscrits" selon l'art. 973d du Code des Obligations.</p>
+                        <h3>Loi DLT (Art. 973d CO)</h3>
+                        <p>Les tokens HPIV sont qualifiés de <strong>Droits-Valeurs Inscrits</strong> (Ledger-based Securities).</p>
 
                         <div class="card-details">
-                            <h4>Tokens = Titres Légaux</h4>
-                            <p>Grâce à la Loi DLT suisse, les tokens émis par le Vault ne sont pas de simples jetons utilitaires, mais des <strong>Droits-Valeurs Inscrits</strong>.</p>
-                            <p>La blockchain fait foi de registre de propriété. Le transfert du token équivaut juridiquement au transfert de la créance, sans papier ni notaire.</p>
+                            <h4>Sécurité Juridique</h4>
+                            <p>En vertu de la Loi TRD/DLT, la blockchain agit comme registre officiel de propriété. Le transfert du token équivaut juridiquement au transfert de la créance (Convention d'inscription), offrant une robustesse légale aux investisseurs institutionnels sans dépositaire central.</p>
                         </div>
                     </article>
 
@@ -252,17 +237,13 @@
                             <div class="card-icon"><img src="img/blueLoop.png" alt="BLUE_LOOP" class="logo-img" onerror="this.src='https://placehold.co/50?text=O'"/></div>
                             <button class="close-btn" aria-label="Fermer">×</button>
                         </div>
-                        <h3>Oracles Certifiés</h3>
-                        <p>Déclenchement paramétrique (IoT/Météo) auditable on-chain pour une transparence totale.</p>
+                        <h3>Conformité LBA & LSFin</h3>
+                        <p>Architecture "Permissioned DeFi" avec Whitelisting (KYB/KYC) via la Factory.</p>
 
                         <div class="card-details">
-                            <h4>Automatisation & Transparence</h4>
-                            <p>Le paiement ne dépend pas d'un expert humain. Il est déclenché par des données :</p>
-                            <ul>
-                                <li>Vitesse du vent > 250km/h</li>
-                                <li>Magnitude sismique</li>
-                            </ul>
-                            <p>Le système agrège <strong>3 sources indépendantes</strong> pour éviter toute manipulation. Si le seuil est franchi, le Smart Contract exécute le paiement instantanément.</p>
+                            <h4>Cadre Anti-Blanchiment</h4>
+                            <p>Le VUSA agit comme intermédiaire financier (Art. 2 LBA). Le Smart Contract <code>HPIVFactory</code> gère un registre d'assureurs whitelistés.</p>
+                            <p>Le ciblage des <strong>Investisseurs Qualifiés</strong> permet l'exemption de prospectus (LSFin), alignant le protocole avec les standards institutionnels.</p>
                         </div>
                     </article>
                 </div>
@@ -272,59 +253,59 @@
         <!-- PAGE 5 : FOOTER / LIENS -->
         <section id="ecosystem" class="page page-trust">
             <main class="content-wrapper">
-                <h2 class="section-title">Écosystème & Conformité</h2>
-                <p class="section-desc">Une infrastructure transparente, documentée et régulée.</p>
+                <h2 class="section-title">Écosystème & Ressources</h2>
+                <p class="section-desc">Documentation technique, audits et analyses réglementaires.</p>
 
                 <div class="links-container">
                     <div class="link-col">
-                        <h3>Solutions</h3>
+                        <h3>Protocole</h3>
                         <ul class="link-list">
-                            <li><a href="#">Cat Bonds (VUSA)</a></li>
-                            <li><a href="#">RWA Yield Farming</a></li>
-                            <li><a href="#">Protection Soft Default</a></li>
+                            <li><a href="#">Architecture HPIV</a></li>
+                            <li><a href="#">Smart Contracts (Solidity)</a></li>
+                            <li><a href="#">Soft Default Mechanics</a></li>
                             <li><a href="#">Marché Secondaire DLT</a></li>
                         </ul>
-                        <h3>Company</h3>
+                        <h3>Organisation</h3>
                         <ul class="link-list">
-                            <li><a href="#">About us</a></li>
-                            <li><a href="#">Partenaires</a></li>
-                            <li><a href="#">Carière</a></li>
+                            <li><a href="#">À propos</a></li>
+                            <li><a href="#">Partenaires VUSA</a></li>
+                            <li><a href="#">Carrière</a></li>
                         </ul>
                     </div>
 
                     <div class="link-col">
                         <h3>Ressources</h3>
                         <ul class="link-list">
-                            <li><a href="https://github.com/leobtlh/moeba_protocol/blob/main/ressources/whitepaper.md">Whitepaper & Audit</a></li>
-                            <li><a href="doc/template/index.html">Documentation</a></li>
-                            <li><a href="https://github.com/leobtlh/moeba_protocol/tree/main">GitHub</a></li>
-                            <li><a href="#">Oracles</a></li>
+                            <li><a href="https://github.com/leobtlh/moeba_protocol/blob/main/ressources/whitepaper.md">Whitepaper Technique</a></li>
+                            <li><a href="documentation/index.html">Documentation API</a></li>
+                            <li><a href="https://github.com/leobtlh/moeba_protocol/tree/main">GitHub Repository</a></li>
+                            <li><a href="#">Rapport Mathématique</a></li>
                         </ul>
                         <h3>Contact</h3>
                         <ul class="link-list">
-                            <li><a href="#">Téléphone : +41 78 302 50 85</a></li>
+                            <li><a href="#">Siège : Lausanne, Suisse</a></li>
                             <li><a href="#">Mail : info@moeba.ch</a></li>
-                            <li><a href="https://discord.com/channels/1458362167744139370/1458362169002561660" target="_blank">Discord</a></li>
+                            <li><a href="https://discord.com/channels/1458362167744139370/1458362169002561660" target="_blank">Discord Communauté</a></li>
                         </ul>
                     </div>
 
                     <div class="link-col">
-                        <h3>Conformité & Légal</h3>
+                        <h3>Légal & Conformité</h3>
                         <ul class="link-list">
-                            <li><a href="#">Cadre FINMA / LSA</a></li>
-                            <li><a href="#">Droits-Valeurs Inscrits</a></li>
-                            <li><a href="#">Gouvernance DAO</a></li>
-                            <li><a href="#">Centre de Support</a></li>
+                            <li><a href="#">Veille Réglementaire FINMA</a></li>
+                            <li><a href="#">Registre des Droits-Valeurs</a></li>
+                            <li><a href="#">Politique LBA/AML</a></li>
+                            <li><a href="#">Avertissement Risques</a></li>
                         </ul>
-                        <h3>Backoffice</h3>
+                        <h3>Accès</h3>
                         <ul class="link-list">
-                            <li><a href="backoffice/backoffice.html" target="_blank">Backoffice Website</a></li>
+                            <li><a href="backoffice/backoffice.html" target="_blank">Portail Assureur (Backoffice)</a></li>
                         </ul>
                     </div>
                 </div>
 
                 <footer class="site-footer">
-                    <p>© Mœba Protocol 2026 • Lausanne, Suisse.</p>
+                    <p>© Mœba Protocol 2026 • Infrastructure VUSA Suisse.</p>
                 </footer>
             </main>
         </section>
