@@ -1,156 +1,96 @@
-# Mœba Protocol - Hybrid Parametric Insurance Vault (HPIV)
+# Mœba Protocol | Hybrid Parametric Insurance Vault (HPIV)
 
-## 1. Vue d'Ensemble
+**Mœba Protocol** est une infrastructure décentralisée d'assurance paramétrique sur Ethereum et EVM-chains. Elle introduit le standard **HPIV** (Hybrid Parametric Insurance Vault) pour résoudre le problème du risque binaire ("Tout ou Rien") des Cat Bonds traditionnels.
 
-Ce protocole introduit une nouvelle architecture pour les Obligations Catastrophe (Cat Bonds) sur la blockchain.  
-Il résout le principal frein à l'adoption des assurances décentralisées : le risque binaire (« tout ou rien »).
-
-Contrairement aux Cat Bonds traditionnels où l'investisseur perd 100 % de son capital en cas de sinistre, ce protocole utilise un mécanisme de **sur-collatéralisation** et de **tranches de risque (Junior / Senior)** pour garantir qu'en cas de catastrophe majeure, les investisseurs récupèrent une partie significative de leur mise.  
-Ce mécanisme est appelé **Soft Default**.
+Grâce à une architecture basée sur **ERC-4626** et une segmentation du capital en tranches (Junior/Senior), le protocole permet un **"Soft Default"** : en cas de catastrophe, les pertes sont absorbées prioritairement par l'assureur, protégeant ainsi le capital des investisseurs.
 
 ---
 
-## 2. Architecture du Vault
+## ⚡ Fonctionnalités Clés
 
-### 2.1 Structure du Capital
-
-L'innovation centrale repose sur la répartition de la liquidité entre l'Assureur (demandeur de couverture) et les Investisseurs (fournisseurs de liquidité).
-
-- **Besoin de Couverture Réel (Sinistre Max)** : 20,000,000 USD  
-- **Cible de Levée de Fonds (Vault Cap)** : 40,000,000 USD  
-- **Ratio de Sur-collatéralisation** : 200 %  
-  (le vault lève 2× le montant du risque)
-
-#### Répartition des apports ("Skin in the Game")
-
-Pour aligner les intérêts et protéger les investisseurs, l'assureur doit verrouiller du capital dans le vault aux côtés des utilisateurs.
-
-| Acteur                         | Apport | % du Vault | Rôle                                   |
-|--------------------------------|--------|------------|----------------------------------------|
-| Investisseurs (Retail / Whales)| 36 M$  | 90 %       | Tranche Senior (protégée)              |
-| Assureur (Sponsor)             | 4 M$   | 10 %       | Tranche Junior (première perte)        |
-| **TOTAL**                      | 40 M$  | 100 %      | Liquidité totale                       |
+* **Soft Default Mechanism** : Fini le risque binaire. Une architecture en cascade (Waterfall) absorbe les pertes hiérarchiquement.
+* **Multi-Tranche Architecture** :
+    * **Senior Tranche (ERC-4626)** : Risque réduit, pour les fournisseurs de liquidité (LPs).
+    * **Junior Tranche (ERC-20)** : Risque élevé ("First Loss"), pour les assureurs/sponsors.
+* **Sur-Collatéralisation** : Le vault est "Fully Funded" pour garantir la solvabilité technique sans risque de contrepartie.
+* **Swiss Compliant Architecture** : Conçu pour s'aligner avec le cadre VUSA (Véhicule à Usage Spécifique d'Assurance) et la Loi DLT suisse.
+* **Multi-Chain Agnostic** : Compatible Ethereum, Base, Polygon, Arbitrum.
 
 ---
 
-## 3. Logique de Rendement et Frais
+## 🏗 Architecture Technique
 
-### 3.1 Structure de l'APR
+Le protocole repose sur trois Smart Contracts principaux (Solidity `^0.8.20`) et une DApp autonome.
 
-Le rendement total pour l'investisseur :
+### 1. Smart Contracts
 
-- **Prime d'Assurance (Insurance Fee)** : X % APR  
-(payée par l'assureur pour la couverture)
+* **`HPIVVault.sol` (Le Cœur)**
+    * Implémente le standard **ERC-4626** pour la gestion de la Tranche Senior.
+    * Gère la machine à états du cycle de vie : `PENDING` → `OPEN` → `ACTIVE` → `MATURED` / `TRIGGERED`.
+    * Contient la logique de **Waterfall** pour la distribution des sinistres (`triggerCatastrophe`).
+    * Intègre une protection contre les attaques d'inflation (minting de "Dead Shares" à l'initialisation).
 
-- **APR Total Cible (scénario sans catastrophe)** : ~15 %
+* **`HPIVJuniorToken.sol`**
+    * Token ERC-20 standard avec `AccessControl`.
+    * Représente la part "Risque" du capital.
+    * Entièrement piloté (mint/burn) par le contrat `HPIVVault`.
 
----
+* **`HPIVFactory.sol`**
+    * Usine de déploiement pour standardiser la création de nouveaux Vaults.
+    * Gère la **Whitelist des Assureurs** et le registre KYB (Know Your Business) via hachage IPFS.
+    * Assure que seuls les acteurs certifiés peuvent déployer des instruments de couverture.
 
-### 3.2 Mécanique des Retraits
+### 2. Le Mécanisme de Waterfall (Soft Default)
 
-- **Liquidité**  
-Les retraits sont possibles grâce au buffer de 20 %.
+La fonction `triggerCatastrophe` dans `HPIVVault.sol` définit l'ordre précis d'absorption des pertes en cas de sinistre validé par l'oracle.
 
-- **Frais Dynamiques**  
-Les frais de sortie augmentent à l'approche de la date de maturité afin de décourager la fuite des capitaux avant l'événement climatique.
+| Priorité | Source de Liquidité | Description |
+| :--- | :--- | :--- |
+| **1. First Loss** | Capital Assureur | Le capital déposé par le sponsor est consommé en premier. |
+| **2. Buffer** | Premium Reserve | Les primes (rendements) non distribuées servent de tampon. |
+| **3. Absorption** | Tranche Junior | Les détenteurs de tokens Junior perdent leur capital. |
+| **4. Dernier Recours** | Tranche Senior | Les investisseurs Senior ne sont impactés que sur le reliquat. |
 
-- **Verrouillage (Hard Lock)**  
-Les retraits deviennent impossibles 5 jours avant la date de maturité.
-
----
-
-## 4. Scénario de Sinistre : le "Soft Default"
-
-En cas de catastrophe validée par l'oracle (ex. ouragan catégorie > 4), le paiement du sinistre est déclenché.
-
-### 4.1 Calcul de l'Absorption des Pertes
-
-- **Montant du sinistre** : 20 M$  
-
-L'absorption se fait dans l'ordre suivant :
-
-1. **Tranche Assureur (prioritaire)**  
- Les 4 M$ déposés par l'assureur sont utilisés en premier  
- (auto-assurance partielle / franchise).
-
-2. **Tranche Investisseurs (secondaire)**  
- Le reste du sinistre est prélevé sur le capital des investisseurs.
-
-Calcul :
-
-Reste à payer = 20 M$ − 4 M$ = 16 M$
-Pool investisseurs = 36 M$
-
+> **Résultat Mathématique** : Si un sinistre de 20M$ frappe un Vault de 40M$ (dont 4M$ Junior), l'investisseur Senior ne subit qu'une perte partielle (~44%) au lieu de 100%, grâce à l'absorption préalable par l'assureur.
 
 ---
 
-### 4.2 Ratio de Perte (Haircut)
+## Frontend & DApp
 
-Le pourcentage de perte appliqué aux investisseurs est :
+L'interface utilisateur (`app.html`) est une Single Page Application (SPA) construite avec React et Tailwind, conçue pour interagir directement avec les contrats sans backend centralisé.
 
-Ratio de Perte = 16,000,000 / 36,000,000 ≈ 44.44 %
-
-
-L'investisseur conserve donc **55.56 % de son capital (+ intérêts)** au lieu de perdre 100 %.
-
----
-
-## 5. Simulation Mathématique Concrète
-
-Simulation basée sur un investissement réel.
-
-### Paramètres d'entrée
-
-- **Investissement initial (P)** : 100 USDC  
-- **Date de dépôt** : 19 décembre 2025  
-- **Date de maturité** : 18 janvier 2026  
-- **Durée (t)** : 30 jours  
-- **Rendement collatéral (r)** : 5 % APR  
-- **Événement** : Catastrophe confirmée (sinistre total)
+* **Rôles Utilisateurs** :
+    * **Investisseur** : Dépôt/Retrait Senior & Junior, visualisation APR dynamique.
+    * **Assureur** : Déploiement de Vaults via la Factory, gestion KYB.
+    * **Dashboard** : Interface servant à regrouper et visualiser rapidement l'ensemble de ses investissements.
+    * **Oracles** : Interface regroupant les dérnières données récupérées via les oracles et leurs répercutions sur les vaults.
+* **Analytics** : Graphiques de risques (Recharts) et calculs de rendement en temps réel.
 
 ---
 
-### Formule de calcul
+## Installation et Démarrage
 
-Valeur Finale = P × (1 + r)^(t / 365) × (1 − Ratio de Perte)
+Le projet est conçu pour être léger. Le frontend est contenu dans un fichier unique pour faciliter l'audit et le déploiement IPFS.
 
+### Prérequis
 
----
+* Un navigateur moderne.
+* Un portefeuille Web3 (Rabby, MetaMask, Zerion, etc).
 
-### Étape 1 : Intérêts acquis avant le sinistre
+### Lancer l'Application
 
-100 × (1 + 0.05)^(30 / 365)
-≈ 100 × 1.0040
-≈ 100.40 USDC
+**Lien simulation :** *https://moeba-protocol.vercel.app/*
+Possibilité d'utiliser un wallet de simulation automatiquement whitelisté assureur (*'Connecter Wallet' → 'Autres Wallets' → 'Simulation Wallet'*).
 
+### Contrats
 
----
-
-### Étape 2 : Application du Haircut (44.44 %)
-
-
-100.40 × (1 − 0.4444)
-≈ 100.40 × 0.5556
-≈ 55.78 USDC
-
+Les contrats se trouvent dans le dossier `/app`.
+  * **Sous les noms :** `HIPVVault.sol` et `HPIVFactory.sol`.
+  * La Factory sert à instancier de nouveaux Vaults.
 
 ---
 
-## Conclusion de la Simulation
+## Avertissement & Conformité
 
-Dans le pire scénario possible (catastrophe majeure), l'investisseur ne repart pas avec 0.  
-Il récupère **55.78 USDC**, limitant sa perte nette à **−44.2 %**.
-
-Ce profil de risque asymétrique :
-
-- Gain potentiel : ~15 %
-- Perte maximale : ~44 %
-
-comparé à :
-
-- Gain potentiel : ~15 %
-- Perte maximale : 100 % (Cat Bonds traditionnels)
-
-rend ce produit **viable pour une adoption retail (grand public)**.
-
-<img width="1714" height="1455" alt="shapes at 25-12-19 11 55 22" src="https://github.com/user-attachments/assets/6bc26e6b-9ef2-464f-b038-a73a06e5d96f" />
+Ce code est une implémentation de référence (Proof of Concept).
+Bien que l'architecture respecte les principes de la **Loi DLT suisse** (Droits-Valeurs Inscrits) et les exigences de capital pour les **VUSA** (Véhicules à Usage Spécifique d'Assurance), il n'a pas fait l'objet d'un audit de sécurité complet. Utilisez à vos propres risques.

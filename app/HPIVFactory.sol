@@ -6,8 +6,8 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 /**
  * @title HPIV Factory
- * @dev Usine à Smart Contracts. Gère le déploiement des Vaults et l'onboarding (Whitelist) des assureurs.
- * Mise à jour : Support des dates précises (Start/Maturity) pour correspondre à l'App.
+ * @dev Usine mise à jour pour déployer les Vaults Multi-Tranches.
+ * Restauration complète des helpers pour compatibilité Front-End.
  */
 contract HPIVFactory is Ownable {
 
@@ -15,12 +15,11 @@ contract HPIVFactory is Ownable {
     mapping(address => bool) public isValidVault;
 
     // --- WHITELIST ASSUREURS & KYB ---
-
     enum RequestStatus { None, Pending, Approved, Rejected }
 
     struct InsurerRequest {
         string companyName;  // Nom de l'entité légale
-        string kybHash;      // Hash IPFS ou lien vers le dossier de conformité
+        string kybHash;      // Hash IPFS
         RequestStatus status;
         uint256 requestDate;
     }
@@ -49,22 +48,17 @@ contract HPIVFactory is Ownable {
     );
 
     constructor() Ownable(msg.sender) {
-        // Démo : Whitelist par défaut pour faciliter les tests
-        isWhitelistedInsurer[0x912F9886Fb676750943fDeFC4c30d3cA927C3a72] = true;
-        insurerRequests[0x912F9886Fb676750943fDeFC4c30d3cA927C3a72] = InsurerRequest({
-            companyName: "Moeha Demo Insurer",
-            kybHash: "ipfs://QmDemoHash...",
-            status: RequestStatus.Approved,
-            requestDate: block.timestamp
-        });
+        // Démo : Whitelist de l'adresse de déploiement pour tests
+        isWhitelistedInsurer[msg.sender] = true;
     }
 
     /**
      * @dev Soumettre une demande d'enregistrement (KYB).
      */
     function registerInsurer(string memory _companyName, string memory _kybHash) external {
-        require(!isWhitelistedInsurer[msg.sender], "HPIV: Already whitelisted");
-        require(insurerRequests[msg.sender].status == RequestStatus.None || insurerRequests[msg.sender].status == RequestStatus.Rejected, "HPIV: Request pending or already processed");
+        require(!isWhitelistedInsurer[msg.sender], "Already whitelisted");
+        // Accepte si status est None ou Rejected (permet de resoumettre)
+        require(insurerRequests[msg.sender].status != RequestStatus.Pending, "Request pending");
 
         insurerRequests[msg.sender] = InsurerRequest({
             companyName: _companyName,
@@ -82,34 +76,29 @@ contract HPIVFactory is Ownable {
      */
     function setInsurerStatus(address _insurer, bool _status) external onlyOwner {
         isWhitelistedInsurer[_insurer] = _status;
-
-        if (insurerRequests[_insurer].status != RequestStatus.None) {
-            insurerRequests[_insurer].status = _status ? RequestStatus.Approved : RequestStatus.Rejected;
-        } else {
-            insurerRequests[_insurer].status = _status ? RequestStatus.Approved : RequestStatus.Rejected;
-            insurerRequests[_insurer].companyName = "Manually Added";
-        }
-
+        insurerRequests[_insurer].status = _status ? RequestStatus.Approved : RequestStatus.Rejected;
         emit InsurerStatusChanged(_insurer, _status);
     }
 
     /**
-     * @dev Création d'un Vault avec Dates Explicites (Start & End).
-     * @param _startDate Timestamp du début de la couverture (Fin de souscription / Début Lock).
-     * @param _maturityDate Timestamp de fin de couverture (Déblocage des fonds).
+     * @dev Création d'un Vault HPIV Sécurisé Multi-Tranches.
      */
     function createVault(
         IERC20 _asset,
-        address _compliance,
+        address _compliance, // Gardé pour compatibilité signature app.html
         uint256 _capTotal,
         uint256 _maxCoverage,
-        uint256 _startDate,     // UPDATE: Remplacement de durationInDays
-        uint256 _maturityDate,  // UPDATE: Remplacement de durationInDays
+        uint256 _startDate,
+        uint256 _maturityDate,
         string memory _riskName,
         string memory _description
     ) external returns (address) {
-        require(isWhitelistedInsurer[msg.sender], "HPIV: Caller is not a whitelisted Insurer");
-        require(_maturityDate > _startDate, "HPIV: Maturity must be after Start");
+        require(isWhitelistedInsurer[msg.sender], "Not authorized");
+        require(_maturityDate > _startDate, "Invalid dates");
+
+        // Génération automatique des symboles pour Junior/Senior
+        string memory tokenName = _riskName;
+        string memory tokenSymbol = "HPIV";
 
         HPIVVault newVault = new HPIVVault(
             _asset,
@@ -120,7 +109,9 @@ contract HPIVFactory is Ownable {
             _startDate,
             _maturityDate,
             _riskName,
-            _description
+            _description,
+            tokenName,
+            tokenSymbol
         );
 
         address vaultAddr = address(newVault);
@@ -132,11 +123,11 @@ contract HPIVFactory is Ownable {
         return vaultAddr;
     }
 
+    // --- HELPERS FRONT-END (RESTAURÉS) ---
+
     function totalVaults() external view returns (uint256) {
         return allVaults.length;
     }
-
-    // --- HELPERS FRONT-END ---
 
     function getPendingRequests() external view returns (address[] memory) {
         return pendingRequestAddresses;
@@ -144,5 +135,9 @@ contract HPIVFactory is Ownable {
 
     function getRequestDetails(address _insurer) external view returns (InsurerRequest memory) {
         return insurerRequests[_insurer];
+    }
+
+    function getAllVaults() external view returns (address[] memory) {
+        return allVaults;
     }
 }
