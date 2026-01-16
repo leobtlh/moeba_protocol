@@ -18,7 +18,7 @@ Grâce à une architecture basée sur **ERC-4626** et une segmentation du capita
 
 ---
 
-## 🏗 Architecture Technique
+## Architecture Technique
 
 Le protocole repose sur trois Smart Contracts principaux (Solidity `^0.8.20`) et une DApp autonome.
 
