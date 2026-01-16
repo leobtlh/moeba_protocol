@@ -1248,7 +1248,7 @@
 
           const handleTriggerOracle = (vaultId) => {
             setVaults(vaults.map(v => v.id === vaultId ? { ...v, status: "TRIGGERED" } : v));
-            showNotification("⚠️ ORACLE ALERT : Catastrophe validée. Soft Default activé.", 'error');
+            showNotification(<AlertTriangle className="h-8 w-8" /> && "ORACLE ALERT : Catastrophe validée. Soft Default activé.", 'error');
           };
 
           // CALCUL CASCADE DE PERTE (Reste inchangé, la logique de perte First-Loss est correcte)
@@ -1907,8 +1907,9 @@
                                                     </span>
                                                 </div>
                                                 <div className="flex items-center gap-3 mb-2">
-                                                    <h1 className={`text-3xl font-bold ${selectedVault.status === 'TRIGGERED' ? 'text-red-700 dark:text-red-400' : selectedVault.status === 'MATURED' ? 'text-green-700 dark:text-green-400' : 'text-slate-900 dark:text-white'}`}>
-                                                        {selectedVault.status === 'TRIGGERED' && "⚠ "}{selectedVault.name}
+                                                    <h1 className={`text-3xl font-bold flex items-center gap-3 ${selectedVault.status === 'TRIGGERED' ? 'text-red-700 dark:text-red-400' : selectedVault.status === 'MATURED' ? 'text-green-700 dark:text-green-400' : 'text-slate-900 dark:text-white'}`}>
+                                                        {selectedVault.status === 'TRIGGERED' && <AlertTriangle className="h-8 w-8" />}
+                                                        {selectedVault.name}
                                                     </h1>
                                                     {isVaultStarted(selectedVault) && selectedVault.status !== 'MATURED' && selectedVault.status !== 'TRIGGERED' &&
                                                         <span className="px-3 py-1 rounded-full text-xs font-bold bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 flex items-center gap-1"><Lock className="h-3 w-3" /> PÉRIODE ACTIVE</span>
