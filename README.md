@@ -1,4 +1,4 @@
-# Hybrid Parametric Insurance Vault (HPIV) Protocol
+# Mœba Protocol - Hybrid Parametric Insurance Vault (HPIV)
 
 ## 1. Vue d'Ensemble
 
@@ -33,38 +33,13 @@ Pour aligner les intérêts et protéger les investisseurs, l'assureur doit verr
 
 ---
 
-### 2.2 Gestion de Trésorerie (Treasury Management)
-
-Le capital déposé n'est pas dormant. Il est géré activement afin de générer un rendement de base (**Base Yield**) indépendamment des primes d'assurance.
-
-- **Allocation RWA (Real World Assets)**  
-  80 % du capital est investi dans des bons du Trésor ou du crédit privé générant du rendement.
-
-- **Rendement cible RWA**  
-  6.25 % APR.
-
-- **Impact sur le Vault**  
-
-0.80 × 6.25 % = 5.00 % APR
-
-
-Ce rendement net est distribué à tous les déposants.
-
-- **Buffer de Liquidité**  
-20 % du capital reste liquide (USDC) pour permettre les retraits instantanés avant la période de verrouillage final.
-
----
-
 ## 3. Logique de Rendement et Frais
 
 ### 3.1 Structure de l'APR
 
-Le rendement total pour l'investisseur est composé de deux flux distincts :
+Le rendement total pour l'investisseur :
 
-- **Rendement du Collatéral (Base Yield)** : 5 % APR  
-(issu des 80 % investis en RWA)
-
-- **Prime d'Assurance (Insurance Fee)** : 10 % APR  
+- **Prime d'Assurance (Insurance Fee)** : X % APR  
 (payée par l'assureur pour la couverture)
 
 - **APR Total Cible (scénario sans catastrophe)** : ~15 %

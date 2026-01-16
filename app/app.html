@@ -1171,18 +1171,16 @@
                   const seniorCapacity = vault.totalCapacity - vault.juniorCapital - vault.premium;
                   const userShare = seniorCapacity > 0 ? (vault.userBalance / seniorCapacity) : 0;
                   const yieldPayout = vault.premium * userShare; // Part des primes
-                  const rwaYield = vault.userBalance * 0.05; // 5% Yield de base (ex: T-Bills)
-                  const totalPayout = principalRecovered + yieldPayout + rwaYield;
-                  return { principalRecovered, yieldPayout, rwaYield, loss: 0, totalPayout };
+                  const totalPayout = principalRecovered + yieldPayout;
+                  return { principalRecovered, yieldPayout, loss: 0, totalPayout };
               }
               const { recoveryRatio } = calculateClaimStats(vault);
               const principalRecovered = vault.userBalance * recoveryRatio;
               const seniorCapacity = vault.totalCapacity - vault.juniorCapital - vault.premium;
               const userShare = seniorCapacity > 0 ? (vault.userBalance / seniorCapacity) : 0;
               const yieldPayout = vault.premium * userShare;
-              const rwaYield = vault.userBalance * 0.05;
-              const totalPayout = principalRecovered + yieldPayout + rwaYield;
-              return { principalRecovered, yieldPayout, rwaYield, loss: vault.userBalance - principalRecovered, totalPayout };
+              const totalPayout = principalRecovered + yieldPayout;
+              return { principalRecovered, yieldPayout, loss: vault.userBalance - principalRecovered, totalPayout };
           };
 
           const handleClaim = (vault) => {
@@ -2310,7 +2308,7 @@
                                            </div>
                                            <div className="flex justify-between items-center mb-2 text-green-600 dark:text-green-400 text-sm">
                                               <span>Total Gains (Yield)</span>
-                                              <span>+ {formatCurrency(details.yieldPayout + details.rwaYield)}</span>
+                                              <span>+ {formatCurrency(details.yieldPayout)}</span>
                                            </div>
                                            <div className="h-px bg-slate-100 dark:bg-slate-700 my-2"></div>
                                            <div className="flex justify-between items-center">
