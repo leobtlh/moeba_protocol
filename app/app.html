@@ -132,7 +132,8 @@
         // --- WHITELIST ASSUREURS LOCALE (SIMULATION) ---
         const INSURER_WHITELIST_LOCAL = [
             '0x912f9886fb676750943fdefc4c30d3ca927c3a72',
-            '0x5B757b308b8842698035C53b8ea0844240ac485B'
+            '0x5B757b308b8842698035C53b8ea0844240ac485B',
+            '0xsimulated000000000000000000000000000000'
         ].map(addr => addr.toLowerCase());
 
         // ABI Minimal pour lire les balances ERC20
@@ -231,6 +232,12 @@
                 <rect width="32" height="32" rx="8" fill="#3B99FC"/>
                 <path d="M8 14c4-4 12-4 16 0" stroke="white" strokeWidth="2" strokeLinecap="round"/>
                 <path d="M16 19v.01" stroke="white" strokeWidth="3" strokeLinecap="round"/>
+             </svg>
+        );
+        const SimulationIcon = () => (
+             <svg viewBox="0 0 32 32" className="w-8 h-8 rounded-lg" fill="none">
+                <rect width="32" height="32" rx="8" fill="#475569"/>
+                <path d="M16 6v20M6 16h20" stroke="white" strokeWidth="4" strokeLinecap="round"/>
              </svg>
         );
 
@@ -828,6 +835,19 @@
 
           const handleWalletSelect = async (walletType) => {
              setShowWalletSelector(false);
+
+             // --- AJOUT : SIMULATION WALLET LOGIC ---
+             if (walletType === 'simulation') {
+                 const simAddress = '0xsimulated000000000000000000000000000000';
+                 setWalletConnected(true);
+                 setUserAddress('Simu...Test');
+                 setUserFullAddress(simAddress);
+                 setUserBalance('100.0000');
+                 showNotification("Connecté avec Simulation Wallet (Mode Test)", 'success');
+                 return;
+             }
+             // ---------------------------------------
+
              if (!window.ethers) { showNotification("Erreur technique : Librairie Web3 non chargée.", 'error'); return; }
              let providerInput = null;
              if (walletType === 'zerion') {
@@ -1423,6 +1443,10 @@
 
                                   {showOtherWallets && (
                                       <div className="space-y-2 mt-2 animate-slide-up">
+                                          <button onClick={() => handleWalletSelect('simulation')} className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors group">
+                                              <SimulationIcon />
+                                              <span className="font-medium text-slate-700 dark:text-slate-300">Simulation Wallet</span>
+                                          </button>
                                           <button onClick={() => handleWalletSelect('metamask')} className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors group">
                                               <MetaMaskIcon />
                                               <span className="font-medium text-slate-700 dark:text-slate-300">MetaMask</span>
