@@ -1471,7 +1471,7 @@
                                                     'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 hover:border-blue-300 dark:hover:border-blue-500'}`}
                                             >
                                                 {/* PADDING AUGMENTÉ (p-6 au lieu de p-4) */}
-                                                <div className="p-6 relative flex flex-col md:flex-row md:items-center gap-6">
+                                                <div className="p-4 relative flex flex-col md:flex-row md:items-center gap-6">
 
                                                     {/* 1. MAIN INFO & BADGES */}
                                                     <div className="flex-1 min-w-0">
@@ -1497,7 +1497,7 @@
                                                     {/* Levée */}
                                                     <div
                                                     className="absolute top-1/2 -translate-y-1/2 flex items-center gap-10 pointer-events-none"
-                                                    style={{ left: '39%' }}
+                                                    style={{ left: '40%' }}
                                                     >
                                                         <div className="flex flex-col items-start">
                                                             <span className="text-sm text-slate-400 dark:text-slate-500">
@@ -1512,7 +1512,7 @@
                                                     {/* Barre */}
                                                     <div
                                                     className="absolute top-1/2 -translate-y-1/2 flex items-center gap-10 pointer-events-none"
-                                                    style={{ left: '49%' }}
+                                                    style={{ left: '50%' }}
                                                     >
                                                         <div className="h-8 w-px bg-slate-200 dark:bg-slate-700"></div>
                                                     </div>
@@ -1520,7 +1520,7 @@
                                                     {/* APR */}
                                                     <div
                                                     className="absolute top-1/2 -translate-y-1/2 -translate-x-full flex items-center gap-10 pointer-events-none"
-                                                    style={{ left: '57%' }}
+                                                    style={{ left: '58%' }}
                                                     >
                                                         <div className="flex flex-col items-end">
                                                             <span className="text-sm text-slate-400 dark:text-slate-500">
@@ -1543,7 +1543,7 @@
 
                                                         {/* BOXES (DATES de app.html) */}
                                                         <div className="flex flex-col gap-4">
-                                                            <div className="w-[330px] h-[80px] flex items-center gap-4 bg-slate-50 dark:bg-slate-900/50 px-4 py-4 rounded-xl border border-slate-100 dark:border-slate-700 shrink-0">
+                                                            <div className="w-[330px] h-[70px] flex items-center gap-4 bg-slate-50 dark:bg-slate-900/50 px-4 py-4 rounded-xl border border-slate-100 dark:border-slate-700 shrink-0">
                                                                 <div>
                                                                     <p className="text-sm text-slate-400 dark:text-slate-500">Début</p>
                                                                     <p className="text-sm font-bold text-slate-700 dark:text-slate-300">{vault.startDate || 'N/A'}</p>
@@ -1576,8 +1576,8 @@
                                                     </div>
                                                 </div>
 
-                                                <div className="pl-6 pr-28">
-                                                  <div className="w-full bg-slate-100 dark:bg-slate-700 rounded-full h-3 mb-6 overflow-hidden">
+                                                <div className="pl-4 pr-[100px]">
+                                                  <div className="w-full bg-slate-100 dark:bg-slate-700 rounded-full h-2 mb-4 overflow-hidden">
                                                     <div
                                                       className={`h-full rounded-full transition-all duration-1000 ${vault.status === 'TRIGGERED' ? 'bg-red-500' : vault.status === 'MATURED' ? 'bg-green-500' : isFull ? 'bg-slate-500' : 'bg-blue-600'}`}
                                                       style={{ width: `${(vault.currentAssets / vault.totalCapacity) * 100}%` }}
