@@ -1004,33 +1004,13 @@
                         sDate.setDate(today.getDate() + 1);
                     }
 
-                    // 2. Calcul Date Fin Safe
+                    // 2. Calcul Date Fin Safe (Basé sur les inputs actuels)
                     let eDate = getValidDateObj(current.day, current.month, current.year);
 
-                    // 3. LOGIQUE SPÉCIFIQUE FIN : Si Fin <= Début, on passe au mois suivant par rapport au début
+                    // 3. LOGIQUE SIMPLIFIÉE : Si la fin est <= au début, on force Fin = Début + 1 jour
                     if (eDate <= sDate) {
-                        // On prend le mois suivant celui du début
-                        let nextM = sDate.getMonth() + 1;
-                        let nextY = sDate.getFullYear();
-
-                        if (nextM > 11) {
-                            nextM = 0;
-                            nextY++;
-                        }
-
-                        // On valide le jour saisi par l'utilisateur dans ce nouveau mois
-                        const userDay = parseInt(current.day) || 1;
-                        const daysInNextMonth = new Date(nextY, nextM + 1, 0).getDate();
-                        const safeDayNext = Math.min(Math.max(1, userDay), daysInNextMonth);
-
-                        // On applique la nouvelle date (Mois suivant)
-                        eDate = new Date(nextY, nextM, safeDayNext);
-
-                        // Sécurité finale : Si malgré le saut de mois c'est encore <= sDate, fallback +1 jour
-                        if (eDate <= sDate) {
-                            eDate = new Date(sDate);
-                            eDate.setDate(sDate.getDate() + 1);
-                        }
+                        eDate = new Date(sDate);
+                        eDate.setDate(sDate.getDate() + 1);
                     }
 
                     return {
