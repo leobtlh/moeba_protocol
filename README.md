@@ -6,7 +6,7 @@ Grâce à une architecture basée sur **ERC-4626** et une segmentation du capita
 
 ---
 
-## ⚡ Fonctionnalités Clés
+## Fonctionnalités Clés
 
 * **Soft Default Mechanism** : Fini le risque binaire. Une architecture en cascade (Waterfall) absorbe les pertes hiérarchiquement.
 * **Multi-Tranche Architecture** :
@@ -51,7 +51,7 @@ La fonction `triggerCatastrophe` dans `HPIVVault.sol` définit l'ordre précis d
 | **3. Absorption** | Tranche Junior | Les détenteurs de tokens Junior perdent leur capital. |
 | **4. Dernier Recours** | Tranche Senior | Les investisseurs Senior ne sont impactés que sur le reliquat. |
 
-> **Résultat Mathématique** : Si un sinistre de 20M$ frappe un Vault de 40M$ (dont 4M$ Junior), l'investisseur Senior ne subit qu'une perte partielle (~44%) au lieu de 100%, grâce à l'absorption préalable par l'assureur.
+> **Résultat Mathématique :** Si un sinistre de 5M$ frappe un Vault de 10M$ (dont 2M$ Junior), l'investisseur Senior ne subit qu'une perte réduite (37.5%) au lieu de 50%, grâce à l'absorption préalable par la Tranche Junior (qui assume la "First Loss" en échange d'un APR supérieur).
 
 ---
 
