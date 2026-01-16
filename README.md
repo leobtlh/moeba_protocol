@@ -79,9 +79,9 @@ Le projet est conçu pour être léger. Le frontend est contenu dans un fichier 
 
 ### Lancer l'Application
 
-**Lien simulation :** *https://moeba-protocol.vercel.app/*
-  Possibilité d'utiliser un wallet de simulation automatiquement whitelisté assureur
-  (*'Connecter Wallet' → 'Autres Wallets' → 'Simulation Wallet'*).
+**Lien simulation :** *https://moeba-protocol.vercel.app/*\
+Possibilité d'utiliser un wallet de simulation automatiquement whitelisté assureur\
+(*'Connecter Wallet' → 'Autres Wallets' → 'Simulation Wallet'*).
 
 ### Contrats
 
