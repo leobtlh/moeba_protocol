@@ -1497,7 +1497,7 @@
                                                     {/* Levée */}
                                                     <div
                                                     className="absolute top-1/2 -translate-y-1/2 flex items-center gap-10 pointer-events-none"
-                                                    style={{ left: '40%' }}
+                                                    style={{ left: '39%' }}
                                                     >
                                                         <div className="flex flex-col items-start">
                                                             <span className="text-sm text-slate-400 dark:text-slate-500">
@@ -1512,7 +1512,7 @@
                                                     {/* Barre */}
                                                     <div
                                                     className="absolute top-1/2 -translate-y-1/2 flex items-center gap-10 pointer-events-none"
-                                                    style={{ left: '50%' }}
+                                                    style={{ left: '49%' }}
                                                     >
                                                         <div className="h-8 w-px bg-slate-200 dark:bg-slate-700"></div>
                                                     </div>
@@ -1520,7 +1520,7 @@
                                                     {/* APR */}
                                                     <div
                                                     className="absolute top-1/2 -translate-y-1/2 -translate-x-full flex items-center gap-10 pointer-events-none"
-                                                    style={{ left: '58%' }}
+                                                    style={{ left: '57%' }}
                                                     >
                                                         <div className="flex flex-col items-end">
                                                             <span className="text-sm text-slate-400 dark:text-slate-500">
@@ -1543,15 +1543,28 @@
 
                                                         {/* BOXES (DATES de app.html) */}
                                                         <div className="flex flex-col gap-4">
-                                                            <div className="flex items-center gap-4 bg-slate-50 dark:bg-slate-900/50 px-4 py-4 rounded-xl border border-slate-100 dark:border-slate-700">
+                                                            <div className="w-[330px] h-[80px] flex items-center gap-4 bg-slate-50 dark:bg-slate-900/50 px-4 py-4 rounded-xl border border-slate-100 dark:border-slate-700 shrink-0">
                                                                 <div>
                                                                     <p className="text-sm text-slate-400 dark:text-slate-500">Début</p>
                                                                     <p className="text-sm font-bold text-slate-700 dark:text-slate-300">{vault.startDate || 'N/A'}</p>
                                                                 </div>
-                                                                <div className="h-8 w-px bg-slate-200 dark:bg-slate-700"></div>
-                                                                <div className="text-right">
-                                                                    <p className="text-sm text-slate-400 dark:text-slate-500">Maturité</p>
-                                                                    <p className="text-sm font-bold text-slate-700 dark:text-slate-300">{vault.maturityDate}</p>
+
+                                                                {/* Barre */}
+                                                                <div
+                                                                className="absolute top-1/2 -translate-y-1/2 flex items-center gap-10 pointer-events-none"
+                                                                style={{ left: '77%' }}
+                                                                >
+                                                                    <div className="h-8 w-px bg-slate-200 dark:bg-slate-700"></div>
+                                                                </div>
+
+                                                                <div
+                                                                className="absolute top-1/2 -translate-y-1/2 -translate-x-full flex items-center gap-10 pointer-events-none"
+                                                                style={{ left: '89%' }}
+                                                                >
+                                                                    <div className="text-right">
+                                                                        <p className="text-sm text-slate-400 dark:text-slate-500">Maturité</p>
+                                                                        <p className="text-sm font-bold text-slate-700 dark:text-slate-300">{vault.maturityDate}</p>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
