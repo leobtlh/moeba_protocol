@@ -47,6 +47,39 @@ window.addEventListener("wheel", (e) => {
   }, 800);
 });
 
+// --- GESTION TOUCH (MOBILE) ---
+let touchStartY = 0;
+
+window.addEventListener('touchstart', (e) => {
+    touchStartY = e.touches[0].clientY;
+}, { passive: false });
+
+window.addEventListener('touchend', (e) => {
+    if (document.body.classList.contains('modal-open')) return;
+    if (isScrolling) return;
+
+    const touchEndY = e.changedTouches[0].clientY;
+    const diffY = touchStartY - touchEndY;
+    const threshold = 50; // Sensibilité du swipe
+
+    if (Math.abs(diffY) > threshold) {
+        if (diffY > 0 && currentSection < sections.length - 1) {
+            // Swipe vers le haut -> Section suivante
+            currentSection++;
+            isScrolling = true;
+            smoothScrollTo(sections[currentSection].offsetTop, 1000);
+            setTimeout(() => { isScrolling = false; }, 800);
+        } else if (diffY < 0 && currentSection > 0) {
+            // Swipe vers le bas -> Section précédente
+            currentSection--;
+            isScrolling = true;
+            smoothScrollTo(sections[currentSection].offsetTop, 1000);
+            setTimeout(() => { isScrolling = false; }, 800);
+        }
+    }
+}, { passive: false });
+
+
 // --- GESTION DES CLICS MENU (NAVIGATION FLUIDE) ---
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
