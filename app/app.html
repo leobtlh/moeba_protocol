@@ -1007,6 +1007,16 @@
                     // 2. Calcul Date Fin Safe (Basé sur les inputs actuels)
                     let eDate = getValidDateObj(current.day, current.month, current.year);
 
+                    // Si on est le même mois/année que le début, mais que le jour de fin est inférieur au jour de début
+                    if (
+                        eDate.getMonth() === sDate.getMonth() &&
+                        eDate.getFullYear() === sDate.getFullYear() &&
+                        eDate.getDate() < sDate.getDate()
+                    ) {
+                        // On ajoute 1 mois à la date de fin
+                        eDate.setMonth(eDate.getMonth() + 1);
+                    }
+
                     // 3. LOGIQUE SIMPLIFIÉE : Si la fin est <= au début, on force Fin = Début + 1 jour
                     if (eDate <= sDate) {
                         eDate = new Date(sDate);
