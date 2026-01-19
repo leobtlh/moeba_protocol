@@ -1,7 +1,7 @@
 :root {
   /* Palette de base (Mode Sombre par défaut pour l'impact) */
-  --bg-main: #0f172a;       /* Dark Blue/Slate */
-  --bg-nav: #0F1B2A;       /* Dark Blue/Slate */
+  --bg-main: #0A181C;       /* Dark Blue/Slate */
+  --bg-nav: #0F242A;       /* Dark Blue/Slate */
   --bg-secondary: #1e293b;  /* Lighter Slate */
   --accent: #A1C740;        /* MOEBA Green */
   --accent-hover: #b4d652;
@@ -17,8 +17,8 @@
 
 /* Light Mode Override (activé par JS) */
 body:not(.dark-theme) {
-    --bg-main: #f0f9ff;
-    --bg-nav: #F2FFFC;
+    --bg-main: #F5FFFD;
+    --bg-nav: #F7FFFD;
     --bg-secondary: #e0f2fe;
     --text-main: #0f172a;
     --text-muted: #475569;
