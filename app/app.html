@@ -1552,7 +1552,7 @@
                               </div>
 
                               {/* BARRE DE FILTRES BLOCKCHAINS */}
-                              <div className="w-full flex flex-wrap items-center gap-2 bg-pink-100 dark:bg-pink-800/20 p-2 rounded-xl">
+                              <div className="w-full flex flex-wrap items-center gap-2 bg-pink-100/40 dark:bg-pink-800/20 p-2 rounded-xl">
                                 <span className="text-xs font-bold text-slate-400 px-2 uppercase tracking-wide flex items-center gap-1"><Globe className="h-3 w-3" /> Réseaux</span>
                                 {AVAILABLE_CHAINS.filter(chain => vaults.some(v => v.chain === chain)).map(chain => (
                                     <button
