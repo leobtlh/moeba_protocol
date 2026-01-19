@@ -570,6 +570,7 @@
           const [searchQuery, setSearchQuery] = useState('');
           const [aprSort, setAprSort] = useState('neutral');
           const [maturitySort, setMaturitySort] = useState('neutral');
+          const [riskSort, setRiskSort] = useState('neutral');
 
           // --- MODE LISTE / GRILLE ---
           const [viewMode, setViewMode] = useState('list');
@@ -810,11 +811,17 @@
                   const dateB = parseDateForSort(b.maturityDate);
                   return maturitySort === 'asc' ? dateA - dateB : dateB - dateA;
               }
+              if (riskSort !== 'neutral') {
+                  const riskA = parseFloat(a.riskProb);
+                  const riskB = parseFloat(b.riskProb);
+                  return riskSort === 'asc' ? riskA - riskB : riskB - riskA;
+              }
               return 0;
           });
 
           const toggleAprSort = () => {
               setMaturitySort('neutral');
+              setRiskSort('neutral');
               if (aprSort === 'neutral') setAprSort('desc');
               else if (aprSort === 'desc') setAprSort('asc');
               else setAprSort('neutral');
@@ -822,9 +829,18 @@
 
           const toggleMaturitySort = () => {
               setAprSort('neutral');
+              setRiskSort('neutral');
               if (maturitySort === 'neutral') setMaturitySort('asc');
               else if (maturitySort === 'asc') setMaturitySort('desc');
               else setMaturitySort('neutral');
+          };
+
+          const toggleRiskSort = () => {
+              setAprSort('neutral');
+              setMaturitySort('neutral');
+              if (riskSort === 'neutral') setRiskSort('asc');
+              else if (riskSort === 'asc') setRiskSort('desc');
+              else setRiskSort('neutral');
           };
 
           // --- CONNEXION WALLET ---
@@ -1455,7 +1471,7 @@
 
               {/* NAVBAR */}
               <nav className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-50 shadow-sm transition-colors duration-300">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
                   <div className="flex justify-between h-16 items-center">
 
                     <div className="flex items-center gap-4">
@@ -1519,7 +1535,7 @@
                 </div>
               </nav>
 
-              <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+              <main className="max-w-[88%] mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
                 {/* --- VUE INVESTISSEUR --- */}
                 {activeRole === 'investor' && (
@@ -1612,6 +1628,21 @@
                                       {maturitySort === 'desc' && <span>←</span>}
                                   </button>
 
+                                  {/* BUTTON RISK SORT */}
+                                  <button
+                                    onClick={toggleRiskSort}
+                                    className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all border select-none ${
+                                        riskSort !== 'neutral'
+                                        ? 'bg-indigo-50 dark:bg-indigo-900/30 border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 shadow-sm'
+                                        : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'
+                                    }`}
+                                  >
+                                      <span className="font-bold text-sm">Risque</span>
+                                      {riskSort === 'neutral' && <span className="text-slate-300">⇅</span>}
+                                      {riskSort === 'asc' && <span>↓</span>}
+                                      {riskSort === 'desc' && <span>↑</span>}
+                                  </button>
+
                                   {/* CHAMP RECHERCHE */}
                                   <div className="relative ml-auto flex-1 min-w-[200px] max-w-sm">
                                       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -1679,17 +1710,25 @@
                                                         </p>
                                                     </div>
 
-                                                    {/* Levée */}
+                                                    {/* Barre */}
                                                     <div
                                                     className="absolute top-1/2 -translate-y-1/2 flex items-center gap-10 pointer-events-none"
-                                                    style={{ left: '40%' }}
+                                                    style={{ left: '35%' }}
+                                                    >
+                                                        <div className="h-8 w-px bg-slate-200 dark:bg-slate-700"></div>
+                                                    </div>
+
+                                                    {/* Risque */}
+                                                    <div
+                                                    className="absolute top-1/2 -translate-y-1/2 flex items-center gap-10 pointer-events-none"
+                                                    style={{ left: '36%' }}
                                                     >
                                                         <div className="flex flex-col items-start">
                                                             <span className="text-sm text-slate-400 dark:text-slate-500">
-                                                            Levée
+                                                            Risque
                                                             </span>
-                                                            <span className="text-ml font-bold text-slate-700 dark:text-slate-300">
-                                                            {formatCurrency(vault.currentAssets)}
+                                                            <span className={`text-ml font-bold ${vault.riskProb > 10 ? 'text-red-600 dark:text-red-400' : 'text-orange-500 dark:text-orange-400'}`}>
+                                                                {vault.riskProb}%
                                                             </span>
                                                         </div>
                                                     </div>
@@ -1697,17 +1736,17 @@
                                                     {/* Barre */}
                                                     <div
                                                     className="absolute top-1/2 -translate-y-1/2 flex items-center gap-10 pointer-events-none"
-                                                    style={{ left: '50%' }}
+                                                    style={{ left: '44%' }}
                                                     >
                                                         <div className="h-8 w-px bg-slate-200 dark:bg-slate-700"></div>
                                                     </div>
 
                                                     {/* APR */}
                                                     <div
-                                                    className="absolute top-1/2 -translate-y-1/2 -translate-x-full flex items-center gap-10 pointer-events-none"
-                                                    style={{ left: '58%' }}
+                                                    className="absolute top-1/2 -translate-y-1/2 flex items-center gap-10 pointer-events-none"
+                                                    style={{ left: '45%' }}
                                                     >
-                                                        <div className="flex flex-col items-end">
+                                                        <div className="flex flex-col items-start">
                                                             <span className="text-sm text-slate-400 dark:text-slate-500">
                                                             APR
                                                             </span>
@@ -1723,12 +1762,38 @@
                                                         </div>
                                                     </div>
 
+                                                    {/* Barre */}
+                                                    <div
+                                                    className="absolute top-1/2 -translate-y-1/2 flex items-center gap-10 pointer-events-none"
+                                                    style={{ left: '53%' }}
+                                                    >
+                                                        <div className="h-8 w-px bg-slate-200 dark:bg-slate-700"></div>
+                                                    </div>
+
+                                                    {/* Levée */}
+                                                    <div
+                                                    className="absolute top-1/2 -translate-y-1/2 flex items-center gap-10 pointer-events-none"
+                                                    style={{ left: '54%' }}
+                                                    >
+                                                        <div className="flex flex-col items-start">
+                                                            <span className="text-sm text-slate-400 dark:text-slate-500">
+                                                            Levée
+                                                            </span>
+                                                            <span className="text-ml font-bold text-slate-700 dark:text-slate-300">
+                                                            {formatCurrency(vault.currentAssets)} <span className="text-slate-400 dark:text-slate-500 text-sm font-normal">/ {formatCurrency(vault.totalCapacity)}</span>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+
+
+
                                                     {/* DÉBUT ET MATURITÉ */}
-                                                    <div className="flex flex-wrap items-center gap-14 justify-end">
+                                                    {/* pr-[54px] aligne la boite avec la barre du bas (70px barre - 16px padding = 54px) */}
+                                                    <div className="flex flex-wrap items-center gap-14 justify-end pr-[74px] relative">
 
                                                         {/* BOXES (DATES de app.html) */}
                                                         <div className="flex flex-col gap-4">
-                                                            <div className="w-[330px] h-[70px] flex items-center gap-4 bg-slate-50 dark:bg-slate-900/50 px-4 py-4 rounded-xl border border-slate-100 dark:border-slate-700 shrink-0">
+                                                            <div className="w-[335px] h-[70px] relative flex items-center gap-4 bg-slate-50 dark:bg-slate-900/50 px-4 py-4 rounded-xl border border-slate-100 dark:border-slate-700 shrink-0">
                                                                 <div>
                                                                     <p className="text-sm text-slate-400 dark:text-slate-500">Début</p>
                                                                     <p className="text-sm font-bold text-slate-700 dark:text-slate-300">{vault.startDate || 'N/A'}</p>
@@ -1737,15 +1802,13 @@
                                                                 {/* Barre */}
                                                                 <div
                                                                 className="absolute top-1/2 -translate-y-1/2 flex items-center gap-10 pointer-events-none"
-                                                                style={{ left: '77%' }}
+                                                                style={{ left: '50%' }}
                                                                 >
                                                                     <div className="h-8 w-px bg-slate-200 dark:bg-slate-700"></div>
                                                                 </div>
 
-                                                                <div
-                                                                className="absolute top-1/2 -translate-y-1/2 -translate-x-full flex items-center gap-10 pointer-events-none"
-                                                                style={{ left: '89%' }}
-                                                                >
+                                                                {/* Maturité : Positionné en 'right-4' pour toucher exactement le bord droit du padding de la boite */}
+                                                                <div className="absolute top-1/2 -translate-y-1/2 right-4 flex items-center gap-10 pointer-events-none">
                                                                     <div className="text-right">
                                                                         <p className="text-sm text-slate-400 dark:text-slate-500">Maturité</p>
                                                                         <p className="text-sm font-bold text-slate-700 dark:text-slate-300">{vault.maturityDate}</p>
@@ -1755,19 +1818,19 @@
                                                         </div>
 
                                                         {/* ARROW */}
-                                                        <div className="text-slate-300 dark:text-slate-600 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors pl-2 hidden md:block">
+                                                        <div className="absolute right-0 top-1/2 -translate-y-1/2 text-slate-300 dark:text-slate-600 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors hidden md:block">
                                                             <ArrowRight className="h-5 w-5" />
                                                         </div>
                                                     </div>
                                                 </div>
 
-                                                <div className="pl-4 pr-[100px]">
-                                                  <div className="w-full bg-slate-100 dark:bg-slate-700 rounded-full h-2 mb-4 overflow-hidden">
+                                                <div className="pl-4 pr-[90px]">
+                                                    <div className="w-full bg-slate-100 dark:bg-slate-700 rounded-full h-2 mb-4 overflow-hidden">
                                                     <div
-                                                      className={`h-full rounded-full transition-all duration-1000 ${vault.status === 'TRIGGERED' ? 'bg-red-500' : vault.status === 'MATURED' ? 'bg-green-500' : isFull ? 'bg-slate-500' : 'bg-blue-600'}`}
-                                                      style={{ width: `${(vault.currentAssets / vault.totalCapacity) * 100}%` }}
+                                                        className={`h-full rounded-full transition-all duration-1000 ${vault.status === 'TRIGGERED' ? 'bg-red-500' : vault.status === 'MATURED' ? 'bg-green-500' : isFull ? 'bg-slate-500' : 'bg-blue-600'}`}
+                                                        style={{ width: `${(vault.currentAssets / vault.totalCapacity) * 100}%` }}
                                                     ></div>
-                                                  </div>
+                                                    </div>
                                                 </div>
 
                                             </div>
@@ -1795,7 +1858,7 @@
                                         {vault.status === 'TRIGGERED' && <span className="px-3 py-1 rounded-full text-xs font-bold bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-400 flex items-center gap-1"><AlertTriangle className="h-3 w-3" /> CATASTROPHE</span>}
                                       </div>
 
-                                      <div className="p-8">
+                                      <div className="p-6">
                                         <div className="mb-6">
                                           {/* BADGE NETWORK & ASSET DANS LA CARTE */}
                                           <div className="flex gap-2 mb-3">
