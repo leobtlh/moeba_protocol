@@ -1,3 +1,58 @@
+// 1. Dictionnaire des traductions
+const translations = {
+    fr: {
+        main_title: "Infrastructure Décentralisée d'Assurance Paramétrique.",
+        sub_title: "La solution au risque binaire des Cat Bonds traditionnels. Une architecture multi-tranches sur ERC-4626 permettant un \"Soft Default\" et une solvabilité Fully Funded."
+    },
+    en: {
+        main_title: "Decentralized Parametric Assurance Infrastructure.",
+        sub_title: "The solution to the binary risk of traditional Cat Bonds. A multi-tranche architecture on ERC-4626 allowing \"Soft Default\" and Fully Funded solvency."
+    }
+};
+
+// 2. Fonction Toggle (Bascule)
+function toggleLanguage() {
+    // On regarde la langue actuelle du site
+    const currentLang = document.documentElement.lang || 'fr';
+    // Si c'est FR on veut EN, sinon on veut FR
+    const targetLang = currentLang === 'fr' ? 'en' : 'fr';
+    setLanguage(targetLang);
+}
+
+// Fonction principale pour appliquer la langue
+function setLanguage(lang) {
+    // Vérifie si la langue existe, sinon fallback sur 'fr'
+    if (!translations[lang]) lang = 'fr';
+
+    // --- TRADUCTION DES TEXTES ---
+    const elements = document.querySelectorAll('[data-i18n]');
+    elements.forEach(element => {
+        const key = element.getAttribute('data-i18n');
+        if (translations[lang][key]) {
+            element.innerText = translations[lang][key];
+        }
+    });
+
+    // --- MISE À JOUR DU BOUTON ---
+    const btn = document.getElementById('langToggle');
+    if (btn) {
+        // Si la langue active est 'fr', le bouton doit proposer 'EN'
+        // Si la langue active est 'en', le bouton doit proposer 'FR'
+        btn.innerText = lang === 'fr' ? 'EN' : 'FR';
+    }
+
+    // --- SAUVEGARDE ET DOM ---
+    localStorage.setItem('preferredLang', lang);
+    document.documentElement.lang = lang;
+}
+
+// 3. Charger la langue au démarrage
+document.addEventListener('DOMContentLoaded', () => {
+    // Récupère la langue sauvegardée ou utilise celle du navigateur, ou 'fr' par défaut
+    const savedLang = localStorage.getItem('preferredLang') || navigator.language.slice(0, 2);
+    setLanguage(savedLang);
+});
+
 // --- GESTION SCROLL FLUIDE & NAVIGATION ---
 const sections = document.querySelectorAll(".page");
 let currentSection = 0;

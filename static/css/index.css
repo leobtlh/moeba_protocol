@@ -143,6 +143,16 @@ a { text-decoration: none; color: inherit; }
     animation: fadeIn 0.2s ease-in-out;
 }
 
+.menu-language {
+    color: var(--text-muted);
+    transition: color 0.2s;
+    background: none;
+    border: none;
+    margin: 0;
+    font: inherit;
+    cursor: pointer;
+}
+
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(-5px); }
     to { opacity: 1; transform: translateY(0); }

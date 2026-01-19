@@ -36,7 +36,7 @@
                                 <a class="stick" href="#">│</a>
                                 <a class="nav-link" href="#home">Accueil</a><span class="stick"> · </span>
                                 <a class="nav-link" href="#concepts">Architecture</a><span class="stick"> · </span>
-                                <a class="nav-link" href="#mechanics">Mathématiques</a><span class="stick"> · </span>
+                                <a class="nav-link" href="#mechanics">Mechanics</a><span class="stick"> · </span>
                                 <a class="nav-link" href="#regulation">Conformité</a><span class="stick"> · </span>
                                 <a class="nav-link" href="#ecosystem">Écosystème</a>
                             </div>
@@ -47,6 +47,7 @@
                     <div class="nav-actions">
                         <a class="nav-link" href="documentation/index.html" target="_blank">Doc</a>
                         <a class="nav-link" href="https://github.com/leobtlh/moeba_protocol/blob/main/ressources/whitepaper.md" target="_blank">Whitepaper</a>
+                        <button id="langToggle" class="menu-language nav-link" onclick="toggleLanguage()">EN</button>
                         <button class="nav-btn-icon" id="themeSwitch" aria-label="Toggle Dark Mode"></button>
                         <a class="btn-primary" href="app/app.html" target="_blank">Launch dApp</a>
                     </div>
@@ -56,8 +57,8 @@
             <main class="content-wrapper">
                 <div class="hero-content">
                     <div class="badge">Hybrid Parametric Insurance Vault (HPIV)</div>
-                    <h1 class="main-title" style="font-size: 3.5rem;">Infrastructure Décentralisée d'Assurance Paramétrique.</h1>
-                    <p class="subtitle">
+                    <h1 class="main-title" data-i18n="main_title" style="font-size: 3.5rem;">Infrastructure Décentralisée d'Assurance Paramétrique.</h1>
+                    <p class="subtitle" data-i18n="sub_title">
                         La solution au risque binaire des Cat Bonds traditionnels.<br>
                         Une architecture multi-tranches sur ERC-4626 permettant un "Soft Default" et une solvabilité Fully Funded.
                     </p>
@@ -285,7 +286,7 @@
                         <ul class="link-list">
                             <li><a href="#">Siège : Lausanne, Suisse</a></li>
                             <li><a href="#">Mail : info@moeba.ch</a></li>
-                            <li><a href="https://discord.com/channels/1458362167744139370/1458362169002561660" target="_blank">Discord Communauté</a></li>
+                            <li><a href="https://discord.gg/HGaYQNJh" target="_blank">Discord</a></li>
                         </ul>
                     </div>
 
@@ -299,7 +300,7 @@
                         </ul>
                         <h3>Accès</h3>
                         <ul class="link-list">
-                            <li><a href="backoffice/backoffice.html" target="_blank">Portail Assureur (Backoffice)</a></li>
+                            <li><a href="backoffice/backoffice.html" target="_blank">Backoffice</a></li>
                         </ul>
                     </div>
                 </div>
