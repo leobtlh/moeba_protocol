@@ -11,7 +11,7 @@
   --card-border: rgba(255, 255, 255, 0.1);
 
   /* Layout */
-  --container-width: 1200px;
+  --container-width: full;
   --header-height: 80px;
 }
 
@@ -185,7 +185,7 @@ a { text-decoration: none; color: inherit; }
 }
 
 .content-wrapper {
-    width: 100%;
+    width: 78%;
     max-width: var(--container-width);
     padding: 0 2rem;
     margin-top: var(--header-height); /* Compenser le header fixe */

@@ -1535,7 +1535,7 @@
                 </div>
               </nav>
 
-              <main className="max-w-[88%] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+              <main className="max-w-[89%] mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
                 {/* --- VUE INVESTISSEUR --- */}
                 {activeRole === 'investor' && (
@@ -1552,7 +1552,7 @@
                               </div>
 
                               {/* BARRE DE FILTRES BLOCKCHAINS */}
-                              <div className="w-full flex flex-wrap items-center gap-2 bg-slate-100 dark:bg-slate-800 p-2 rounded-xl">
+                              <div className="w-full flex flex-wrap items-center gap-2 bg-pink-100 dark:bg-pink-800/20 p-2 rounded-xl">
                                 <span className="text-xs font-bold text-slate-400 px-2 uppercase tracking-wide flex items-center gap-1"><Globe className="h-3 w-3" /> Réseaux</span>
                                 {AVAILABLE_CHAINS.filter(chain => vaults.some(v => v.chain === chain)).map(chain => (
                                     <button
@@ -1562,7 +1562,7 @@
                                         className={`p-2 rounded-lg transition-all border ${
                                             selectedChains.includes(chain)
                                             ? 'bg-blue-100 dark:bg-blue-900/50 border-blue-500 shadow-sm'
-                                            : 'bg-white dark:bg-slate-700 border-slate-200 dark:border-slate-600 hover:border-blue-300'
+                                            : 'bg-white dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 hover:border-blue-300'
                                         }`}
                                     >
                                         <img src={CHAIN_LOGOS[chain]} alt={chain} className="w-6 h-6 object-contain" />
@@ -1604,7 +1604,7 @@
                                     className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all border select-none ${
                                         aprSort !== 'neutral'
                                         ? 'bg-blue-50 dark:bg-blue-900/30 border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-300 shadow-sm'
-                                        : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'
+                                        : 'bg-white dark:bg-slate-800/30 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'
                                     }`}
                                   >
                                       <span className="font-bold text-sm">APR</span>
@@ -1619,7 +1619,7 @@
                                     className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all border select-none ${
                                         maturitySort !== 'neutral'
                                         ? 'bg-indigo-50 dark:bg-indigo-900/30 border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 shadow-sm'
-                                        : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'
+                                        : 'bg-white dark:bg-slate-800/30 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'
                                     }`}
                                   >
                                       <span className="font-bold text-sm">Maturité</span>
@@ -1634,7 +1634,7 @@
                                     className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all border select-none ${
                                         riskSort !== 'neutral'
                                         ? 'bg-indigo-50 dark:bg-indigo-900/30 border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 shadow-sm'
-                                        : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'
+                                        : 'bg-white dark:bg-slate-800/30 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'
                                     }`}
                                   >
                                       <span className="font-bold text-sm">Risque</span>
