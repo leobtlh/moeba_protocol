@@ -249,16 +249,16 @@ const translations = {
 // 2. Fonction Toggle (Bascule)
 function toggleLanguage() {
     // On regarde la langue actuelle du site
-    const currentLang = document.documentElement.lang || 'fr';
+    const currentLang = document.documentElement.lang || 'en';
     // Si c'est FR on veut EN, sinon on veut FR
-    const targetLang = currentLang === 'fr' ? 'en' : 'fr';
+    const targetLang = currentLang === 'en' ? 'fr' : 'en';
     setLanguage(targetLang);
 }
 
 // Fonction principale pour appliquer la langue
 function setLanguage(lang) {
     // Vérifie si la langue existe, sinon fallback sur 'fr'
-    if (!translations[lang]) lang = 'fr';
+    if (!translations[lang]) lang = 'en';
 
     // --- TRADUCTION DES TEXTES ---
     const elements = document.querySelectorAll('[data-i18n]');
@@ -272,9 +272,9 @@ function setLanguage(lang) {
     // --- MISE À JOUR DU BOUTON ---
     const btn = document.getElementById('langToggle');
     if (btn) {
-        // Si la langue active est 'fr', le bouton doit proposer 'EN'
         // Si la langue active est 'en', le bouton doit proposer 'FR'
-        btn.innerText = lang === 'fr' ? 'EN' : 'FR';
+        // Si la langue active est 'fr', le bouton doit proposer 'EN'
+        btn.innerText = lang === 'en' ? 'FR' : 'EN';
     }
 
     // --- SAUVEGARDE ET DOM ---
@@ -284,8 +284,8 @@ function setLanguage(lang) {
 
 // 3. Charger la langue au démarrage
 document.addEventListener('DOMContentLoaded', () => {
-    // Récupère la langue sauvegardée ou utilise celle du navigateur, ou 'fr' par défaut
-    const savedLang = localStorage.getItem('preferredLang') || navigator.language.slice(0, 2);
+    // Récupère la langue sauvegardée par l'utilisateur s'il est déjà venu
+    const savedLang = localStorage.getItem('preferredLang') || 'en';
     setLanguage(savedLang);
 });
 
