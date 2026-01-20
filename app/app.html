@@ -310,7 +310,7 @@
             for (let i = 30; i >= 0; i--) {
                 const date = new Date(now);
                 date.setDate(date.getDate() - i);
-                const dayStr = date.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' });
+                const dayStr = date.toLocaleDateString('en-US', { day: '2-digit', month: '2-digit' });
                 let risk, trigger1;
                 if (type === 'WIND') {
                     risk = Math.min(99, Math.max(0, 5 + (i * 0.2) + (Math.random() * 10 - 5)));
@@ -362,62 +362,58 @@
             {
                 id: '0x8f2a...e12b',
                 name: 'Atlantic Hurricane 2025',
-                description: 'Couverture paramétrique contre les ouragans de catégorie 4+ en Floride. Déclenchement si la vitesse du vent dépasse 210 km/h sur les stations certifiées NOAA.',
+                description: 'Parametric coverage against category 4+ hurricanes in Florida. Triggered if wind speed exceeds 210 km/h at NOAA certified stations.',
                 insurer: 'Axa Climate',
                 totalCapacity: 10000000,
                 claimAmount: 10000000,
-                currentAssets: 10000000, // 100% Funded
+                currentAssets: 10000000,
                 juniorCapital: 1000000,
                 premium: 800000,
-                startDate: '01 Janvier 2025',
-                maturityDate: '31 Décembre 2025', // Date passée = Status MATURED
+                startDate: '01 January 2025',
+                maturityDate: '31 December 2025',
                 apr: '12.50',
                 riskProb: '5.2',
-                status: 'MATURED', // Statut Terminé
+                status: 'MATURED',
                 chain: 'Ethereum',
                 asset: 'USDC',
-                userBalance: 5000, // Simulation : L'utilisateur a investi et peut réclamer
+                userBalance: 5000,
                 balances: { '0x...': 5000 },
-                // --- NEW TRANCHE DATA ---
                 balancesJunior: {},
                 balancesSenior: { '0x...': 5000 },
                 totalJuniorDeposits: 0,
-                totalSeniorDeposits: 8200000, // (10m - 1m junior - 0.8m premium)
-                // ------------------------
+                totalSeniorDeposits: 8200000,
                 triggers: [
-                    { id: 'windSpeed', name: 'Vent', unit: 'km/h', color: '#8884d8' }
+                    { id: 'windSpeed', name: 'Wind', unit: 'km/h', color: '#8884d8' }
                 ],
                 history: [
                     { date: '01/08', risk: 10, windSpeed: 45 },
-                    { date: '15/09', risk: 45, windSpeed: 160 }, // Pic de saison
+                    { date: '15/09', risk: 45, windSpeed: 160 },
                     { date: '30/10', risk: 5, windSpeed: 60 }
                 ]
             },
             {
                 id: '0x3c4d...9a12',
                 name: 'California Quake 2026',
-                description: 'Protection contre les séismes > 7.0 Richter en Californie du Sud. Oracle USGS avec redondance Chainlink. Période de souscription ouverte.',
+                description: 'Protection against earthquakes > 7.0 Richter in Southern California. USGS Oracle with Chainlink redundancy. Subscription period open.',
                 insurer: 'Munich Re',
                 totalCapacity: 5000000,
                 claimAmount: 5000000,
-                currentAssets: 1500000, // 30% Funded
+                currentAssets: 1500000,
                 juniorCapital: 500000,
                 premium: 450000,
-                startDate: '01 Janvier 2026', // Date future = Status OPEN (Période souscription)
-                maturityDate: '31 Mars 2026',
+                startDate: '01 January 2026',
+                maturityDate: '31 March 2026',
                 apr: '8.75',
                 riskProb: '3.1',
-                status: 'OPEN', // Statut En cours
+                status: 'OPEN',
                 chain: 'Base',
                 asset: 'USDC',
                 userBalance: 0,
                 balances: {},
-                // --- NEW TRANCHE DATA ---
                 balancesJunior: {},
                 balancesSenior: {},
                 totalJuniorDeposits: 0,
-                totalSeniorDeposits: 550000, // (1.5m - 0.5m junior - 0.45m premium)
-                // ------------------------
+                totalSeniorDeposits: 550000,
                 triggers: [
                     { id: 'magnitude', name: 'Magnitude', unit: 'R', color: '#82ca9d' }
                 ],
@@ -430,10 +426,10 @@
         ];
 
         const MONTHS = [
-            { name: 'Janvier', days: 31 }, { name: 'Février', days: 29 }, { name: 'Mars', days: 31 },
-            { name: 'Avril', days: 30 }, { name: 'Mai', days: 31 }, { name: 'Juin', days: 30 },
-            { name: 'Juillet', days: 31 }, { name: 'Août', days: 31 }, { name: 'Septembre', days: 30 },
-            { name: 'Octobre', days: 31 }, { name: 'Novembre', days: 30 }, { name: 'Décembre', days: 31 }
+            { name: 'January', days: 31 }, { name: 'February', days: 29 }, { name: 'March', days: 31 },
+            { name: 'April', days: 30 }, { name: 'May', days: 31 }, { name: 'June', days: 30 },
+            { name: 'July', days: 31 }, { name: 'August', days: 31 }, { name: 'September', days: 30 },
+            { name: 'October', days: 31 }, { name: 'November', days: 30 }, { name: 'December', days: 31 }
         ];
 
         // --- HELPER FUNCTION : VALIDATION JOURS DANS MOIS ---
@@ -463,7 +459,7 @@
                     <div className="flex flex-wrap items-center gap-4 mb-2">
                         <div className="flex items-center gap-2">
                             <span className="w-3 h-3 rounded-full bg-orange-500"></span>
-                            <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Probabilité Risque (%)</span>
+                            <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Risk Probability (%)</span>
                         </div>
                         {triggers.map(trigger => (
                             <label key={trigger.id} className="flex items-center gap-2 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800 p-1 rounded-lg transition-colors border border-transparent hover:border-slate-200 dark:hover:border-slate-700">
@@ -489,7 +485,7 @@
                                 <YAxis yAxisId="right" orientation="right" tick={{fontSize: 12, fill: '#64748b'}} axisLine={false} tickLine={false} hide={activeTriggers.length === 0} />
                                 <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)', backgroundColor: 'rgba(255, 255, 255, 0.9)' }} labelStyle={{ color: '#0f172a', fontWeight: 'bold' }} />
                                 <Legend wrapperStyle={{ paddingTop: '10px' }}/>
-                                <Line yAxisId="left" type="monotone" dataKey="risk" name="Probabilité de Sinistre" stroke="#f97316" strokeWidth={3} dot={false} activeDot={{ r: 6 }} />
+                                <Line yAxisId="left" type="monotone" dataKey="risk" name="Claim Probability" stroke="#f97316" strokeWidth={3} dot={false} activeDot={{ r: 6 }} />
                                 {triggers.map(trigger => (
                                     activeTriggers.includes(trigger.id) && (
                                         <Line key={trigger.id} yAxisId="right" type="monotone" dataKey={trigger.id} name={`${trigger.name} (${trigger.unit})`} stroke={trigger.color} strokeWidth={2} dot={false} strokeDasharray="5 5" />
@@ -518,7 +514,7 @@
                     <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-lg border border-slate-200 dark:border-slate-700 overflow-hidden animate-zoom-in" onClick={e => e.stopPropagation()}>
                          <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
                             <h3 className="font-bold text-lg text-slate-900 dark:text-white flex items-center gap-2">
-                                <Shield className="h-5 w-5 text-indigo-600" /> Inscription Assureur
+                                <Shield className="h-5 w-5 text-indigo-600" /> Insurer Registration
                             </h3>
                             <button onClick={onClose} className="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
                                 <X className="h-5 w-5 text-slate-500" />
@@ -526,11 +522,11 @@
                         </div>
                         <div className="p-6">
                             <div className="mb-6 p-4 bg-indigo-50 dark:bg-indigo-900/20 rounded-xl border border-indigo-100 dark:border-indigo-800/50 text-sm text-indigo-800 dark:text-indigo-300">
-                                Pour être whitelisté, vous devez fournir une preuve d'existence légale (KYB) et un certificat d'assurance valide.
+                                To be whitelisted, you must provide legal proof of existence (KYB) and a valid insurance certificate.
                             </div>
                             <form onSubmit={handleSubmit} className="space-y-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Nom de la Compagnie</label>
+                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Company Name</label>
                                     <input
                                         type="text"
                                         required
@@ -541,7 +537,7 @@
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Preuve KYB (Lien IPFS/URL)</label>
+                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">KYB Proof (IPFS/URL Link)</label>
                                     <input
                                         type="text"
                                         required
@@ -550,14 +546,14 @@
                                         className="w-full p-3 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none font-mono text-sm"
                                         placeholder="ipfs://..."
                                     />
-                                    <p className="text-xs text-slate-500 mt-1">Lien vers le certificat hébergé de manière décentralisée.</p>
+                                    <p className="text-xs text-slate-500 mt-1">Link to the decentralized hosted certificate.</p>
                                 </div>
                                 <button
                                     type="submit"
                                     disabled={isSubmitting}
                                     className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold shadow-lg shadow-indigo-200 dark:shadow-none transition-all flex justify-center items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
-                                    {isSubmitting ? "Envoi de la demande..." : "Soumettre la demande"}
+                                    {isSubmitting ? "Sending request..." : "Submit Request"}
                                 </button>
                             </form>
                         </div>
@@ -773,12 +769,12 @@
                         const addr = accounts[0];
                         setUserFullAddress(addr);
                         setUserAddress(`${addr.substring(0, 6)}...${addr.substring(addr.length - 4)}`);
-                        showNotification("Compte changé détecté", 'info');
+                        showNotification("Account change detected", 'info');
                     } else {
                         setWalletConnected(false);
                         setUserAddress('');
                         setUserFullAddress('');
-                        showNotification("Wallet déconnecté", 'info');
+                        showNotification("Wallet disconnected", 'info');
                     }
                 });
             }
@@ -806,11 +802,11 @@
             premium: 330000,
             // START DATE FIELDS (De app.html)
             startDay: '',
-            startMonth: 'Janvier',
+            startMonth: 'January',
             startYear: new Date().getFullYear(),
             // MATURITY FIELDS
             day: '',
-            month: 'Janvier',
+            month: 'January',
             year: new Date().getFullYear(),
             chain: 'Base',
             asset: 'USDC'
@@ -899,12 +895,12 @@
                  setUserAddress('Simu...Test');
                  setUserFullAddress(simAddress);
                  setUserBalance('100.0000');
-                 showNotification("Connecté avec Simulation Wallet (Mode Test)", 'success');
+                 showNotification("Connected with Simulation Wallet (Test Mode)", 'success');
                  return;
              }
              // ---------------------------------------
 
-             if (!window.ethers) { showNotification("Erreur technique : Librairie Web3 non chargée.", 'error'); return; }
+             if (!window.ethers) { showNotification("Technical error: Web3 library not loaded.", 'error'); return; }
              let providerInput = null;
              if (walletType === 'zerion') {
                  if (window.zerionWallet) providerInput = window.zerionWallet;
@@ -920,22 +916,22 @@
              } else {
                  providerInput = window.ethereum;
              }
-             if (!providerInput) { showNotification("Aucun wallet compatible détecté.", 'error'); return; }
+             if (!providerInput) { showNotification("No compatible wallet detected.", 'error'); return; }
 
              try {
                   const accounts = await providerInput.request({ method: 'eth_requestAccounts' });
-                  if (!accounts || accounts.length === 0) { showNotification("Aucun compte sélectionné.", 'error'); return; }
+                  if (!accounts || accounts.length === 0) { showNotification("No account selected.", 'error'); return; }
                   const provider = new window.ethers.providers.Web3Provider(providerInput);
                   const signer = provider.getSigner();
                   const address = await signer.getAddress();
                   try {
-                      const messageToSign = `Connexion Mœba Protocol\n\nWallet: ${address}\nNonce: ${Date.now()}`;
-                      showNotification("Veuillez signer la demande dans votre wallet...", 'info');
+                      const messageToSign = `Mœba Protocol Login\n\nWallet: ${address}\nNonce: ${Date.now()}`;
+                      showNotification("Please sign the request in your wallet...", 'info');
                       await signer.signMessage(messageToSign);
-                      showNotification("Signature valide. Connexion autorisée.", 'success');
+                      showNotification("Valid signature. Authorized login.", 'success');
                   } catch (signErr) {
-                      console.error("Erreur signature:", signErr);
-                      showNotification("Connexion annulée : Signature refusée par l'utilisateur.", 'error');
+                      console.error("Signature error:", signErr);
+                      showNotification("Connection canceled: Signature rejected by user.", 'error');
                       return;
                   }
                   const balanceBig = await provider.getBalance(address);
@@ -949,9 +945,9 @@
                   if (walletType === 'zerion' || providerInput.isZerion || window.zerionWallet) walletName = 'Zerion';
                   else if (walletType === 'rabby' || providerInput.isRabby) walletName = 'Rabby';
                   else if (walletType === 'metamask' || providerInput.isMetaMask) walletName = 'MetaMask';
-                  showNotification(`Connecté avec ${walletName}`, 'success');
+                  showNotification(`Connected with ${walletName}`, 'success');
              } catch (error) {
-                  showNotification(`Echec connexion: ${error.message || error}`, 'error');
+                  showNotification(`Connection failed: ${error.message || error}`, 'error');
              }
           };
 
@@ -961,7 +957,7 @@
              setUserFullAddress('');
              setUserBalance('0.00');
              setRegistrationStatus('none');
-             showNotification("Déconnecté de l'application.", 'info');
+             showNotification("Disconnected from the application.", 'info');
           };
 
           // --- GESTION ENREGISTREMENT ASSUREUR ---
@@ -976,9 +972,9 @@
                       await tx.wait();
                       setRegistrationStatus('pending');
                       setShowInsurerRegistration(false);
-                      showNotification("Demande d'enregistrement envoyée avec succès !", 'success');
+                      showNotification("Registration request successfully submitted!", 'success');
                   } catch (err) {
-                      showNotification("Erreur Blockchain: " + (err.reason || err.message), 'error');
+                      showNotification("Blockchain Error: " + (err.reason || err.message), 'error');
                   }
               } else {
                   await new Promise(resolve => setTimeout(resolve, 1500));
@@ -998,7 +994,7 @@
                   localStorage.setItem('moeba_insurer_requests', JSON.stringify(requests));
                   setRegistrationStatus('pending');
                   setShowInsurerRegistration(false);
-                  showNotification("Demande simulée envoyée avec succès (Stockée Local)", 'success');
+                  showNotification("Simulated request sent successfully (Stored Locally)", 'success');
               }
               setIsRegistering(false);
           };
@@ -1168,7 +1164,7 @@
               };
 
               setVaults([...vaults, newVault]);
-              showNotification(`Vault créé avec succès !`, 'success');
+              showNotification(`Vault successfully created!`, 'success');
 
               // Reset formulaire (avec dates valides par défaut)
               setNewVaultData(prev => ({
@@ -1207,7 +1203,7 @@
                return v;
              });
              setVaults(updatedVaults);
-             showNotification(isLiveMode ? "Vault Initialisé (Live Mock)" : "Vault Initialisé (Simulation)", 'success');
+             showNotification(isLiveMode ? "Vault Initialized (Live Mock)" : "Vault Initialized (Simulation)", 'success');
           };
 
           // GESTION DU POURCENTAGE DE DÉPÔT
@@ -1217,18 +1213,18 @@
               const remaining = selectedVault.totalCapacity - selectedVault.currentAssets;
               const finalAmount = amount > remaining ? remaining : amount;
               setDepositAmount(finalAmount.toFixed(4));
-              if (amount > remaining) showNotification("Montant ajusté à la capacité restante maximale.", 'info');
+              if (amount > remaining) showNotification("Amount adjusted to the maximum remaining capacity.", 'info');
           };
 
           const handleDeposit = async () => {
-            if (!walletConnected) { showNotification("Connectez votre wallet.", 'error'); return; }
+            if (!walletConnected) { showNotification("Connect your wallet.", 'error'); return; }
             if (!selectedVault || !depositAmount) return;
             const amount = parseFloat(depositAmount);
-            if (amount <= 0) { showNotification("Montant invalide.", 'error'); return; }
+            if (amount <= 0) { showNotification("Invalid amount.", 'error'); return; }
 
             const remainingCapacity = selectedVault.totalCapacity - selectedVault.currentAssets;
             if (amount > remainingCapacity) {
-                showNotification(`Erreur : Dépassement capacité (${formatCurrency(remainingCapacity)}).`, 'error');
+                showNotification(`Error: Capacity exceeded (${formatCurrency(remainingCapacity)}).`, 'error');
                 return;
             }
 
@@ -1263,7 +1259,7 @@
             };
             setSelectedVault(updatedVault);
             setVaults(vaults.map(v => v.id === selectedVault.id ? updatedVault : v));
-            showNotification(`Dépôt de ${amount} ${selectedVault.asset} (${trancheType === 'junior' ? 'Junior' : 'Senior'}) confirmé.`, 'success');
+            showNotification(`Deposit of ${amount} ${selectedVault.asset} (${trancheType === 'junior' ? 'Junior' : 'Senior'}) confirmed.`, 'success');
             setDepositAmount('');
           };
 
@@ -1276,7 +1272,7 @@
              const currentSenior = selectedVault.balancesSenior ? (selectedVault.balancesSenior[userFullAddress] || 0) : 0;
              const available = trancheType === 'junior' ? currentJunior : currentSenior;
 
-             if (amount <= 0 || amount > available) { showNotification(`Montant invalide ou solde ${trancheType} insuffisant.`, 'error'); return; }
+             if (amount <= 0 || amount > available) { showNotification(`Invalid amount or insufficient ${trancheType} balance.`, 'error'); return; }
 
              // MODIFICATION: Gestion Multi-Wallet via 'balances'
              const currentBalances = selectedVault.balances || {};
@@ -1309,13 +1305,13 @@
             };
             setSelectedVault(updatedVault);
             setVaults(vaults.map(v => v.id === selectedVault.id ? updatedVault : v));
-            showNotification(`Retrait de ${amount} (${trancheType}) effectué.`, 'success');
+            showNotification(`Withdrawal of ${amount} (${trancheType}) completed.`, 'success');
             setWithdrawAmount('');
           };
 
           const handleTriggerOracle = (vaultId) => {
             setVaults(vaults.map(v => v.id === vaultId ? { ...v, status: "TRIGGERED" } : v));
-            showNotification(<AlertTriangle className="h-8 w-8" /> && "ORACLE ALERT : Catastrophe validée. Soft Default activé.", 'error');
+            showNotification(<AlertTriangle className="h-8 w-8" /> && "ORACLE ALERT : Catastrophe confirmed. Soft Default activated.", 'error');
           };
 
           // CALCUL CASCADE DE PERTE (Reste inchangé, la logique de perte First-Loss est correcte)
@@ -1415,7 +1411,7 @@
 
           const handleClaim = (vault) => {
               const details = calculatePayoutDetails(vault);
-              showNotification(`Réclamation de ${formatCurrency(details.totalPayout)} versée.`, 'success');
+              showNotification(`Claim of ${formatCurrency(details.totalPayout)} paid.`, 'success');
 
               // MODIFICATION: Mise à jour balance utilisateur courant
               const currentBalances = vault.balances || {};
@@ -1462,7 +1458,7 @@
                   <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in" onClick={() => setShowWalletSelector(false)}>
                       <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-sm border border-slate-200 dark:border-slate-700 overflow-hidden animate-zoom-in" onClick={e => e.stopPropagation()}>
                           <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
-                              <h3 className="font-bold text-lg text-slate-900 dark:text-white">Connecter Wallet</h3>
+                              <h3 className="font-bold text-lg text-slate-900 dark:text-white">Connect Wallet</h3>
                               <button onClick={() => setShowWalletSelector(false)} className="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
                                   <X className="h-5 w-5 text-slate-500" />
                               </button>
@@ -1484,7 +1480,7 @@
                               {/* AUTRES WALLETS (DROPDOWN) */}
                               <div className="border-t border-slate-100 dark:border-slate-800 pt-2 mt-2">
                                   <button onClick={() => setShowOtherWallets(!showOtherWallets)} className="w-full flex items-center justify-between p-3 rounded-lg text-sm font-medium text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 transition-colors">
-                                      <span>Autres Wallets</span>
+                                      <span>Other Wallets</span>
                                       <ChevronDown className={`h-4 w-4 transition-transform duration-300 ${showOtherWallets ? 'rotate-180' : ''}`} />
                                   </button>
 
@@ -1528,8 +1524,8 @@
 
                     <div className="flex items-center gap-4">
                       <div className="hidden md:flex bg-slate-100 dark:bg-slate-800 rounded-lg p-1 transition-colors">
-                        <button onClick={() => { setActiveRole('investor'); setSelectedVault(null); }} className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${activeRole === 'investor' ? 'bg-white dark:bg-slate-700 shadow-sm text-blue-700 dark:text-blue-400' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'}`}>Investisseur</button>
-                        <button onClick={() => { setActiveRole('insurer'); setSelectedVault(null); }} className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${activeRole === 'insurer' ? 'bg-white dark:bg-slate-700 shadow-sm text-indigo-700 dark:text-indigo-400' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'}`}>Assureur</button>
+                        <button onClick={() => { setActiveRole('investor'); setSelectedVault(null); }} className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${activeRole === 'investor' ? 'bg-white dark:bg-slate-700 shadow-sm text-blue-700 dark:text-blue-400' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'}`}>Investor</button>
+                        <button onClick={() => { setActiveRole('insurer'); setSelectedVault(null); }} className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${activeRole === 'insurer' ? 'bg-white dark:bg-slate-700 shadow-sm text-indigo-700 dark:text-indigo-400' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'}`}>Insurer</button>
                         <button onClick={() => { setActiveRole('dashboard'); setSelectedVault(null); }} className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${activeRole === 'dashboard' ? 'bg-white dark:bg-slate-700 shadow-sm text-green-600 dark:text-green-400' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'}`}>Dashboard</button>
                         <button onClick={() => { setActiveRole('oracle'); setSelectedVault(null); }} className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${activeRole === 'oracle' ? 'bg-white dark:bg-slate-700 shadow-sm text-red-600 dark:text-red-400' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'}`}>Oracle</button>
                       </div>
@@ -1548,7 +1544,7 @@
                             {walletConnected ? (
                                 <span className="text-xs font-bold">{userAddress}</span>
                             ) : (
-                                <span>Connecter Wallet</span>
+                                <span>Connect Wallet</span>
                             )}
                           </button>
 
@@ -1588,13 +1584,13 @@
                             {/* EN-TÊTE + FILTRES MULTI-CHAINS */}
                             <div className="flex flex-col gap-6">
                               <div>
-                                <h2 className="text-4xl font-bold text-slate-900 dark:text-white">Opportunités de Vaults</h2>
-                                <p className="text-slate-500 dark:text-slate-400 mt-1">Investissez dans des risques paramétriques sécurisés par la blockchain.</p>
+                                <h2 className="text-4xl font-bold text-slate-900 dark:text-white">Vaults Opportunities</h2>
+                                <p className="text-slate-500 dark:text-slate-400 mt-1">Invest in Swiss-compliant parametric risks, secured by a fully funded blockchain infrastructure.</p>
                               </div>
 
                               {/* BARRE DE FILTRES BLOCKCHAINS */}
                               <div className="w-full flex flex-wrap items-center gap-2 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-transparent via-pink-50/30 to-pink-200/50 dark:from-transparent dark:via-pink-900/10 dark:to-pink-800/30 p-2 rounded-xl">
-                                <span className="text-xs font-bold text-slate-400 px-2 uppercase tracking-wide flex items-center gap-1"><Globe className="h-4 w-4" /> Réseaux</span>
+                                <span className="text-xs font-bold text-slate-400 px-2 uppercase tracking-wide flex items-center gap-1"><Globe className="h-4 w-4" /> Network</span>
                                 {AVAILABLE_CHAINS.filter(chain => vaults.some(v => v.chain === chain)).map(chain => (
                                     <button
                                         key={chain}
@@ -1663,7 +1659,7 @@
                                         : 'bg-white dark:bg-slate-800/30 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'
                                     }`}
                                   >
-                                      <span className="font-bold text-sm">Maturité</span>
+                                      <span className="font-bold text-sm">Maturity</span>
                                       {maturitySort === 'neutral' && <span className="text-slate-300">⇅</span>}
                                       {maturitySort === 'asc' && <span>→</span>}
                                       {maturitySort === 'desc' && <span>←</span>}
@@ -1678,7 +1674,7 @@
                                         : 'bg-white dark:bg-slate-800/30 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'
                                     }`}
                                   >
-                                      <span className="font-bold text-sm">Risque</span>
+                                      <span className="font-bold text-sm">Risk</span>
                                       {riskSort === 'neutral' && <span className="text-slate-300">⇅</span>}
                                       {riskSort === 'asc' && <span>↓</span>}
                                       {riskSort === 'desc' && <span>↑</span>}
@@ -1694,7 +1690,7 @@
                                           value={searchQuery}
                                           onChange={(e) => setSearchQuery(e.target.value)}
                                           className="block w-full pl-10 pr-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm"
-                                          placeholder="Rechercher (ex: USDC, Florida...)"
+                                          placeholder="Search (e.g., USDC, Florida...)"
                                       />
                                   </div>
                               </div>
@@ -1706,7 +1702,7 @@
                               {/* UTILISATION DE FILTEREDVAULTS AU LIEU DE VAULTS */}
                               {filteredVaults.length === 0 ? (
                                   <div className="col-span-full py-12 text-center text-slate-400 bg-slate-50 dark:bg-slate-900/50 rounded-2xl border border-dashed border-slate-200 dark:border-slate-700">
-                                      Aucun vault trouvé avec ces critères.
+                                      No vault found with these criteria.
                                   </div>
                               ) : (
                                   filteredVaults.map((vault) => {
@@ -1740,10 +1736,10 @@
                                                                 {vault.asset}
                                                             </span>
                                                             {vault.status === 'OPEN' && !started && <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-400 flex items-center gap-1"><CheckCircle2 className="h-3 w-3" /> OPEN</span>}
-                                                            {vault.status === 'OPEN' && started && <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-400 flex items-center gap-1"><Lock className="h-3 w-3" /> VERROUILLÉ</span>}
-                                                            {vault.status === 'MATURED' && <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-400 flex items-center gap-1"><CheckCircle2 className="h-3 w-3" /> TERMINÉ</span>}
+                                                            {vault.status === 'OPEN' && started && <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-400 flex items-center gap-1"><Lock className="h-3 w-3" /> LOCKED</span>}
+                                                            {vault.status === 'MATURED' && <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-400 flex items-center gap-1"><CheckCircle2 className="h-3 w-3" /> COMPLETED</span>}
                                                             {vault.status === 'PENDING' && <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-400 flex items-center gap-1"><Activity className="h-3 w-3" /> PENDING</span>}
-                                                            {vault.status === 'TRIGGERED' && <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-400 flex items-center gap-1"><AlertTriangle className="h-3 w-3" /> CATASTROPHE</span>}
+                                                            {vault.status === 'TRIGGERED' && <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-400 flex items-center gap-1"><AlertTriangle className="h-3 w-3" /> DISASTER</span>}
                                                         </div>
                                                         <h3 className="text-xl font-bold text-slate-900 dark:text-white truncate group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{vault.name}</h3>
                                                         <p className="text-sm text-slate-500 dark:text-slate-400 truncate flex items-center gap-1 mt-1">
@@ -1755,7 +1751,7 @@
 
                                                         {/* --- BLOC 1 : RISQUE --- */}
                                                         <div className="flex flex-col items-start">
-                                                            <span className="text-sm text-slate-400 dark:text-slate-500">Risque</span>
+                                                            <span className="text-sm text-slate-400 dark:text-slate-500">Risk</span>
                                                             <span className={`text-ml font-bold ${vault.riskProb > 10 ? 'text-red-600 dark:text-red-400' : 'text-orange-500 dark:text-orange-400'}`}>
                                                                 {vault.riskProb}%
                                                             </span>
@@ -1781,7 +1777,7 @@
 
                                                         {/* --- BLOC 3 : LEVÉE --- */}
                                                         <div className="flex flex-col items-start">
-                                                            <span className="text-sm text-slate-400 dark:text-slate-500">Levée</span>
+                                                            <span className="text-sm text-slate-400 dark:text-slate-500">Funds raised</span>
                                                             <span className="text-ml font-bold text-slate-700 dark:text-slate-300">
                                                                 {formatCurrency(vault.currentAssets)}
                                                                 <span className="text-slate-400 dark:text-slate-500 text-sm font-normal ml-1">
@@ -1801,7 +1797,7 @@
                                                         <div className="flex flex-col gap-4">
                                                             <div className="w-[335px] h-[70px] relative flex items-center gap-4 bg-slate-50 dark:bg-slate-900/50 px-4 py-4 rounded-xl border border-slate-100 dark:border-slate-700 shrink-0">
                                                                 <div>
-                                                                    <p className="text-sm text-slate-400 dark:text-slate-500">Début</p>
+                                                                    <p className="text-sm text-slate-400 dark:text-slate-500">Beginning</p>
                                                                     <p className="text-sm font-bold text-slate-700 dark:text-slate-300">{vault.startDate || 'N/A'}</p>
                                                                 </div>
 
@@ -1816,7 +1812,7 @@
                                                                 {/* Maturité : Positionné en 'right-4' pour toucher exactement le bord droit du padding de la boite */}
                                                                 <div className="absolute top-1/2 -translate-y-1/2 right-4 flex items-center gap-10 pointer-events-none">
                                                                     <div className="text-right">
-                                                                        <p className="text-sm text-slate-400 dark:text-slate-500">Maturité</p>
+                                                                        <p className="text-sm text-slate-400 dark:text-slate-500">Maturity</p>
                                                                         <p className="text-sm font-bold text-slate-700 dark:text-slate-300">{vault.maturityDate}</p>
                                                                     </div>
                                                                 </div>
@@ -1857,11 +1853,11 @@
                                       <div className="absolute top-6 right-6 flex flex-col items-end gap-2">
                                         {/* BADGES AVEC LOGIQUE "STARTED" */}
                                         {vault.status === 'OPEN' && !started && !isFull && <span className="px-3 py-1 rounded-full text-xs font-bold bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-400 flex items-center gap-1"><CheckCircle2 className="h-3 w-3" /> OPEN</span>}
-                                        {vault.status === 'OPEN' && started && <span className="px-3 py-1 rounded-full text-xs font-bold bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-400 flex items-center gap-1"><Lock className="h-3 w-3" /> VERROUILLÉ</span>}
+                                        {vault.status === 'OPEN' && started && <span className="px-3 py-1 rounded-full text-xs font-bold bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-400 flex items-center gap-1"><Lock className="h-3 w-3" /> LOCKED</span>}
                                         {vault.status === 'OPEN' && isFull && !started && <span className="px-3 py-1 rounded-full text-xs font-bold bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 flex items-center gap-1"><Lock className="h-3 w-3" /> SOLD OUT</span>}
-                                        {vault.status === 'MATURED' && <span className="px-3 py-1 rounded-full text-xs font-bold bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-400 flex items-center gap-1"><CheckCircle2 className="h-3 w-3" /> TERMINÉ</span>}
+                                        {vault.status === 'MATURED' && <span className="px-3 py-1 rounded-full text-xs font-bold bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-400 flex items-center gap-1"><CheckCircle2 className="h-3 w-3" /> OVER</span>}
                                         {vault.status === 'PENDING' && <span className="px-3 py-1 rounded-full text-xs font-bold bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-400 flex items-center gap-1"><Activity className="h-3 w-3" /> PENDING</span>}
-                                        {vault.status === 'TRIGGERED' && <span className="px-3 py-1 rounded-full text-xs font-bold bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-400 flex items-center gap-1"><AlertTriangle className="h-3 w-3" /> CATASTROPHE</span>}
+                                        {vault.status === 'TRIGGERED' && <span className="px-3 py-1 rounded-full text-xs font-bold bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-400 flex items-center gap-1"><AlertTriangle className="h-3 w-3" /> DISASTER</span>}
                                       </div>
 
                                       <div className="p-6">
@@ -1878,19 +1874,19 @@
 
                                           <h3 className="text-xl font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{vault.name}</h3>
                                           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1 flex items-center gap-2">
-                                            <Building2 className="h-3 w-3" /> Assureur: {vault.insurer}
+                                            <Building2 className="h-3 w-3" /> Insurer: {vault.insurer}
                                           </p>
                                         </div>
 
                                         <div className="flex justify-between items-end mb-6">
                                           <div>
-                                            <p className="text-sm text-slate-500 dark:text-slate-400 mb-1">Rendement (APR)</p>
+                                            <p className="text-sm text-slate-500 dark:text-slate-400 mb-1">Yield (APR)</p>
                                             <p className={`text-4xl font-bold ${vault.status === 'OPEN' ? 'text-green-600 dark:text-green-400' : 'text-slate-400 dark:text-slate-500'}`}>
                                               {vault.apr}%
                                             </p>
                                           </div>
                                           <div className="text-right">
-                                            <p className="text-sm text-slate-500 dark:text-slate-400 mb-1">Levée de Fonds</p>
+                                            <p className="text-sm text-slate-500 dark:text-slate-400 mb-1">Funds raised</p>
                                             <p className="text-lg font-semibold text-slate-900 dark:text-white">
                                               {formatCurrency(vault.currentAssets)} <span className="text-slate-400 dark:text-slate-500 text-sm font-normal">/ {formatCurrency(vault.totalCapacity)}</span>
                                             </p>
@@ -1899,7 +1895,7 @@
 
                                         <div className="flex justify-between items-center mb-3">
                                             <span className="text-sm font-medium text-slate-500 dark:text-slate-400 flex items-center gap-1">
-                                                <AlertTriangle className="h-3 w-3 text-orange-500" /> Probabilité de sinistre
+                                                <AlertTriangle className="h-3 w-3 text-orange-500" /> Probability of loss
                                             </span>
                                             <span className={`text-sm font-bold ${vault.riskProb > 10 ? 'text-red-600 dark:text-red-400' : 'text-orange-500 dark:text-orange-400'}`}>
                                                 {vault.riskProb}%
@@ -1916,17 +1912,17 @@
                                         <div className="grid grid-cols-2 gap-4 mb-6 text-sm">
                                             {/* Modifié pour inclure Start Date de app.html tout en gardant structure grid */}
                                           <div className="bg-slate-50 dark:bg-slate-900/50 p-3 rounded-lg border border-slate-100 dark:border-slate-700">
-                                            <p className="text-slate-500 dark:text-slate-400 text-xs uppercase tracking-wider mb-1">Début (Lock)</p>
+                                            <p className="text-slate-500 dark:text-slate-400 text-xs uppercase tracking-wider mb-1">Beginning (Lock)</p>
                                             <p className="font-semibold text-slate-900 dark:text-white">{vault.startDate || 'N/A'}</p>
                                           </div>
                                           <div className="bg-slate-50 dark:bg-slate-900/50 p-3 rounded-lg border border-slate-100 dark:border-slate-700">
-                                            <p className="text-slate-500 dark:text-slate-400 text-xs uppercase tracking-wider mb-1">Maturité (Unlock)</p>
+                                            <p className="text-slate-500 dark:text-slate-400 text-xs uppercase tracking-wider mb-1">Maturity (Unlock)</p>
                                             <p className="font-semibold text-slate-900 dark:text-white">{vault.maturityDate}</p>
                                           </div>
                                         </div>
 
                                         <div className="flex justify-center items-center gap-2 text-blue-600 dark:text-blue-400 text-sm font-medium">
-                                            <span>Voir Détails {vault.status === 'OPEN' && !isFull ? '& Investir' : ''}</span> <ArrowRight className="h-4 w-4" />
+                                            <span>View details {vault.status === 'OPEN' && !isFull ? '& Invest' : ''}</span> <ArrowRight className="h-4 w-4" />
                                         </div>
                                       </div>
                                     </div>
@@ -1971,7 +1967,7 @@
                                 onClick={() => setSelectedVault(null)}
                                 className="flex items-center gap-2 text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors"
                             >
-                                <ArrowLeft className="h-4 w-4" /> Retour aux Vaults
+                                <ArrowLeft className="h-4 w-4" /> Back to the Vaults
                             </button>
 
                             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -1995,13 +1991,13 @@
                                                         {selectedVault.name}
                                                     </h1>
                                                     {isVaultStarted(selectedVault) && selectedVault.status !== 'MATURED' && selectedVault.status !== 'TRIGGERED' &&
-                                                        <span className="px-3 py-1 rounded-full text-xs font-bold bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 flex items-center gap-1"><Lock className="h-3 w-3" /> PÉRIODE ACTIVE</span>
+                                                        <span className="px-3 py-1 rounded-full text-xs font-bold bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 flex items-center gap-1"><Lock className="h-3 w-3" /> ACTIVE PERIOD</span>
                                                     }
-                                                    {selectedVault.status === 'MATURED' && <span className="px-3 py-1 rounded-full text-xs font-bold bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-400 flex items-center gap-1">TERMINÉ</span>}
-                                                    {selectedVault.status === 'TRIGGERED' && <span className="px-3 py-1 rounded-full text-xs font-bold bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-400 flex items-center gap-1">CATASTROPHE</span>}
+                                                    {selectedVault.status === 'MATURED' && <span className="px-3 py-1 rounded-full text-xs font-bold bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-400 flex items-center gap-1">OVER</span>}
+                                                    {selectedVault.status === 'TRIGGERED' && <span className="px-3 py-1 rounded-full text-xs font-bold bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-400 flex items-center gap-1">DISASTER</span>}
                                                 </div>
                                                 <p className="text-sm text-slate-500 dark:text-slate-400 flex items-center gap-2 mt-1">
-                                                    <Building2 className="h-4 w-4" /> Assureur : <span className="font-semibold">{selectedVault.insurer}</span>
+                                                    <Building2 className="h-4 w-4" /> Insurer : <span className="font-semibold">{selectedVault.insurer}</span>
                                                     <span className="mx-2">•</span>
                                                     ID : <span className="font-mono bg-slate-100 dark:bg-slate-700 px-2 py-0.5 rounded text-xs">{selectedVault.id}</span>
                                                 </p>
@@ -2013,10 +2009,10 @@
                                     {selectedVault.status === 'TRIGGERED' && (
                                         <div className="bg-red-50 dark:bg-red-900/20 border-l-4 border-red-600 p-6 rounded-r-xl">
                                             <h4 className="text-xl font-bold text-red-800 dark:text-red-300 mb-2 flex items-center gap-2">
-                                                <AlertTriangle className="h-6 w-6" /> Catastrophe Confirmée
+                                                <AlertTriangle className="h-6 w-6" /> Disaster Confirmed
                                             </h4>
                                             <p className="text-red-700 dark:text-red-200 mb-4 text-sm leading-relaxed">
-                                                L'oracle a détecté un événement dépassant les seuils critiques. Le mécanisme de "Soft Default" est activé.
+                                                The oracle has detected an event exceeding critical thresholds. The “Soft Default” mechanism is activated.
                                             </p>
                                         </div>
                                     )}
@@ -2025,10 +2021,10 @@
                                     {selectedVault.status === 'MATURED' && (
                                         <div className="bg-green-50 dark:bg-green-900/20 border-l-4 border-green-600 p-6 rounded-r-xl">
                                             <h4 className="text-xl font-bold text-green-800 dark:text-green-300 mb-2 flex items-center gap-2">
-                                                <CheckCircle2 className="h-6 w-6" /> Période de Risque Terminée
+                                                <CheckCircle2 className="h-6 w-6" /> Risk Period Over
                                             </h4>
                                             <p className="text-green-700 dark:text-green-200 mb-4 text-sm leading-relaxed">
-                                                La période de couverture est terminée sans déclenchement de sinistre. Le capital et les intérêts sont disponibles pour retrait.
+                                                The coverage period has ended without any claims being made. The principal and interest are available for withdrawal.
                                             </p>
                                         </div>
                                     )}
@@ -2036,52 +2032,52 @@
                                     {/* DESCRIPTION */}
                                     <section className="bg-white dark:bg-slate-800 rounded-2xl p-8 border border-slate-200 dark:border-slate-700">
                                         <h4 className="text-lg font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-4 flex items-center gap-2">
-                                            <FileText className="h-5 w-5 text-blue-600 dark:text-blue-400"/> Conditions de Déclenchement
+                                            <FileText className="h-5 w-5 text-blue-600 dark:text-blue-400"/> Trigger Conditions
                                         </h4>
                                         <div className="bg-slate-50 dark:bg-slate-900/50 p-6 rounded-xl border border-slate-100 dark:border-slate-700 text-sm text-slate-700 dark:text-slate-300 whitespace-pre-line leading-relaxed">
-                                            {selectedVault.description || "Aucune description détaillée fournie par l'assureur."}
+                                            {selectedVault.description || "No detailed description provided by the insurer."}
                                         </div>
                                     </section>
 
                                     {/* DONNÉES FINANCIÈRES */}
                                     <section className="bg-white dark:bg-slate-800 rounded-2xl p-8 border border-slate-200 dark:border-slate-700">
                                         <h4 className="text-lg font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-6 flex items-center gap-2">
-                                            <Activity className="h-5 w-5 text-green-600 dark:text-green-400"/> Données Financières
+                                            <Activity className="h-5 w-5 text-green-600 dark:text-green-400"/> Financial Data
                                         </h4>
                                         <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
                                             <div className="bg-slate-50 dark:bg-slate-900/30 p-4 rounded-xl border border-slate-100 dark:border-slate-700">
-                                                <p className="text-xs text-slate-500 dark:text-slate-400 mb-2 uppercase font-semibold">Capacité Totale (Hard Cap)</p>
+                                                <p className="text-xs text-slate-500 dark:text-slate-400 mb-2 uppercase font-semibold">Total Capacity (Hard Cap)</p>
                                                 <p className="text-xl font-bold text-slate-900 dark:text-white">{formatCurrency(selectedVault.totalCapacity)}</p>
-                                                <p className="text-[10px] text-slate-400 mt-1">Inclus Capital Risque + Prime</p>
+                                                <p className="text-[10px] text-slate-400 mt-1">Includes Venture Capital + Premium</p>
                                             </div>
                                             <div className="bg-slate-50 dark:bg-slate-900/30 p-4 rounded-xl border border-slate-100 dark:border-slate-700">
-                                                <p className="text-xs text-slate-500 dark:text-slate-400 mb-2 uppercase font-semibold text-indigo-600 dark:text-indigo-400">Tranche Junior (First Loss)</p>
+                                                <p className="text-xs text-slate-500 dark:text-slate-400 mb-2 uppercase font-semibold text-indigo-600 dark:text-indigo-400">Junior Slice (First Loss)</p>
                                                 <p className="text-xl font-bold text-indigo-600 dark:text-indigo-400">{formatCurrency(selectedVault.juniorCapital)}</p>
-                                                <p className="text-[10px] text-slate-400 mt-1">Capital Assureur à risque</p>
+                                                <p className="text-[10px] text-slate-400 mt-1">Insurance capital at risk</p>
                                             </div>
                                             <div className="bg-slate-50 dark:bg-slate-900/30 p-4 rounded-xl border border-slate-100 dark:border-slate-700">
-                                                <p className="text-xs text-slate-500 dark:text-slate-400 mb-2 uppercase font-semibold text-green-600 dark:text-green-400">Réserve de Prime (Yield)</p>
+                                                <p className="text-xs text-slate-500 dark:text-slate-400 mb-2 uppercase font-semibold text-green-600 dark:text-green-400">Premium Reserve (Yield)</p>
                                                 <p className="text-xl font-bold text-green-600 dark:text-green-400">{formatCurrency(selectedVault.premium)}</p>
-                                                <p className="text-[10px] text-slate-400 mt-1">Sanctuarisée pour les investisseurs</p>
+                                                <p className="text-[10px] text-slate-400 mt-1">Sanctuarized for investors</p>
                                             </div>
                                             <div className="bg-slate-50 dark:bg-slate-900/30 p-4 rounded-xl border border-slate-100 dark:border-slate-700">
-                                                <p className="text-xs text-slate-500 dark:text-slate-400 mb-2 uppercase font-semibold">Date de Début (Lock)</p>
+                                                <p className="text-xs text-slate-500 dark:text-slate-400 mb-2 uppercase font-semibold">Starting date (Lock)</p>
                                                 <p className="text-xl font-bold text-slate-900 dark:text-white">{selectedVault.startDate || 'N/A'}</p>
-                                                <p className="text-[10px] text-slate-400 mt-1">Début du verrouillage</p>
+                                                <p className="text-[10px] text-slate-400 mt-1">Beginning of the lockdown</p>
                                             </div>
                                             <div className="bg-slate-50 dark:bg-slate-900/30 p-4 rounded-xl border border-slate-100 dark:border-slate-700">
-                                                <p className="text-xs text-slate-500 dark:text-slate-400 mb-2 uppercase font-semibold">Sur-Collatéralisation</p>
+                                                <p className="text-xs text-slate-500 dark:text-slate-400 mb-2 uppercase font-semibold">Over-Collateralization</p>
                                                 <p className="text-xl font-bold text-slate-900 dark:text-white">
                                                     {(selectedVault.totalCapacity - selectedVault.premium) > selectedVault.claimAmount ?
                                                         (((selectedVault.totalCapacity - selectedVault.premium) / selectedVault.claimAmount) * 100).toFixed(0) + '%'
                                                         : '100%'}
                                                 </p>
-                                                <p className="text-[10px] text-slate-400 mt-1">Ratio (Cap - Prime) / Risque</p>
+                                                <p className="text-[10px] text-slate-400 mt-1">Ratio (Capital - Premium) / Risk</p>
                                             </div>
                                             <div className="bg-slate-50 dark:bg-slate-900/30 p-4 rounded-xl border border-slate-100 dark:border-slate-700">
-                                                <p className="text-xs text-slate-500 dark:text-slate-400 mb-2 uppercase font-semibold">Date de Maturité</p>
+                                                <p className="text-xs text-slate-500 dark:text-slate-400 mb-2 uppercase font-semibold">Maturity Date</p>
                                                 <p className="text-xl font-bold text-slate-900 dark:text-white">{selectedVault.maturityDate}</p>
-                                                <p className="text-[10px] text-slate-400 mt-1">Fin de la période de risque</p>
+                                                <p className="text-[10px] text-slate-400 mt-1">End of the risk period</p>
                                             </div>
                                         </div>
                                     </section>
@@ -2089,7 +2085,7 @@
                                     {/* GRAPHIQUE RISQUE */}
                                     <section className="bg-white dark:bg-slate-800 rounded-2xl p-8 border border-slate-200 dark:border-slate-700">
                                         <h4 className="text-lg font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-6 flex items-center gap-2">
-                                            <TrendingUp className="h-5 w-5 text-orange-600 dark:text-orange-400"/> Évolution du Risque & Triggers
+                                            <TrendingUp className="h-5 w-5 text-orange-600 dark:text-orange-400"/> Risk Evolution & Triggers
                                         </h4>
                                         <RiskChart data={selectedVault.history || []} triggers={selectedVault.triggers || []} />
                                     </section>
@@ -2106,14 +2102,14 @@
                                                     <Coins className="h-20 w-20 text-green-600" />
                                                 </div>
                                                 <h3 className="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-2">
-                                                    Votre Position Actuelle
+                                                    Your Current Location
                                                 </h3>
                                                 <div className="mb-4">
                                                     <p className="text-3xl font-mono font-bold text-green-700 dark:text-green-400">
                                                         {formatCurrency(selectedVault.userBalance)}
                                                     </p>
                                                     <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
-                                                        Investi dans {selectedVault.name}
+                                                        Invested in {selectedVault.name}
                                                     </p>
                                                 </div>
                                             </div>
@@ -2127,7 +2123,7 @@
                                             'border-slate-200 dark:border-slate-700 shadow-slate-100 dark:shadow-none'
                                         }`}>
                                             <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
-                                                <Wallet className="h-5 w-5" /> Gestion Position
+                                                <Wallet className="h-5 w-5" /> Position Management
                                             </h3>
 
                                             {selectedVault.status === 'OPEN' ? (
@@ -2135,19 +2131,19 @@
                                                 isVaultStarted(selectedVault) ? (
                                                     <div className="text-center py-6 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-dashed border-slate-300 dark:border-slate-600">
                                                         <Lock className="h-8 w-8 text-slate-400 mx-auto mb-3" />
-                                                        <p className="text-slate-600 dark:text-slate-300 font-bold">Vault Actif & Verrouillé</p>
+                                                        <p className="text-slate-600 dark:text-slate-300 font-bold">Active & Locked Vault</p>
                                                         <p className="text-xs text-slate-500 mt-2 px-4 leading-relaxed">
-                                                            La période de souscription est terminée depuis le <strong>{selectedVault.startDate}</strong>. Les sorties ne sont plus possibles jusqu'à maturité.
+                                                            The subscription period ended on <strong>{selectedVault.startDate}</strong>. Withdrawals are no longer possible until maturity.
                                                         </p>
-                                                        <p className="text-xs text-slate-500 mt-2 font-mono">Déverrouillage : {selectedVault.maturityDate}</p>
+                                                        <p className="text-xs text-slate-500 mt-2 font-mono">Unlocking : {selectedVault.maturityDate}</p>
                                                     </div>
                                                 ) : (
                                                     <div>
                                                         {/* ... (Tout le code du formulaire de dépôt/retrait OPEN ici) ... */}
                                                         {/* Pour abréger ici, gardez tout le contenu du bloc "CAS 2" de votre code actuel */}
                                                         <div className="flex bg-slate-100 dark:bg-slate-700 p-1 rounded-xl mb-6">
-                                                            <button onClick={() => setActionTab('deposit')} className={`flex-1 py-2 rounded-lg text-sm font-bold transition-all ${actionTab === 'deposit' ? 'bg-white dark:bg-slate-800 shadow-sm text-blue-600 dark:text-blue-400' : 'text-slate-500 dark:text-slate-400'}`}>Dépôt</button>
-                                                            <button onClick={() => setActionTab('withdraw')} className={`flex-1 py-2 rounded-lg text-sm font-bold transition-all ${actionTab === 'withdraw' ? 'bg-white dark:bg-slate-800 shadow-sm text-orange-600 dark:text-orange-400' : 'text-slate-500 dark:text-slate-400'}`}>Retrait</button>
+                                                            <button onClick={() => setActionTab('deposit')} className={`flex-1 py-2 rounded-lg text-sm font-bold transition-all ${actionTab === 'deposit' ? 'bg-white dark:bg-slate-800 shadow-sm text-blue-600 dark:text-blue-400' : 'text-slate-500 dark:text-slate-400'}`}>Deposit</button>
+                                                            <button onClick={() => setActionTab('withdraw')} className={`flex-1 py-2 rounded-lg text-sm font-bold transition-all ${actionTab === 'withdraw' ? 'bg-white dark:bg-slate-800 shadow-sm text-orange-600 dark:text-orange-400' : 'text-slate-500 dark:text-slate-400'}`}>Withdrawal</button>
                                                         </div>
                                                         {/* SÉLECTEUR DE TRANCHE (Senior vs Junior) */}
                                                         <div className="mb-6 grid grid-cols-2 gap-3">
@@ -2156,7 +2152,7 @@
                                                                 <div className="p-3 rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 peer-checked:border-blue-500 peer-checked:bg-blue-50 dark:peer-checked:bg-blue-900/20 text-center transition-all h-full flex flex-col justify-center">
                                                                     <div className="font-bold text-slate-700 dark:text-slate-200">Senior</div>
                                                                     <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">APR { seniorApr.toFixed(2) }%</div>
-                                                                    <div className="text-[10px] text-green-600 mt-1 font-medium">Priorité Paiement</div>
+                                                                    <div className="text-[10px] text-green-600 mt-1 font-medium">Payment Priority</div>
                                                                 </div>
                                                             </label>
                                                             <label className="cursor-pointer">
@@ -2164,7 +2160,7 @@
                                                                 <div className="p-3 rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 peer-checked:border-indigo-500 peer-checked:bg-indigo-50 dark:peer-checked:bg-indigo-900/20 text-center transition-all h-full flex flex-col justify-center">
                                                                     <div className="font-bold text-slate-700 dark:text-slate-200">Junior</div>
                                                                     <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">APR { juniorApr.toFixed(2) }%</div>
-                                                                    <div className="text-[10px] text-orange-500 mt-1 font-medium">Boost Rendement</div>
+                                                                    <div className="text-[10px] text-orange-500 mt-1 font-medium">Boost Yield</div>
                                                                 </div>
                                                             </label>
                                                         </div>
@@ -2172,17 +2168,17 @@
                                                         {actionTab === 'deposit' ? (
                                                             <div className="space-y-6 animate-fade-in">
                                                                 {selectedVault.currentAssets >= selectedVault.totalCapacity && (
-                                                                    <div className="mb-4 p-3 bg-slate-100 dark:bg-slate-700 rounded-xl text-center"><span className="font-bold text-slate-500 dark:text-slate-300">Ce vault a atteint sa capacité maximale.</span></div>
+                                                                    <div className="mb-4 p-3 bg-slate-100 dark:bg-slate-700 rounded-xl text-center"><span className="font-bold text-slate-500 dark:text-slate-300">This vault has reached its maximum capacity.</span></div>
                                                                 )}
                                                                 <div className="space-y-4">
                                                                     {/* MODIFICATION ICI : items-start pour aligner en haut + pt-1 sur le label */}
                                                                     <div className="flex justify-between items-start mb-1">
                                                                         <label className="text-sm font-medium text-slate-700 dark:text-slate-300 pt-1">
-                                                                            Montant à déposer ({trancheType === 'senior' ? 'Senior' : 'Junior'})
+                                                                            Amount ({trancheType === 'senior' ? 'Senior' : 'Junior'})
                                                                         </label>
                                                                         <div className="text-right">
-                                                                            <span className="text-xs text-slate-500 dark:text-slate-400">Solde: <span className="font-bold text-slate-700 dark:text-slate-200 cursor-pointer hover:underline" onClick={() => setDepositAmount(assetBalance.toString())}>{assetBalanceFormatted}</span> {selectedVault.asset}</span>
-                                                                            <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Max autorisé: <span className="font-bold text-blue-600 dark:text-blue-400 cursor-pointer hover:underline" onClick={() => setDepositAmount((selectedVault.totalCapacity - selectedVault.currentAssets).toString())}>{formatCurrency(selectedVault.totalCapacity - selectedVault.currentAssets)}</span></div>
+                                                                            <span className="text-xs text-slate-500 dark:text-slate-400">Balance: <span className="font-bold text-slate-700 dark:text-slate-200 cursor-pointer hover:underline" onClick={() => setDepositAmount(assetBalance.toString())}>{assetBalanceFormatted}</span> {selectedVault.asset}</span>
+                                                                            <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">max: <span className="font-bold text-blue-600 dark:text-blue-400 cursor-pointer hover:underline" onClick={() => setDepositAmount((selectedVault.totalCapacity - selectedVault.currentAssets).toString())}>{formatCurrency(selectedVault.totalCapacity - selectedVault.currentAssets)}</span></div>
                                                                         </div>
                                                                     </div>
 
@@ -2195,25 +2191,25 @@
                                                                     )}
                                                                 </div>
                                                                 <div className="space-y-3 pt-2">
-                                                                    <div className="flex justify-between text-sm"><span className="text-slate-500 dark:text-slate-400">APR Estimé (Annuel)</span><span className={`font-bold ${trancheType === 'junior' ? 'text-indigo-600' : 'text-blue-600'}`}>{trancheType === 'junior' ? juniorApr.toFixed(2) : seniorApr.toFixed(2)}%</span></div>
-                                                                    <div className="flex justify-between text-sm"><span className="text-slate-500 dark:text-slate-400">Frais d'entrée</span><span className="font-medium text-slate-900 dark:text-white">0.00%</span></div>
+                                                                    <div className="flex justify-between text-sm"><span className="text-slate-500 dark:text-slate-400">Estimated APR</span><span className={`font-bold ${trancheType === 'junior' ? 'text-indigo-600' : 'text-blue-600'}`}>{trancheType === 'junior' ? juniorApr.toFixed(2) : seniorApr.toFixed(2)}%</span></div>
+                                                                    <div className="flex justify-between text-sm"><span className="text-slate-500 dark:text-slate-400">Admission fees</span><span className="font-medium text-slate-900 dark:text-white">0.00%</span></div>
                                                                 </div>
-                                                                <button onClick={handleDeposit} disabled={selectedVault.currentAssets >= selectedVault.totalCapacity} className={`w-full py-4 ${trancheType === 'junior' ? 'bg-indigo-600 hover:bg-indigo-700' : 'bg-blue-600 hover:bg-blue-700'} text-white rounded-xl font-bold shadow-lg shadow-blue-200 dark:shadow-none transition-all flex justify-center items-center gap-2 disabled:bg-slate-400 disabled:cursor-not-allowed disabled:shadow-none`}>{selectedVault.currentAssets >= selectedVault.totalCapacity ? "Capacité Atteinte" : `Confirmer Dépôt ${trancheType === 'junior' ? 'Junior' : 'Senior'}`} <ArrowRight className="h-4 w-4"/></button>
-                                                                <p className="text-xs text-center text-slate-400 mt-2">Période de souscription ouverte jusqu'au {selectedVault.startDate}.</p>
+                                                                <button onClick={handleDeposit} disabled={selectedVault.currentAssets >= selectedVault.totalCapacity} className={`w-full py-4 ${trancheType === 'junior' ? 'bg-indigo-600 hover:bg-indigo-700' : 'bg-blue-600 hover:bg-blue-700'} text-white rounded-xl font-bold shadow-lg shadow-blue-200 dark:shadow-none transition-all flex justify-center items-center gap-2 disabled:bg-slate-400 disabled:cursor-not-allowed disabled:shadow-none`}>{selectedVault.currentAssets >= selectedVault.totalCapacity ? "Capacity Reached" : `Confirm Deposit ${trancheType === 'junior' ? 'Junior' : 'Senior'}`} <ArrowRight className="h-4 w-4"/></button>
+                                                                <p className="text-xs text-center text-slate-400 mt-2">Subscription period open until {selectedVault.startDate}.</p>
                                                             </div>
                                                         ) : (
                                                             <div className="space-y-4 animate-fade-in">
-                                                                <div className="flex justify-between items-center mb-1"><label className="text-sm font-medium text-slate-700 dark:text-slate-300">Montant à retirer ({trancheType === 'senior' ? 'Senior' : 'Junior'})</label></div>
+                                                                <div className="flex justify-between items-center mb-1"><label className="text-sm font-medium text-slate-700 dark:text-slate-300">Amount to be withdrawn ({trancheType === 'senior' ? 'Senior' : 'Junior'})</label></div>
                                                                 <div className="relative">
                                                                     <input type="number" value={withdrawAmount} onChange={e => setWithdrawAmount(e.target.value)} className="w-full pl-4 pr-16 py-4 border border-orange-200 dark:border-orange-800 bg-orange-50/30 dark:bg-orange-900/10 text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-orange-500 outline-none font-medium text-lg" placeholder="0.00" />
                                                                     <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 font-bold">{selectedVault.asset}</span>
                                                                 </div>
                                                                 <div className="flex justify-between text-xs text-slate-500">
-                                                                    <span>Investi {trancheType === 'junior' ? 'Junior' : 'Senior'}: {trancheType === 'junior' ? (selectedVault.balancesJunior?.[userFullAddress] || 0) : (selectedVault.balancesSenior?.[userFullAddress] || 0)} {selectedVault.asset}</span>
+                                                                    <span>Invested {trancheType === 'junior' ? 'Junior' : 'Senior'}: {trancheType === 'junior' ? (selectedVault.balancesJunior?.[userFullAddress] || 0) : (selectedVault.balancesSenior?.[userFullAddress] || 0)} {selectedVault.asset}</span>
                                                                     <span className="text-orange-600 dark:text-orange-400 font-bold cursor-pointer hover:underline" onClick={() => setWithdrawAmount(trancheType === 'junior' ? (selectedVault.balancesJunior?.[userFullAddress] || 0) : (selectedVault.balancesSenior?.[userFullAddress] || 0))}>Max</span>
                                                                 </div>
-                                                                <button onClick={handleWithdraw} className="w-full py-4 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 hover:border-orange-500 dark:hover:border-orange-500 text-slate-700 dark:text-white hover:text-orange-600 dark:hover:text-orange-400 rounded-xl font-bold transition-all">Retirer Fonds {trancheType}</button>
-                                                                <p className="text-xs text-center text-slate-400 mt-2">Le retrait est autorisé sans frais tant que le vault n'a pas démarré.</p>
+                                                                <button onClick={handleWithdraw} className="w-full py-4 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 hover:border-orange-500 dark:hover:border-orange-500 text-slate-700 dark:text-white hover:text-orange-600 dark:hover:text-orange-400 rounded-xl font-bold transition-all">Withdraw Funds {trancheType}</button>
+                                                                <p className="text-xs text-center text-slate-400 mt-2">Withdrawal is permitted free of charge as long as the vault has not started.</p>
                                                             </div>
                                                         )}
                                                     </div>
@@ -2222,7 +2218,7 @@
                                                 <div className="space-y-4">
                                                     <div className="bg-green-50 dark:bg-green-900/30 p-4 rounded-xl border border-green-100 dark:border-green-800 mb-4">
                                                         <p className="text-sm text-green-800 dark:text-green-200 font-medium text-center">
-                                                            Le vault est arrivé à maturité. Vous pouvez retirer vos gains.
+                                                            The vault has matured. You can withdraw your earnings.
                                                         </p>
                                                     </div>
                                                     <button
@@ -2235,7 +2231,7 @@
                                                         }`}
                                                     >
                                                         <Coins className="h-5 w-5" />
-                                                        {selectedVault.userBalance > 0 ? "Récupérer Gains & Capital" : "Gains Récupérés"}
+                                                        {selectedVault.userBalance > 0 ? "Claim Gains & Principal" : "Gains Claimed"}
                                                     </button>
                                                 </div>
                                             ) : selectedVault.status === 'PENDING' ? (
@@ -2245,10 +2241,10 @@
                                                         <div className="flex flex-col items-center text-center">
                                                             <Activity className="h-8 w-8 text-amber-500 mb-2" />
                                                             <p className="text-sm text-amber-800 dark:text-amber-200 font-bold">
-                                                                En attente d'activation
+                                                                Pending activation
                                                             </p>
                                                             <p className="text-xs text-amber-700 dark:text-amber-300 mt-1">
-                                                                Ce vault est en cours de configuration par l'assureur. Les dépôts ne sont pas encore ouverts.
+                                                                This vault is currently being set up by the insurer. Deposits are not yet open.
                                                             </p>
                                                         </div>
                                                     </div>
@@ -2256,7 +2252,7 @@
                                                         disabled
                                                         className="w-full py-4 rounded-xl font-bold flex justify-center items-center gap-2 bg-slate-100 dark:bg-slate-700 text-slate-400 dark:text-slate-500 cursor-not-allowed"
                                                     >
-                                                        <Lock className="h-4 w-4" /> Bientôt disponible
+                                                        <Lock className="h-4 w-4" /> Coming soon
                                                     </button>
                                                 </div>
                                             ) : (
@@ -2264,7 +2260,7 @@
                                                 <div className="space-y-4">
                                                     <div className="bg-red-50 dark:bg-red-900/30 p-4 rounded-xl border border-red-100 dark:border-red-800 mb-4">
                                                         <p className="text-sm text-red-800 dark:text-red-200 font-medium text-center">
-                                                            Les retraits sont restreints suite à l'événement.
+                                                            Withdrawals are restricted following the event.
                                                         </p>
                                                     </div>
                                                     <button
@@ -2277,18 +2273,18 @@
                                                         }`}
                                                     >
                                                         <Coins className="h-5 w-5" />
-                                                        {selectedVault.userBalance > 0 ? "Réclamer Solde Restant" : "Fonds Réclamés"}
+                                                        {selectedVault.userBalance > 0 ? "Claim Remaining Balance" : "Funds Claimed"}
                                                     </button>
                                                 </div>
                                             )}
                                         </div>
 
                                         <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-5 border border-slate-200 dark:border-slate-700">
-                                            <h5 className="font-bold text-slate-900 dark:text-white text-sm mb-3">Besoin d'aide ?</h5>
+                                            <h5 className="font-bold text-slate-900 dark:text-white text-sm mb-3">Need help?</h5>
                                             <ul className="text-sm space-y-2 text-slate-600 dark:text-slate-400">
-                                                <li>• <a href="#" className="hover:underline">Lire le Whitepaper</a></li>
-                                                <li>• <a href="#" className="hover:underline">Audit du Smart Contract</a></li>
-                                                <li>• <a href="#" className="hover:underline">Support Discord</a></li>
+                                                <li>• <a href="#" className="hover:underline">Whitepaper</a></li>
+                                                <li>• <a href="#" className="hover:underline">Smart Contract Audit</a></li>
+                                                <li>• <a href="#" className="hover:underline">Discord Support</a></li>
                                             </ul>
                                         </div>
                                     </div>
@@ -2310,39 +2306,39 @@
                            <div className="p-6 bg-slate-100 dark:bg-slate-800 rounded-full mb-2">
                                <Shield className="h-20 w-20 text-slate-400 dark:text-slate-500" />
                            </div>
-                           <h2 className="text-3xl font-bold text-slate-900 dark:text-white">Accès Réservé aux Assureurs</h2>
+                           <h2 className="text-3xl font-bold text-slate-900 dark:text-white">Insurer Access Only</h2>
                            <p className="text-lg text-slate-500 dark:text-slate-400">
-                              L'espace assureur est restreint aux entités accréditées VUSA. Veuillez connecter votre portefeuille pour vérifier vos droits d'accès.
+                              The insurer space is restricted to VUSA accredited entities. Please connect your wallet to verify your access rights.
                            </p>
                            <button onClick={openWalletSelector} className="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold transition-all shadow-lg hover:shadow-blue-200 dark:hover:shadow-none flex items-center gap-2">
-                             <Wallet className="h-5 w-5" /> Connecter Wallet
+                             <Wallet className="h-5 w-5" /> Connect Wallet
                            </button>
                       </div>
                   ) :
                   /* ETAT 2: WALLET CONNECTÉ MAIS PAS SUR LA WHITELIST */
                   !isInsurerWhitelisted ? (
-                       <div className="flex flex-col items-center justify-center min-h-[60vh] text-center space-y-6 animate-in fade-in max-w-2xl mx-auto">
+                        <div className="flex flex-col items-center justify-center min-h-[60vh] text-center space-y-6 animate-in fade-in max-w-2xl mx-auto">
                            <div className="p-6 bg-red-50 dark:bg-red-900/20 rounded-full mb-2 border border-red-100 dark:border-red-900">
                               <UserCheck className="h-20 w-20 text-red-500 dark:text-red-400" />
                            </div>
-                           <h2 className="text-3xl font-bold text-slate-900 dark:text-white">Accès Non Autorisé</h2>
+                           <h2 className="text-3xl font-bold text-slate-900 dark:text-white">Unauthorized Access</h2>
                            {registrationStatus === 'pending' ? (
                                <div className="mt-4 p-4 bg-amber-50 dark:bg-amber-900/30 rounded-xl border border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-200 max-w-md">
-                                   <div className="flex items-center gap-2 font-bold mb-1"><Activity className="h-5 w-5" /> Demande en cours d'analyse</div>
-                                   <p className="text-sm">Votre dossier KYB a bien été reçu et est en cours de traitement par l'équipe du protocole.</p>
+                                   <div className="flex items-center gap-2 font-bold mb-1"><Activity className="h-5 w-5" /> Application under review</div>
+                                   <p className="text-sm">Your KYB file has been received and is currently being processed by the protocol team.</p>
                                </div>
                            ) : registrationStatus === 'rejected' ? (
                                <div className="mt-4 p-4 bg-red-50 dark:bg-red-900/30 rounded-xl border border-red-200 dark:border-red-800 text-red-800 dark:text-red-200 max-w-md">
-                                   <div className="flex items-center gap-2 font-bold mb-1"><X className="h-5 w-5" /> Demande Refusée</div>
-                                   <p className="text-sm">Votre demande a été rejetée.</p>
+                                   <div className="flex items-center gap-2 font-bold mb-1"><X className="h-5 w-5" /> Application Rejected</div>
+                                   <p className="text-sm">Your application has been rejected.</p>
                                </div>
                            ) : (
-                               <p className="text-lg text-slate-500 dark:text-slate-400">L'adresse <span className="font-mono font-bold bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded">{userAddress}</span> n'est pas certifiée.</p>
+                               <p className="text-lg text-slate-500 dark:text-slate-400">The address <span className="font-mono font-bold bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded">{userAddress}</span> is not certified.</p>
                            )}
                            <div className="flex gap-4 mt-6">
-                               <button onClick={disconnectWallet} className="px-6 py-3 border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 rounded-xl font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">Changer de Wallet</button>
+                               <button onClick={disconnectWallet} className="px-6 py-3 border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 rounded-xl font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">Switch Wallet</button>
                                {registrationStatus !== 'pending' && (
-                                   <button onClick={() => setShowInsurerRegistration(true)} className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold transition-all shadow-lg hover:shadow-indigo-200 dark:shadow-none">S'enregistrer comme Assureur</button>
+                                   <button onClick={() => setShowInsurerRegistration(true)} className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold transition-all shadow-lg hover:shadow-indigo-200 dark:shadow-none">Register as Insurer</button>
                                )}
                            </div>
                       </div>
@@ -2358,9 +2354,9 @@
                       >
                         <div className="flex items-center gap-3 mb-6 pb-6 border-b border-slate-100 dark:border-slate-700">
                           <div className="p-2 bg-indigo-50 dark:bg-indigo-900/30 rounded-lg text-indigo-600 dark:text-indigo-400"><Plus className="h-5 w-5" /></div>
-                          <div><h2 className="text-lg font-bold text-slate-900 dark:text-white">Nouveau Vault</h2><p className="text-xs text-slate-500 dark:text-slate-400">Déploiement Factory</p></div>
+                          <div><h2 className="text-lg font-bold text-slate-900 dark:text-white">New Vault</h2><p className="text-xs text-slate-500 dark:text-slate-400">Factory Deployment</p></div>
                           {isFormExpanded && (
-                              <button onClick={(e) => { e.stopPropagation(); setIsFormExpanded(false); }} className="ml-auto text-xs bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 px-3 py-1.5 rounded-lg text-slate-500 dark:text-slate-400 font-bold flex items-center gap-1 transition-colors"><Minimize2 className="h-3 w-3" /> Réduire</button>
+                              <button onClick={(e) => { e.stopPropagation(); setIsFormExpanded(false); }} className="ml-auto text-xs bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 px-3 py-1.5 rounded-lg text-slate-500 dark:text-slate-400 font-bold flex items-center gap-1 transition-colors"><Minimize2 className="h-3 w-3" /> Collapse</button>
                           )}
                         </div>
 
@@ -2368,7 +2364,7 @@
                            {/* ... Formulaire identique ... */}
                            <div className={isFormExpanded ? "grid grid-cols-2 gap-4" : "space-y-4"}>
                                <div className={isFormExpanded ? "col-span-2" : ""}>
-                                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Nom du Risque</label>
+                                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Risk Name</label>
                                 <input type="text" value={newVaultData.name} onChange={e => setNewVaultData({...newVaultData, name: e.target.value})} className="w-full p-3 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all" placeholder="Ex: Florida Wind 2026" />
                               </div>
 
@@ -2380,7 +2376,7 @@
                                       </select>
                                   </div>
                                   <div>
-                                      <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Actif (Paiement)</label>
+                                      <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Asset (Payment)</label>
                                       <select value={newVaultData.asset} onChange={e => setNewVaultData({...newVaultData, asset: e.target.value})} className="w-full p-3 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none">
                                           {AVAILABLE_ASSETS.map(asset => (<option key={asset} value={asset}>{asset}</option>))}
                                       </select>
@@ -2388,41 +2384,41 @@
                               </div>
 
                               <div className={isFormExpanded ? "col-span-2" : ""}>
-                                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Conditions de Déclenchement</label>
+                                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Trigger Conditions</label>
                                 <textarea value={newVaultData.description} onChange={e => setNewVaultData({...newVaultData, description: e.target.value})} className="w-full p-3 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all h-24 resize-none text-sm" placeholder="Conditions..."></textarea>
                               </div>
 
                               {/* CHAMP DATE DEBUT (AJOUT DE APP.HTML) */}
                               <div className={isFormExpanded ? "col-span-2 p-3 bg-blue-50 dark:bg-blue-900/10 rounded-xl border border-blue-100 dark:border-blue-800" : "p-3 bg-blue-50 dark:bg-blue-900/10 rounded-xl border border-blue-100 dark:border-blue-800"}>
-                                   <label className="block text-sm font-bold text-blue-800 dark:text-blue-300 mb-2 flex items-center gap-2"><Calendar className="h-4 w-4"/> Date de Début (Lock)</label>
+                                   <label className="block text-sm font-bold text-blue-800 dark:text-blue-300 mb-2 flex items-center gap-2"><Calendar className="h-4 w-4"/> Start Date (Lock)</label>
                                    <div className="grid grid-cols-3 gap-2">
-                                       <input type="number" min="1" max="31" value={newVaultData.startDay} onBlur={handleDateBlur} onChange={e => setNewVaultData({...newVaultData, startDay: e.target.value})} className="p-2 rounded-lg border dark:bg-slate-900 dark:border-slate-600" placeholder="JJ" />
-                                       <select value={newVaultData.startMonth} onBlur={handleDateBlur} onChange={e => setNewVaultData({...newVaultData, startMonth: e.target.value})} className="p-2 rounded-lg border dark:bg-slate-900 dark:border-slate-600">
-                                         {MONTHS.map(m => <option key={m.name} value={m.name}>{m.name}</option>)}
-                                       </select>
-                                       <input type="number" min="2024" value={newVaultData.startYear} onBlur={handleDateBlur} onChange={e => setNewVaultData({...newVaultData, startYear: e.target.value})} className="p-2 rounded-lg border dark:bg-slate-900 dark:border-slate-600" placeholder="AAAA" />
+                                        <input type="number" min="1" max="31" value={newVaultData.startDay} onBlur={handleDateBlur} onChange={e => setNewVaultData({...newVaultData, startDay: e.target.value})} className="p-2 rounded-lg border dark:bg-slate-900 dark:border-slate-600" placeholder="DD" />
+                                        <select value={newVaultData.startMonth} onBlur={handleDateBlur} onChange={e => setNewVaultData({...newVaultData, startMonth: e.target.value})} className="p-2 rounded-lg border dark:bg-slate-900 dark:border-slate-600">
+                                          {MONTHS.map(m => <option key={m.name} value={m.name}>{m.name}</option>)}
+                                        </select>
+                                        <input type="number" min="2024" value={newVaultData.startYear} onBlur={handleDateBlur} onChange={e => setNewVaultData({...newVaultData, startYear: e.target.value})} className="p-2 rounded-lg border dark:bg-slate-900 dark:border-slate-600" placeholder="YYYY" />
                                    </div>
                                </div>
 
                               <div className={isFormExpanded ? "grid grid-cols-3 gap-4 col-span-2" : "grid grid-cols-3 gap-4"}>
-                                <div><label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Jour Fin</label><input type="number" min="1" max={getMaxDays(newVaultData.month)} value={newVaultData.day} onBlur={handleDateBlur} onChange={e => setNewVaultData({...newVaultData, day: e.target.value})} className="w-full p-3 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="JJ" /></div>
-                                <div><label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Mois Fin</label><select value={newVaultData.month} onBlur={handleDateBlur} onChange={e => setNewVaultData({...newVaultData, month: e.target.value})} className="w-full p-3 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all">{MONTHS.map(m => (<option key={m.name} value={m.name}>{m.name}</option>))}</select></div>
-                                <div><label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Année Fin</label><input type="number" min={new Date().getFullYear()} value={newVaultData.year} onBlur={handleDateBlur} onChange={e => setNewVaultData({...newVaultData, year: e.target.value})} className="w-full p-3 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="AAAA" /></div>
+                                <div><label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">End Day</label><input type="number" min="1" max={getMaxDays(newVaultData.month)} value={newVaultData.day} onBlur={handleDateBlur} onChange={e => setNewVaultData({...newVaultData, day: e.target.value})} className="w-full p-3 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="DD" /></div>
+                                <div><label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">End Month</label><select value={newVaultData.month} onBlur={handleDateBlur} onChange={e => setNewVaultData({...newVaultData, month: e.target.value})} className="w-full p-3 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all">{MONTHS.map(m => (<option key={m.name} value={m.name}>{m.name}</option>))}</select></div>
+                                <div><label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">End Year</label><input type="number" min={new Date().getFullYear()} value={newVaultData.year} onBlur={handleDateBlur} onChange={e => setNewVaultData({...newVaultData, year: e.target.value})} className="w-full p-3 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="YYYY" /></div>
                               </div>
 
                               <div className={isFormExpanded ? "grid grid-cols-2 gap-4 col-span-2" : "grid grid-cols-2 gap-4"}>
-                                <div><label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Capacité</label><input type="number" min="0" value={newVaultData.cap} onBlur={handleCapBlur} onChange={e => { const val = e.target.value; setNewVaultData({...newVaultData, cap: val, junior: updateJunior(val, newVaultData.juniorPercent)}); }} className="w-full p-3 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none" /></div>
+                                <div><label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Capacity</label><input type="number" min="0" value={newVaultData.cap} onBlur={handleCapBlur} onChange={e => { const val = e.target.value; setNewVaultData({...newVaultData, cap: val, junior: updateJunior(val, newVaultData.juniorPercent)}); }} className="w-full p-3 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none" /></div>
                                 <div><label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Junior (%)</label><div className="relative"><input type="number" min="0" max="100" value={newVaultData.juniorPercent} onChange={e => { const val = e.target.value; setNewVaultData({...newVaultData, juniorPercent: val, junior: updateJunior(newVaultData.cap, val)}); }} className="w-full p-3 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none" /><span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 font-bold">%</span></div></div>
                               </div>
 
                               <div className={isFormExpanded ? "col-span-2" : ""}>
                                   <div className="flex items-center gap-2 mb-2 mt-2">
                                       <input type="checkbox" id="overcollat" checked={isOvercollateralized} onChange={(e) => setIsOvercollateralized(e.target.checked)} className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500 border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-900 cursor-pointer" />
-                                      <label htmlFor="overcollat" className="text-sm text-slate-600 dark:text-slate-400 cursor-pointer select-none font-medium">Activer la Sur-collatéralisation</label>
+                                      <label htmlFor="overcollat" className="text-sm text-slate-600 dark:text-slate-400 cursor-pointer select-none font-medium">Enable Over-collateralization</label>
                                   </div>
                                   {isOvercollateralized && (
                                       <div className="mb-4 animate-fade-in p-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-100 dark:border-blue-900">
-                                          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Montant Assuré</label>
+                                          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Insured Amount</label>
                                           <div className="relative"><input type="number" min="0" value={newVaultData.coverage} onChange={e => setNewVaultData({...newVaultData, coverage: e.target.value})} className="w-full p-3 border border-blue-200 dark:border-blue-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" /><span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 font-bold">{newVaultData.asset}</span></div>
                                       </div>
                                   )}
@@ -2430,23 +2426,23 @@
 
                               <div className={isFormExpanded ? "col-span-2" : ""}>
                                   <div className="bg-slate-50 dark:bg-slate-900/50 p-3 rounded-xl border border-slate-200 dark:border-slate-700 flex justify-between items-center text-sm">
-                                      <span className="text-slate-500 dark:text-slate-400">Montant Junior requis:</span>
+                                      <span className="text-slate-500 dark:text-slate-400">Junior Amount Required:</span>
                                       <span className="font-bold text-slate-900 dark:text-white">{formatCurrency(newVaultData.junior)}</span>
                                   </div>
                               </div>
 
                               <div className={isFormExpanded ? "col-span-2" : ""}>
-                                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Prime à Payer</label>
+                                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Premium to Pay</label>
                                 <div className="relative"><input type="number" min="0" value={newVaultData.premium} onChange={e => setNewVaultData({...newVaultData, premium: e.target.value})} className="w-full p-3 pl-3 pr-16 border border-green-200 dark:border-green-800 bg-green-50/30 dark:bg-green-900/20 rounded-xl focus:ring-2 focus:ring-green-500 outline-none text-green-800 dark:text-green-400 font-medium" /><span className="absolute right-4 top-1/2 -translate-y-1/2 text-green-600 dark:text-green-400 text-xs font-bold">{newVaultData.asset}</span></div>
                               </div>
                           </div>
-                          <button type="submit" className="w-full mt-4 bg-slate-900 dark:bg-white text-white dark:text-slate-900 py-3.5 rounded-xl font-bold hover:bg-slate-800 dark:hover:bg-slate-200 transition-all shadow-lg shadow-slate-200 dark:shadow-none">Déployer le Contrat (Simulation)</button>
+                          <button type="submit" className="w-full mt-4 bg-slate-900 dark:bg-white text-white dark:text-slate-900 py-3.5 rounded-xl font-bold hover:bg-slate-800 dark:hover:bg-slate-200 transition-all shadow-lg shadow-slate-200 dark:shadow-none">Deploy Contract (Simulation)</button>
                         </form>
                       </div>
 
                       <div className="bg-indigo-600 dark:bg-indigo-700 rounded-2xl p-6 text-white shadow-lg shadow-indigo-200 dark:shadow-none">
-                        <div className="flex items-center gap-3 mb-4"><Shield className="h-6 w-6 opacity-80" /><h3 className="font-bold">Espace VUSA</h3></div>
-                        <p className="text-indigo-100 text-sm mb-4 leading-relaxed">Votre statut d'assureur est vérifié.</p>
+                        <div className="flex items-center gap-3 mb-4"><Shield className="h-6 w-6 opacity-80" /><h3 className="font-bold">VUSA Space</h3></div>
+                        <p className="text-indigo-100 text-sm mb-4 leading-relaxed">Your insurer status is verified.</p>
                         <div className="bg-white/10 p-3 rounded-lg backdrop-blur-sm border border-white/10">
                           <div className="flex justify-between text-xs font-mono mb-1"><span className="opacity-70">STATUS</span><span className="text-green-300">VERIFIED</span></div>
                           <div className="flex justify-between text-xs font-mono"><span className="opacity-70">ENTITY</span><span>State Farm Re</span></div>
@@ -2455,83 +2451,83 @@
                     </div>
 
                     <div className={`transition-all duration-500 ease-in-out min-w-0 ${isFormExpanded ? 'lg:flex-1' : 'lg:flex-[2]'}`} onClick={() => setIsFormExpanded(false)}>
-                      <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-6">Vos Vaults Gérés</h3>
-<div className="space-y-4">
-  {/* NOUVELLE LOGIQUE : Vérification si la liste est vide */}
-  {(() => {
-    // 1. On filtre d'abord les vaults de l'utilisateur
-    const myVaults = vaults.filter(vault =>
-        vault.insurerAddress && vault.insurerAddress.toLowerCase() === userFullAddress.toLowerCase()
-    );
+                        <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-6">Your Managed Vaults</h3>
+                        <div className="space-y-4">
+                        {/* NOUVELLE LOGIQUE : Vérification si la liste est vide */}
+                        {(() => {
+                            // 1. On filtre d'abord les vaults de l'utilisateur
+                            const myVaults = vaults.filter(vault =>
+                                vault.insurerAddress && vault.insurerAddress.toLowerCase() === userFullAddress.toLowerCase()
+                            );
 
-    // 2. Si aucun vault, on affiche le message d'état vide
-    if (myVaults.length === 0) {
-        return (
-            <div className="flex flex-col items-center justify-center py-12 px-4 border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-2xl bg-slate-50/50 dark:bg-slate-900/30 text-center animate-fade-in group cursor-pointer hover:border-indigo-300 dark:hover:border-indigo-700 transition-colors" onClick={() => setIsFormExpanded(true)}>
-                <div className="bg-white dark:bg-slate-800 p-4 rounded-full shadow-sm mb-4 group-hover:scale-110 transition-transform duration-300">
-                    <Shield className="h-8 w-8 text-slate-400 dark:text-slate-500 group-hover:text-indigo-500" />
-                </div>
-                <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Aucun Vault Actif</h4>
-                <p className="text-sm text-slate-500 dark:text-slate-400 max-w-sm mx-auto mb-6">
-                    Vous n'avez pas encore déployé de contrat d'assurance. Utilisez le formulaire pour configurer votre premier produit paramétrique.
-                </p>
-                <button
-                    onClick={(e) => { e.stopPropagation(); setIsFormExpanded(true); }}
-                    className="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 rounded-lg text-sm font-bold shadow-sm hover:text-indigo-600 dark:hover:text-indigo-400 hover:border-indigo-200 dark:hover:border-indigo-800 transition-all flex items-center gap-2"
-                >
-                    <Plus className="h-4 w-4" /> Commencer le déploiement
-                </button>
-            </div>
-        );
-    }
+                            // 2. Si aucun vault, on affiche le message d'état vide
+                            if (myVaults.length === 0) {
+                                return (
+                                    <div className="flex flex-col items-center justify-center py-12 px-4 border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-2xl bg-slate-50/50 dark:bg-slate-900/30 text-center animate-fade-in group cursor-pointer hover:border-indigo-300 dark:hover:border-indigo-700 transition-colors" onClick={() => setIsFormExpanded(true)}>
+                                        <div className="bg-white dark:bg-slate-800 p-4 rounded-full shadow-sm mb-4 group-hover:scale-110 transition-transform duration-300">
+                                            <Shield className="h-8 w-8 text-slate-400 dark:text-slate-500 group-hover:text-indigo-500" />
+                                        </div>
+                                        <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-2">No Active Vaults</h4>
+                                        <p className="text-sm text-slate-500 dark:text-slate-400 max-w-sm mx-auto mb-6">
+                                            You have not deployed an insurance contract yet. Use the form to configure your first parametric product.
+                                        </p>
+                                        <button
+                                            onClick={(e) => { e.stopPropagation(); setIsFormExpanded(true); }}
+                                            className="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 rounded-lg text-sm font-bold shadow-sm hover:text-indigo-600 dark:hover:text-indigo-400 hover:border-indigo-200 dark:hover:border-indigo-800 transition-all flex items-center gap-2"
+                                        >
+                                            <Plus className="h-4 w-4" /> Start Deployment
+                                        </button>
+                                    </div>
+                                );
+                            }
 
-    // 3. Sinon, on affiche la liste normalement (Code existant)
-    return myVaults.map((vault) => (
-      <div key={vault.id} className={`bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 flex flex-col ${!isFormExpanded ? 'md:flex-row' : ''} items-center justify-between gap-6 hover:shadow-md transition-shadow cursor-pointer`}>
-        {isFormExpanded ? (
-            <div className="flex justify-between items-center w-full">
-                <div className="min-w-0"><h4 className="font-bold text-slate-900 dark:text-white truncate">{vault.name}</h4><p className="text-xs text-slate-500 dark:text-slate-400 font-mono truncate">{vault.id}</p></div>
-                <div className="shrink-0 ml-2">
-                    {vault.status === 'PENDING' && <span className="px-2.5 py-1 bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-400 text-xs font-bold rounded-md">PENDING</span>}
-                    {vault.status === 'OPEN' && <span className="px-2.5 py-1 bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-400 text-xs font-bold rounded-md">ACTIVE</span>}
-                </div>
-            </div>
-        ) : (
-            <>
-                <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-2">
-                    <h4 className="text-lg font-bold text-slate-900 dark:text-white">{vault.name}</h4>
-                    {vault.status === 'PENDING' && <span className="px-2.5 py-1 bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-400 text-xs font-bold rounded-md">PENDING</span>}
-                    {vault.status === 'OPEN' && <span className="px-2.5 py-1 bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-400 text-xs font-bold rounded-md">ACTIVE</span>}
-                    {vault.status === 'MATURED' && <span className="px-2.5 py-1 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-400 text-xs font-bold rounded-md">TERMINÉ</span>}
-                  </div>
-                  <div className="flex gap-6 text-sm text-slate-500 dark:text-slate-400">
-                    <span>Capacité: <strong>{formatCurrency(vault.totalCapacity)}</strong></span>
-                    <span>Junior: <strong>{formatCurrency(vault.juniorCapital)}</strong></span>
-                  </div>
-                </div>
+                            // 3. Sinon, on affiche la liste normalement (Code existant)
+                            return myVaults.map((vault) => (
+                            <div key={vault.id} className={`bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 flex flex-col ${!isFormExpanded ? 'md:flex-row' : ''} items-center justify-between gap-6 hover:shadow-md transition-shadow cursor-pointer`}>
+                                {isFormExpanded ? (
+                                    <div className="flex justify-between items-center w-full">
+                                        <div className="min-w-0"><h4 className="font-bold text-slate-900 dark:text-white truncate">{vault.name}</h4><p className="text-xs text-slate-500 dark:text-slate-400 font-mono truncate">{vault.id}</p></div>
+                                        <div className="shrink-0 ml-2">
+                                            {vault.status === 'PENDING' && <span className="px-2.5 py-1 bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-400 text-xs font-bold rounded-md">PENDING</span>}
+                                            {vault.status === 'OPEN' && <span className="px-2.5 py-1 bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-400 text-xs font-bold rounded-md">ACTIVE</span>}
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <>
+                                        <div className="flex-1">
+                                        <div className="flex items-center gap-3 mb-2">
+                                            <h4 className="text-lg font-bold text-slate-900 dark:text-white">{vault.name}</h4>
+                                            {vault.status === 'PENDING' && <span className="px-2.5 py-1 bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-400 text-xs font-bold rounded-md">PENDING</span>}
+                                            {vault.status === 'OPEN' && <span className="px-2.5 py-1 bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-400 text-xs font-bold rounded-md">ACTIVE</span>}
+                                            {vault.status === 'MATURED' && <span className="px-2.5 py-1 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-400 text-xs font-bold rounded-md">ENDED</span>}
+                                        </div>
+                                        <div className="flex gap-6 text-sm text-slate-500 dark:text-slate-400">
+                                            <span>Capacity: <strong>{formatCurrency(vault.totalCapacity)}</strong></span>
+                                            <span>Junior: <strong>{formatCurrency(vault.juniorCapital)}</strong></span>
+                                        </div>
+                                        </div>
 
-                {vault.status === 'PENDING' ? (
-                  <div className="flex flex-col items-end gap-2 w-full md:w-auto">
-                    <div className="text-right">
-                      <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Total à financer (Junior + Prime)</p>
-                      <p className="font-bold text-slate-900 dark:text-white">{formatCurrency(vault.juniorCapital + vault.premium)}</p>
-                    </div>
-                    <button onClick={(e) => { e.stopPropagation(); handleInitializeVault(vault.id); }} className="w-full md:w-auto px-6 py-2.5 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors shadow-sm">Financer & Ouvrir</button>
-                  </div>
-                ) : (
-                  <div className="flex items-center gap-4 bg-slate-50 dark:bg-slate-900/50 px-4 py-2 rounded-xl border border-slate-100 dark:border-slate-700">
-                    <div className="text-right"><p className="text-xs text-slate-400 dark:text-slate-500">Fonds levés</p><p className="font-bold text-slate-700 dark:text-slate-300">{formatCurrency(vault.currentAssets)}</p></div>
-                    <div className="h-8 w-px bg-slate-200 dark:bg-slate-700"></div>
-                    <div className="text-right"><p className="text-xs text-slate-400 dark:text-slate-500">APR Public</p><p className="font-bold text-green-600 dark:text-green-400">{vault.apr}%</p></div>
-                  </div>
-                )}
-            </>
-        )}
-      </div>
-    ));
-  })()}
-</div>
+                                        {vault.status === 'PENDING' ? (
+                                        <div className="flex flex-col items-end gap-2 w-full md:w-auto">
+                                            <div className="text-right">
+                                            <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Total to fund (Junior + Premium)</p>
+                                            <p className="font-bold text-slate-900 dark:text-white">{formatCurrency(vault.juniorCapital + vault.premium)}</p>
+                                            </div>
+                                            <button onClick={(e) => { e.stopPropagation(); handleInitializeVault(vault.id); }} className="w-full md:w-auto px-6 py-2.5 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors shadow-sm">Fund & Open</button>
+                                        </div>
+                                        ) : (
+                                        <div className="flex items-center gap-4 bg-slate-50 dark:bg-slate-900/50 px-4 py-2 rounded-xl border border-slate-100 dark:border-slate-700">
+                                            <div className="text-right"><p className="text-xs text-slate-400 dark:text-slate-500">Funds Raised</p><p className="font-bold text-slate-700 dark:text-slate-300">{formatCurrency(vault.currentAssets)}</p></div>
+                                            <div className="h-8 w-px bg-slate-200 dark:bg-slate-700"></div>
+                                            <div className="text-right"><p className="text-xs text-slate-400 dark:text-slate-500">Public APR</p><p className="font-bold text-green-600 dark:text-green-400">{vault.apr}%</p></div>
+                                        </div>
+                                        )}
+                                    </>
+                                )}
+                            </div>
+                            ));
+                        })()}
+                        </div>
                     </div>
                   </div>
                   )}
@@ -2545,15 +2541,15 @@
                            <div className="p-6 bg-slate-100 dark:bg-slate-800 rounded-full mb-2">
                                <Wallet className="h-20 w-20 text-slate-400 dark:text-slate-500" />
                            </div>
-                           <h2 className="text-3xl font-bold text-slate-900 dark:text-white">Accès Dashboard</h2>
+                           <h2 className="text-3xl font-bold text-slate-900 dark:text-white">Dashboard Access</h2>
                            <p className="text-lg text-slate-500 dark:text-slate-400">
-                              Connectez votre portefeuille pour visualiser vos positions et gérer vos investissements.
+                              Connect your wallet to view your positions and manage your investments.
                            </p>
                            <button
                              onClick={openWalletSelector}
                              className="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold transition-all shadow-lg hover:shadow-blue-200 dark:hover:shadow-none flex items-center gap-2"
                            >
-                             <Wallet className="h-5 w-5" /> Connecter Wallet
+                             <Wallet className="h-5 w-5" /> Connect Wallet
                            </button>
                       </div>
                   ) : (
@@ -2563,13 +2559,13 @@
                         <Wallet className="h-10 w-10 text-green-600 dark:text-green-400" />
                       </div>
                       <h2 className="text-3xl font-bold text-slate-900 dark:text-white">Portfolio Dashboard</h2>
-                      <p className="text-slate-500 dark:text-slate-400 mt-2">Interface de surveillance des positions investies</p>
+                      <p className="text-slate-500 dark:text-slate-400 mt-2">Monitor your active investment positions</p>
                     </div>
 
                     <div className="bg-white dark:bg-slate-800/80 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
                       <div className="p-4 bg-slate-50 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center">
                         <h3 className="font-bold text-slate-800 dark:text-slate-300 flex items-center gap-2">
-                          <Activity className="h-4 w-4" /> Positions Actives
+                          <Activity className="h-4 w-4" /> Active Positions
                         </h3>
                         <span className="flex h-3 w-3 relative">
                           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
@@ -2624,13 +2620,13 @@
                                               <p className="text-xs font-mono text-green-600 dark:text-green-500 mt-1">{vault.id}</p>
                                           </div>
                                           <span className="px-3 py-1 bg-green-100 dark:bg-green-900/50 rounded-full text-xs font-bold text-green-700 dark:text-green-300 border border-green-200 dark:border-green-600">
-                                              SUCCÈS - À RÉCLAMER
+                                              SUCCESS - CLAIMABLE
                                           </span>
                                       </div>
 
                                       <div className="bg-white dark:bg-slate-900/50 rounded-xl p-4 border border-green-100 dark:border-green-900/30 mb-6">
                                            <div className="flex justify-between items-center mb-2">
-                                              <span className="text-sm text-slate-500 dark:text-slate-400">Solde Initial</span>
+                                              <span className="text-sm text-slate-500 dark:text-slate-400">Initial Balance</span>
                                               <span className="font-mono font-bold text-slate-700 dark:text-slate-300">{formatCurrency(vault.userBalance)}</span>
                                            </div>
                                            <div className="flex justify-between items-center mb-2 text-green-600 dark:text-green-400 text-sm">
@@ -2639,7 +2635,7 @@
                                            </div>
                                            <div className="h-px bg-slate-100 dark:bg-slate-700 my-2"></div>
                                            <div className="flex justify-between items-center">
-                                              <span className="font-bold text-slate-900 dark:text-white">Total Disponible</span>
+                                              <span className="font-bold text-slate-900 dark:text-white">Total Available</span>
                                               <span className="font-mono text-xl font-bold text-green-600 dark:text-green-400">{formatCurrency(details.totalPayout)}</span>
                                            </div>
                                       </div>
@@ -2648,7 +2644,7 @@
                                          onClick={() => handleClaim(vault)}
                                          className="w-full px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-bold shadow-lg shadow-green-200 dark:shadow-none transition-all flex justify-center items-center gap-2"
                                       >
-                                         <Coins className="h-5 w-5" /> Récupérer Gains & Capital
+                                         <Coins className="h-5 w-5" /> Claim Gains & Capital
                                       </button>
                                   </div>
                               );
@@ -2667,22 +2663,22 @@
                                               <p className="text-xs font-mono text-red-400 dark:text-red-500 mt-1">{vault.id}</p>
                                           </div>
                                           <span className="px-3 py-1 bg-red-100 dark:bg-red-900/50 rounded-full text-xs font-bold text-red-600 dark:text-red-300 border border-red-200 dark:border-red-600">
-                                              SINISTRE CONFIRMÉ
+                                              LOSS CONFIRMED
                                           </span>
                                       </div>
 
                                       <div className="bg-white dark:bg-slate-900/50 rounded-xl p-4 border border-red-100 dark:border-red-900/30 mb-6">
                                            <div className="flex justify-between items-center mb-2">
-                                              <span className="text-sm text-slate-500 dark:text-slate-400">Solde Initial</span>
+                                              <span className="text-sm text-slate-500 dark:text-slate-400">Initial Balance</span>
                                               <span className="font-mono font-bold text-slate-700 dark:text-slate-300">{formatCurrency(vault.userBalance)}</span>
                                            </div>
                                            <div className="flex justify-between items-center mb-2 text-red-600 dark:text-red-400 text-sm">
-                                              <span>Perte estimée</span>
+                                              <span>Estimated Loss</span>
                                               <span>- {formatCurrency(details.loss)}</span>
                                            </div>
                                            <div className="h-px bg-slate-100 dark:bg-slate-700 my-2"></div>
                                            <div className="flex justify-between items-center">
-                                              <span className="font-bold text-slate-900 dark:text-white">Reste à réclamer</span>
+                                              <span className="font-bold text-slate-900 dark:text-white">Remaining to Claim</span>
                                               <span className="font-mono text-xl font-bold text-green-600 dark:text-green-400">{formatCurrency(details.totalPayout)}</span>
                                            </div>
                                       </div>
@@ -2691,7 +2687,7 @@
                                          onClick={() => handleClaim(vault)}
                                          className="w-full px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-bold shadow-lg shadow-red-200 dark:shadow-none transition-all flex justify-center items-center gap-2"
                                       >
-                                         <Coins className="h-5 w-5" /> Réclamer les fonds restants
+                                         <Coins className="h-5 w-5" /> Claim Remaining Funds
                                       </button>
                                   </div>
                               );
@@ -2708,10 +2704,10 @@
                                       </div>
                                       <div className="flex flex-col items-end gap-1">
                                         <div className="px-3 py-1 bg-green-100 dark:bg-green-900/50 rounded-full text-xs font-bold text-green-600 dark:text-green-300 border border-green-200 dark:border-green-600">
-                                            INVESTISSEMENT ACTIF
+                                            ACTIVE INVESTMENT
                                         </div>
                                         <div className="p-[5px] flex items-center gap-1 text-slate-400 dark:text-slate-500">
-                                            <span className="text-xs font-medium">Détails</span>
+                                            <span className="text-xs font-medium">Details</span>
                                             <ChevronDown className="h-4 w-4 transition-transform duration-300 group-open:rotate-180" />
                                         </div>
                                       </div>
@@ -2719,7 +2715,7 @@
 
                                     <div className="grid grid-cols-2 gap-6">
                                       <div className="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-100 dark:border-slate-700 group-open:bg-white dark:group-open:bg-slate-800">
-                                        <p className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Montant Investi</p>
+                                        <p className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Invested Amount</p>
                                         <p className="text-2xl font-mono font-bold text-slate-900 dark:text-white">
                                           {formatCurrency(vault.userBalance)} <span className="text-sm font-sans font-normal text-slate-500 dark:text-slate-400">{vault.asset}</span>
                                         </p>
@@ -2728,7 +2724,7 @@
                                         <div className="absolute top-0 right-0 p-2 opacity-10">
                                           <Coins className="h-16 w-16 text-green-600 dark:text-green-400" />
                                         </div>
-                                        <p className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Valeur Estimée (Total)</p>
+                                        <p className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Estimated Value (Total)</p>
                                         <p className="text-2xl font-mono font-bold text-green-600 dark:text-green-400">
                                           {formatCurrency(totalEstimatedEnd)}
                                         </p>
@@ -2738,26 +2734,26 @@
 
                                 {/* --- SECTION DÉTAILLÉE (EXPANDED) --- */}
                                 <div className="mt-6 pt-6 border-t border-slate-200 dark:border-slate-700 animate-slide-up">
-                                    <h5 className="text-sm font-bold text-slate-900 dark:text-white mb-4">Répartition & Projections par Tranche</h5>
+                                    <h5 className="text-sm font-bold text-slate-900 dark:text-white mb-4">Allocation & Projections by Tranche</h5>
 
                                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                         {/* TRANCHE SENIOR */}
                                         <div className="p-4 rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800/50">
                                             <div className="flex items-center gap-2 mb-3">
                                                 <span className="w-2 h-2 rounded-full bg-blue-500"></span>
-                                                <span className="font-bold text-blue-700 dark:text-blue-300 text-sm">Tranche Senior</span>
+                                                <span className="font-bold text-blue-700 dark:text-blue-300 text-sm">Senior Tranche</span>
                                             </div>
                                             <div className="space-y-2">
                                                 <div className="flex justify-between text-sm">
-                                                    <span className="text-slate-500 dark:text-slate-400">Investi</span>
+                                                    <span className="text-slate-500 dark:text-slate-400">Invested</span>
                                                     <span className="font-mono font-bold text-slate-700 dark:text-slate-200">{formatCurrency(userSenior)}</span>
                                                 </div>
                                                 <div className="flex justify-between text-sm">
-                                                    <span className="text-slate-500 dark:text-slate-400">APR Est.</span>
+                                                    <span className="text-slate-500 dark:text-slate-400">Est. APR</span>
                                                     <span className="font-mono font-bold text-blue-600 dark:text-blue-400">{seniorApr.toFixed(2)}%</span>
                                                 </div>
                                                 <div className="pt-2 mt-2 border-t border-blue-200 dark:border-blue-800/50 flex justify-between text-sm">
-                                                    <span className="text-slate-600 dark:text-slate-300 font-medium">Fin Est.</span>
+                                                    <span className="text-slate-600 dark:text-slate-300 font-medium">Est. End</span>
                                                     <span className="font-mono font-bold text-blue-700 dark:text-blue-300">{formatCurrency(estimatedSeniorEnd)}</span>
                                                 </div>
                                             </div>
@@ -2767,19 +2763,19 @@
                                         <div className="p-4 rounded-xl bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800/50">
                                             <div className="flex items-center gap-2 mb-3">
                                                 <span className="w-2 h-2 rounded-full bg-indigo-500"></span>
-                                                <span className="font-bold text-indigo-700 dark:text-indigo-300 text-sm">Tranche Junior</span>
+                                                <span className="font-bold text-indigo-700 dark:text-indigo-300 text-sm">Junior Tranche</span>
                                             </div>
                                             <div className="space-y-2">
                                                 <div className="flex justify-between text-sm">
-                                                    <span className="text-slate-500 dark:text-slate-400">Investi</span>
+                                                    <span className="text-slate-500 dark:text-slate-400">Invested</span>
                                                     <span className="font-mono font-bold text-slate-700 dark:text-slate-200">{formatCurrency(userJunior)}</span>
                                                 </div>
                                                 <div className="flex justify-between text-sm">
-                                                    <span className="text-slate-500 dark:text-slate-400">APR Est.</span>
+                                                    <span className="text-slate-500 dark:text-slate-400">Est. APR</span>
                                                     <span className="font-mono font-bold text-indigo-600 dark:text-indigo-400">{juniorApr.toFixed(2)}%</span>
                                                 </div>
                                                 <div className="pt-2 mt-2 border-t border-indigo-200 dark:border-indigo-800/50 flex justify-between text-sm">
-                                                    <span className="text-slate-600 dark:text-slate-300 font-medium">Fin Est.</span>
+                                                    <span className="text-slate-600 dark:text-slate-300 font-medium">Est. End</span>
                                                     <span className="font-mono font-bold text-indigo-700 dark:text-indigo-300">{formatCurrency(estimatedJuniorEnd)}</span>
                                                 </div>
                                             </div>
@@ -2788,10 +2784,10 @@
                                         {/* RÉSUMÉ TOTAL */}
                                         <div className="p-4 rounded-xl bg-green-50 dark:bg-green-900/20 border border-green-100 dark:border-green-800/50 flex flex-col justify-center">
                                              <div className="text-center">
-                                                 <p className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Total Estimé à Maturité</p>
+                                                 <p className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Estimated Total at Maturity</p>
                                                  <p className="text-2xl font-bold text-green-700 dark:text-green-400 font-mono">{formatCurrency(totalEstimatedEnd)}</p>
                                                  <p className="text-[10px] text-green-600/70 dark:text-green-400/70 mt-1">
-                                                     Gain Potentiel: +{formatCurrency(totalEstimatedEnd - vault.userBalance)}
+                                                     Potential Gain: +{formatCurrency(totalEstimatedEnd - vault.userBalance)}
                                                  </p>
                                              </div>
                                         </div>
@@ -2802,7 +2798,7 @@
                                           onClick={(e) => { e.preventDefault(); setActiveRole('investor'); setSelectedVault(vault); }}
                                           className="px-6 py-2 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 hover:border-blue-500 dark:hover:border-blue-500 text-slate-900 dark:text-white rounded-lg font-bold text-sm transition-all shadow-sm hover:shadow flex items-center gap-2"
                                         >
-                                          Gérer / Ajuster Position <ArrowRight className="h-4 w-4" />
+                                          Manage / Adjust Position <ArrowRight className="h-4 w-4" />
                                         </button>
                                     </div>
                                 </div>
@@ -2812,9 +2808,9 @@
 
                         {vaults.filter(v => v.userBalance > 0).length === 0 && (
                           <div className="p-12 text-center">
-                            <p className="text-slate-400 dark:text-slate-500 mb-2">Aucun investissement actif.</p>
+                            <p className="text-slate-400 dark:text-slate-500 mb-2">No active investments.</p>
                             <button onClick={() => setActiveRole('investor')} className="text-green-600 dark:text-green-400 hover:underline text-sm">
-                              Explorer les opportunités
+                              Explore opportunities
                             </button>
                           </div>
                         )}
@@ -2832,13 +2828,13 @@
                         <Wind className="h-10 w-10 text-red-600 dark:text-red-400" />
                       </div>
                       <h2 className="text-3xl font-bold text-slate-900 dark:text-white">Oracle Dashboard</h2>
-                      <p className="text-slate-500 dark:text-slate-400 mt-2">Interface de surveillance des triggers paramétriques</p>
+                      <p className="text-slate-500 dark:text-slate-400 mt-2">Parametric trigger monitoring interface</p>
                     </div>
 
                     <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
                       <div className="p-6 bg-slate-50 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center">
                         <h3 className="font-bold text-slate-700 dark:text-slate-300 flex items-center gap-2">
-                          <Activity className="h-4 w-4" /> Flux de Données en Temps Réel
+                          <Activity className="h-4 w-4" /> Real-Time Data Feed
                         </h3>
                         <span className="flex h-3 w-3 relative">
                           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
@@ -2858,22 +2854,22 @@
                                 <div className="px-3 py-1 bg-slate-100 dark:bg-slate-700 rounded-full text-xs font-bold text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-600">
                                     MONITORING ACTIVE
                                 </div>
-                                <span className="text-xs font-medium text-slate-400 dark:text-slate-500">Modèle de Risque: {vault.riskProb}%</span>
+                                <span className="text-xs font-medium text-slate-400 dark:text-slate-500">Risk Model: {vault.riskProb}%</span>
                               </div>
                             </div>
 
                             <div className="grid grid-cols-2 gap-6 mb-8">
                               <div className="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-100 dark:border-slate-700">
-                                <p className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Seuil de Déclenchement</p>
+                                <p className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Trigger Threshold</p>
                                 <p className="text-2xl font-mono font-bold text-slate-900 dark:text-white">
-                                  {vault.triggerValue} <span className="text-sm font-sans font-normal text-slate-500 dark:text-slate-400">unités</span>
+                                  {vault.triggerValue} <span className="text-sm font-sans font-normal text-slate-500 dark:text-slate-400">units</span>
                                 </p>
                               </div>
                               <div className="bg-white dark:bg-slate-900/30 p-4 rounded-xl border-2 border-green-100 dark:border-green-800 relative overflow-hidden">
                                 <div className="absolute top-0 right-0 p-2 opacity-10">
                                   <Activity className="h-16 w-16 text-green-600 dark:text-green-400" />
                                 </div>
-                                <p className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Donnée Capteur (Live)</p>
+                                <p className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Sensor Data (Live)</p>
                                 <p className="text-2xl font-mono font-bold text-green-600 dark:text-green-400">
                                   {Math.floor(vault.triggerValue * 0.2)} <span className="text-sm font-sans font-normal text-slate-400 dark:text-slate-500">/ {vault.triggerValue}</span>
                                 </p>
@@ -2886,16 +2882,16 @@
                                   <AlertTriangle className="h-6 w-6 text-red-600 dark:text-red-400" />
                                 </div>
                                 <div className="flex-1">
-                                  <p className="font-bold text-red-900 dark:text-red-300">Zone de Test (Simulation)</p>
+                                  <p className="font-bold text-red-900 dark:text-red-300">Test Zone (Simulation)</p>
                                   <p className="text-xs text-red-700 dark:text-red-400">
-                                    Simuler une catastrophe envoie une transaction `triggerCatastrophe()` au Smart Contract.
+                                    Simulating a catastrophe sends a `triggerCatastrophe()` transaction to the Smart Contract.
                                   </p>
                                 </div>
                                 <button
                                   onClick={() => handleTriggerOracle(vault.id)}
                                   className="px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-bold shadow-lg shadow-red-200 dark:shadow-none transition-all active:scale-95"
                                 >
-                                  SIMULER CRASH
+                                  SIMULATE CRASH
                                 </button>
                               </div>
                             </div>
@@ -2904,9 +2900,9 @@
 
                         {vaults.filter(v => v.status === 'OPEN').length === 0 && (
                           <div className="p-12 text-center">
-                            <p className="text-slate-400 dark:text-slate-500 mb-2">Aucun vault actif à surveiller.</p>
+                            <p className="text-slate-400 dark:text-slate-500 mb-2">No active vaults to monitor.</p>
                             <button onClick={() => setActiveRole('insurer')} className="text-blue-600 dark:text-blue-400 hover:underline text-sm">
-                              Créer un vault en tant qu'assureur
+                              Create a vault as an insurer
                             </button>
                           </div>
                         )}
