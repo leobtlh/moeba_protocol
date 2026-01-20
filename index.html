@@ -34,29 +34,29 @@
 
                             <div class="hide-menu">
                                 <a class="stick" href="#">│</a>
-                                <a class="nav-link" href="#home">Accueil</a><span class="stick"> · </span>
-                                <a class="nav-link" href="#concepts">Architecture</a><span class="stick"> · </span>
-                                <a class="nav-link" href="#mechanics">Mechanics</a><span class="stick"> · </span>
-                                <a class="nav-link" href="#regulation">Conformité</a><span class="stick"> · </span>
-                                <a class="nav-link" href="#ecosystem">Écosystème</a>
+                                <a class="nav-link" data-i18n="home" href="#home">Accueil</a><span class="stick"> · </span>
+                                <a class="nav-link" data-i18n="concepts" href="#concepts">Architecture</a><span class="stick"> · </span>
+                                <a class="nav-link" data-i18n="mechanics" href="#mechanics">Mécanique</a><span class="stick"> · </span>
+                                <a class="nav-link" data-i18n="regulation" href="#regulation">Conformité</a><span class="stick"> · </span>
+                                <a class="nav-link" data-i18n="ecosystem" href="#ecosystem">Écosystème</a>
                             </div>
                         </div>
 
                     </div>
 
                     <div class="nav-actions">
-                        <a class="nav-link" href="documentation/index.html" target="_blank">Doc</a>
-                        <a class="nav-link" href="https://github.com/leobtlh/moeba_protocol/blob/main/ressources/whitepaper.md" target="_blank">Whitepaper</a>
+                        <a class="nav-link" data-i18n="doc" href="documentation/index.html" target="_blank">Doc</a>
+                        <a class="nav-link" data-i18n="whitepaper" href="https://github.com/leobtlh/moeba_protocol/blob/main/ressources/whitepaper.md" target="_blank">Whitepaper</a>
                         <button id="langToggle" class="menu-language nav-link" onclick="toggleLanguage()">EN</button>
                         <button class="nav-btn-icon" id="themeSwitch" aria-label="Toggle Dark Mode"></button>
-                        <a class="btn-primary" href="app/app.html" target="_blank">Launch dApp</a>
+                        <a class="btn-primary" data-i18n="launch_dapp" href="app/app.html" target="_blank">Launch dApp</a>
                     </div>
                 </nav>
             </header>
 
             <main class="content-wrapper">
                 <div class="hero-content">
-                    <div class="badge">Hybrid Parametric Insurance Vault (HPIV)</div>
+                    <div class="badge" data-i18n="badge_hpiv">Hybrid Parametric Insurance Vault (HPIV)</div>
                     <h1 class="main-title" data-i18n="main_title" style="font-size: 3.5rem;">Infrastructure Décentralisée d'Assurance Paramétrique.</h1>
                     <p class="subtitle" data-i18n="sub_title">
                         La solution au risque binaire des Cat Bonds traditionnels.<br>
@@ -66,15 +66,15 @@
                     <div class="stats-row">
                         <div class="stat-item">
                             <span class="stat-value">Yield Splitting</span>
-                            <span class="stat-label">Levier Junior / Sécurité Senior</span>
+                            <span class="stat-label" data-i18n="junior_senior">Levier Junior / Sécurité Senior</span>
                         </div>
                         <div class="stat-item">
                             <span class="stat-value">ERC-4626</span>
-                            <span class="stat-label">Liquidité Standardisée</span>
+                            <span class="stat-label" data-i18n="liquidity">Liquidité Standardisée</span>
                         </div>
                         <div class="stat-item">
                             <span class="stat-value">VUSA</span>
-                            <span class="stat-label">Conformité Suisse (LSA)</span>
+                            <span class="stat-label" data-i18n="compliance">Conformité Suisse (LSA)</span>
                         </div>
                     </div>
                 </div>
@@ -84,8 +84,8 @@
         <!-- PAGE 2 : LE MÉCANISME DE BASE -->
         <section id="concepts" class="page page-tech">
             <main class="content-wrapper">
-                <h2 class="section-title">Architecture Multi-Tranches</h2>
-                <p class="section-desc">Le standard HPIV introduit une hiérarchie de capital pour absorber les chocs sans liquider les investisseurs.</p>
+                <h2 class="section-title" data-i18n="multi_slice">Architecture Multi-Tranches</h2>
+                <p class="section-desc" data-i18n="section_desc_concepts">Le standard HPIV introduit une hiérarchie de capital pour absorber les chocs sans liquider les investisseurs.</p>
 
                 <div class="bento-grid">
                     <!-- Carte 1 : Tranches -->
@@ -94,13 +94,13 @@
                             <div class="card-icon"><img src="img/greenShield.png" alt="GREEN_SHIELD" class="logo-img" onerror="this.src='https://placehold.co/50?text=S'"/></div>
                             <button class="close-btn" aria-label="Fermer">×</button>
                         </div>
-                        <h3>Capital "First Loss"</h3>
-                        <p>Segmentation via <strong>Tranche Junior (ERC-20)</strong> et <strong>Tranche Senior (ERC-4626)</strong>. L'assureur (Sponsor) engage son propre capital en priorité.</p>
+                        <h3 data-i18n="card1_title">Capital "First Loss"</h3>
+                        <p data-i18n="card1_desc">Segmentation via <strong>Tranche Junior (ERC-20)</strong> et <strong>Tranche Senior (ERC-4626)</strong>. L'assureur (Sponsor) engage son propre capital en priorité.</p>
 
                         <div class="card-details">
-                            <h4>Segmentation du Risque</h4>
-                            <p>Le protocole impose à l'assureur de déposer un <strong>Capital First Loss</strong> (Tranche Junior). Ce tampon de sécurité est sacrifié en premier lors d'un sinistre.</p>
-                            <p>Les investisseurs (LPs) se positionnent majoritairement sur la <strong>Tranche Senior</strong>. Leur liquidité n'est exposée qu'après épuisement total du capital de l'assureur et de la Tranche Junior.</p>
+                            <h4 data-i18n="card1_sub1_title">Segmentation du Risque</h4>
+                            <p data-i18n="card1_sub1_desc1">Le protocole impose à l'assureur de déposer un <strong>Capital First Loss</strong> (Tranche Junior). Ce tampon de sécurité est sacrifié en premier lors d'un sinistre.</p>
+                            <p data-i18n="card1_sub1_desc2">Les investisseurs (LPs) se positionnent majoritairement sur la <strong>Tranche Senior</strong>. Leur liquidité n'est exposée qu'après épuisement total du capital de l'assureur et de la Tranche Junior.</p>
                         </div>
                     </article>
 
@@ -110,19 +110,19 @@
                             <div class="card-icon"><img src="img/blueGraph.png" alt="BLUE_GRAPH" class="logo-img" onerror="this.src='https://placehold.co/50?text=G'"/></div>
                             <button class="close-btn" aria-label="Fermer">×</button>
                         </div>
-                        <h3>Mécanisme Waterfall</h3>
-                        <p>En cas de catastrophe, la fonction <code>triggerCatastrophe</code> exécute une absorption séquentielle des pertes.</p>
+                        <h3 data-i18n="card2_title">Mécanisme Waterfall</h3>
+                        <p data-i18n="card2_desc">En cas de catastrophe, la fonction <code>triggerCatastrophe</code> exécute une absorption séquentielle des pertes.</p>
 
                         <div class="card-details">
-                            <h4>Simulation de "Soft Default"</h4>
-                            <p>Exemple Whitepaper (Vault 40M$, Sinistre 8M$) :</p>
+                            <h4 data-i18n="card2_sub1_title">Simulation de "Soft Default"</h4>
+                            <p data-i18n="card2_sub1_desc1">Exemple Whitepaper (Vault 40M$, Sinistre 8M$) :</p>
                             <ul>
-                                <li><strong>1. Assureur :</strong> Perd ses 4M$ de First Loss (100% perte).</li>
-                                <li><strong>2. Buffer :</strong> La Réserve de Prime absorbe le reliquat.</li>
-                                <li><strong>3. Tranche Junior :</strong> Absorbe les 4M$ restants (80% perte).</li>
-                                <li><strong>4. Tranche Senior :</strong> Intacte (0% perte).</li>
+                                <li data-i18n="card2_list1"><strong>1. Assureur :</strong> Perd ses 4M$ de First Loss (100% perte).</li>
+                                <li data-i18n="card2_list2"><strong>2. Buffer :</strong> La Réserve de Prime absorbe le reliquat.</li>
+                                <li data-i18n="card2_list3"><strong>3. Tranche Junior :</strong> Absorbe les 4M$ restants (80% perte).</li>
+                                <li data-i18n="card2_list4"><strong>4. Tranche Senior :</strong> Intacte (0% perte).</li>
                             </ul>
-                            <p>Résultat : Le Senior est protégé par le sacrifice des tranches inférieures.</p>
+                            <p data-i18n="card2_result">Résultat : Le Senior est protégé par le sacrifice des tranches inférieures.</p>
                         </div>
                     </article>
 
@@ -132,13 +132,13 @@
                             <div class="card-icon"><img src="img/yellowGold.png" alt="YELLOW_GOLD" class="logo-img" onerror="this.src='https://placehold.co/50?text=Y'"/></div>
                             <button class="close-btn" aria-label="Fermer">×</button>
                         </div>
-                        <h3>Yield Splitting</h3>
-                        <p>Distribution asymétrique du rendement.</p>
+                        <h3 data-i18n="card3_title">Yield Splitting</h3>
+                        <p data-i18n="card3_desc">Distribution asymétrique du rendement.</p>
 
                         <div class="card-details">
-                            <h4>Levier de Rendement</h4>
-                            <p><strong>Senior :</strong> Reçoit 70% de l'APR de base en échange de la sécurité (Safety First).</p>
-                            <p><strong>Junior :</strong> Capte l'effet de levier sur le reliquat des primes (30% du rendement Senior redirigé), boostant mécaniquement son APR (Yield Seekers).</p>
+                            <h4 data-i18n="card3_sub1_title">Levier de Rendement</h4>
+                            <p data-i18n="card3_sub1_desc1"><strong>Senior :</strong> Reçoit 70% de l'APR de base en échange de la sécurité (Safety First).</p>
+                            <p data-i18n="card3_sub1_desc2"><strong>Junior :</strong> Capte l'effet de levier sur le reliquat des primes (30% du rendement Senior redirigé), boostant mécaniquement son APR (Yield Seekers).</p>
                         </div>
                     </article>
                 </div>
@@ -152,8 +152,8 @@
             <img src="img/croco.png" class="bg-sheep bg-croco-right" alt="" onerror="this.style.display='none'" />
 
             <main class="content-wrapper">
-                <h2 class="section-title">Ingénierie Financière</h2>
-                <p class="section-desc">Sécurité mathématique on-chain et intégrité des données via Oracles.</p>
+                <h2 class="section-title" data-i18n="mechanics_title">Ingénierie Financière</h2>
+                <p class="section-desc" data-i18n="mechanics_desc">Sécurité mathématique on-chain et intégrité des données via Oracles.</p>
 
                 <div class="bento-grid">
                     <!-- Carte 7 : Risque de Base & Dual Trigger (Large) -->
@@ -162,19 +162,19 @@
                             <div class="card-icon"><img src="img/pinkLaw.png" alt="DUAL_TRIGGER" class="logo-img" onerror="this.src='https://placehold.co/50?text=D'"/></div>
                             <button class="close-btn" aria-label="Fermer">×</button>
                         </div>
-                        <h3>Oracles & Sécurité</h3>
-                        <p>Déclenchement automatisé par oracles chain-agnostic et protection contre les vecteurs d'attaque ERC-4626.</p>
+                        <h3 data-i18n="card7_title">Oracles & Sécurité</h3>
+                        <p data-i18n="card7_desc">Déclenchement automatisé par oracles chain-agnostic et protection contre les vecteurs d'attaque ERC-4626.</p>
 
                         <div class="card-details">
-                            <h4>Intégrité Technique</h4>
-                            <p>Le Vault intègre des mécanismes de défense avancés :</p>
+                            <h4 data-i18n="card7_sub1_title">Intégrité Technique</h4>
+                            <p data-i18n="card7_sub1_desc">Le Vault intègre des mécanismes de défense avancés :</p>
                             <ol>
-                                <li><strong>Anti-Inflation Attack :</strong> Minting de "Dead Shares" à l'initialisation pour verrouiller le taux de change et empêcher les attaques par donation.</li>
-                                <li><strong>Oracles Certifiés :</strong> Intégration de flux de données (USGS, NOAA) pour le déclenchement objectif des sinistres.</li>
+                                <li data-i18n="card7_list1"><strong>Anti-Inflation Attack :</strong> Minting de "Dead Shares" à l'initialisation pour verrouiller le taux de change et empêcher les attaques par donation.</li>
+                                <li data-i18n="card7_list2"><strong>Oracles Certifiés :</strong> Intégration de flux de données (USGS, NOAA) pour le déclenchement objectif des sinistres.</li>
                             </ol>
 
-                            <h4>Sur-Collatéralisation</h4>
-                            <p>Le contrat vérifie mathématiquement <code>TotalAssets >= Capacité</code> avant tout dépôt. Le risque est toujours "Fully Funded" pour éliminer le risque de contrepartie.</p>
+                            <h4 data-i18n="card7_sub2_title">Sur-Collatéralisation</h4>
+                            <p data-i18n="card7_sub2_desc">Le contrat vérifie mathématiquement <code>TotalAssets >= Capacité</code> avant tout dépôt. Le risque est toujours "Fully Funded" pour éliminer le risque de contrepartie.</p>
                         </div>
                     </article>
 
@@ -184,13 +184,13 @@
                             <div class="card-icon"><img src="img/yellowGold.png" alt="PREMIUMS" class="logo-img" onerror="this.src='https://placehold.co/50?text=P'"/></div>
                             <button class="close-btn" aria-label="Fermer">×</button>
                         </div>
-                        <h3>Premium Reserve</h3>
-                        <p>La <code>premiumReserve</code> est sanctuarisée et isolée du capital à risque.</p>
+                        <h3 data-i18n="card8_title">Premium Reserve</h3>
+                        <p data-i18n="card8_desc">La <code>premiumReserve</code> est sanctuarisée et isolée du capital à risque.</p>
 
                         <div class="card-details">
-                            <h4>Rendement Garanti</h4>
-                            <p>La prime versée par l'assureur est stockée dans une variable d'état distincte. Elle sert de tampon secondaire dans la Waterfall (après le capital assureur) mais ne constitue jamais le collatéral primaire du risque.</p>
-                            <p>À maturité, cette réserve est la source unique du rendement distribué aux investisseurs Senior et Junior.</p>
+                            <h4 data-i18n="card8_sub1_title">Rendement Garanti</h4>
+                            <p data-i18n="card8_sub1_desc1">La prime versée par l'assureur est stockée dans une variable d'état distincte. Elle sert de tampon secondaire dans la Waterfall (après le capital assureur) mais ne constitue jamais le collatéral primaire du risque.</p>
+                            <p data-i18n="card8_sub1_desc2">À maturité, cette réserve est la source unique du rendement distribué aux investisseurs Senior et Junior.</p>
                         </div>
                     </article>
                 </div>
@@ -200,8 +200,8 @@
         <!-- PAGE 4 : RÉGULATION -->
         <section id="regulation" class="page page-trust">
             <main class="content-wrapper">
-                <h2 class="section-title">Cadre Réglementaire Suisse</h2>
-                <p class="section-desc">Conçu selon les exigences de la LSA révisée et de la Loi DLT/TRD.</p>
+                <h2 class="section-title" data-i18n="regulation_title">Cadre Réglementaire Suisse</h2>
+                <p class="section-desc" data-i18n="regulation_desc">Conçu selon les exigences de la LSA révisée et de la Loi DLT/TRD.</p>
 
                 <div class="bento-grid">
                     <article class="card card-wide" data-card="4">
@@ -209,13 +209,13 @@
                             <div class="card-icon"><img src="img/swissFlag.jpeg" alt="SWISS_FLAG" class="logo-img" onerror="this.src='https://placehold.co/50?text=CH'"/></div>
                             <button class="close-btn" aria-label="Fermer">×</button>
                         </div>
-                        <h3>Véhicule VUSA (Art. 30e LSA)</h3>
-                        <p>Structure juridique de "Véhicule à Usage Spécifique d'Assurance" (ISPV). Transformateur de risques financé intégralement par le marché des capitaux.</p>
+                        <h3 data-i18n="card4_title">Véhicule VUSA (Art. 30e LSA)</h3>
+                        <p data-i18n="card4_desc">Structure juridique de "Véhicule à Usage Spécifique d'Assurance" (ISPV). Transformateur de risques financé intégralement par le marché des capitaux.</p>
 
                         <div class="card-details">
-                            <h4>Conformité LSA Révisée</h4>
-                            <p>Le protocole respecte l'exigence de <strong>"Fully Funded"</strong> (Art. 111d AVO) : le VUSA dispose à tout moment d'actifs couvrant l'exposition maximale.</p>
-                            <p>Utilisation des exemptions pour <strong>"Preneurs d'Assurance Professionnels"</strong> (Art. 30a LSA) pour optimiser les exigences de solvabilité et de fonds d'organisation.</p>
+                            <h4 data-i18n="card4_sub1_title">Conformité LSA Révisée</h4>
+                            <p data-i18n="card4_sub1_desc1">Le protocole respecte l'exigence de <strong>"Fully Funded"</strong> (Art. 111d AVO) : le VUSA dispose à tout moment d'actifs couvrant l'exposition maximale.</p>
+                            <p data-i18n="card4_sub1_desc2">Utilisation des exemptions pour <strong>"Preneurs d'Assurance Professionnels"</strong> (Art. 30a LSA) pour optimiser les exigences de solvabilité et de fonds d'organisation.</p>
                         </div>
                     </article>
 
@@ -224,12 +224,12 @@
                             <div class="card-icon"><img src="img/pinkLaw.png" alt="PINK_LAW" class="logo-img" onerror="this.src='https://placehold.co/50?text=L'"/></div>
                             <button class="close-btn" aria-label="Fermer">×</button>
                         </div>
-                        <h3>Loi DLT (Art. 973d CO)</h3>
-                        <p>Les tokens HPIV sont qualifiés de <strong>Droits-Valeurs Inscrits</strong> (Ledger-based Securities).</p>
+                        <h3 data-i18n="card5_title">Loi DLT (Art. 973d CO)</h3>
+                        <p data-i18n="card5_desc">Les tokens HPIV sont qualifiés de <strong>Droits-Valeurs Inscrits</strong> (Ledger-based Securities).</p>
 
                         <div class="card-details">
-                            <h4>Sécurité Juridique</h4>
-                            <p>En vertu de la Loi TRD/DLT, la blockchain agit comme registre officiel de propriété. Le transfert du token équivaut juridiquement au transfert de la créance (Convention d'inscription), offrant une robustesse légale aux investisseurs institutionnels sans dépositaire central.</p>
+                            <h4 data-i18n="card5_sub1_title">Sécurité Juridique</h4>
+                            <p data-i18n="card5_sub1_desc">En vertu de la Loi TRD/DLT, la blockchain agit comme registre officiel de propriété. Le transfert du token équivaut juridiquement au transfert de la créance (Convention d'inscription), offrant une robustesse légale aux investisseurs institutionnels sans dépositaire central.</p>
                         </div>
                     </article>
 
@@ -238,13 +238,13 @@
                             <div class="card-icon"><img src="img/blueLoop.png" alt="BLUE_LOOP" class="logo-img" onerror="this.src='https://placehold.co/50?text=O'"/></div>
                             <button class="close-btn" aria-label="Fermer">×</button>
                         </div>
-                        <h3>Conformité LBA & LSFin</h3>
-                        <p>Architecture "Permissioned DeFi" avec Whitelisting (KYB/KYC) via la Factory.</p>
+                        <h3 data-i18n="card6_title">Conformité LBA & LSFin</h3>
+                        <p data-i18n="card6_desc">Architecture "Permissioned DeFi" avec Whitelisting (KYB/KYC) via la Factory.</p>
 
                         <div class="card-details">
-                            <h4>Cadre Anti-Blanchiment</h4>
-                            <p>Le VUSA agit comme intermédiaire financier (Art. 2 LBA). Le Smart Contract <code>HPIVFactory</code> gère un registre d'assureurs whitelistés.</p>
-                            <p>Le ciblage des <strong>Investisseurs Qualifiés</strong> permet l'exemption de prospectus (LSFin), alignant le protocole avec les standards institutionnels.</p>
+                            <h4 data-i18n="card6_sub1_title">Cadre Anti-Blanchiment</h4>
+                            <p data-i18n="card6_sub1_desc1">Le VUSA agit comme intermédiaire financier (Art. 2 LBA). Le Smart Contract <code>HPIVFactory</code> gère un registre d'assureurs whitelistés.</p>
+                            <p data-i18n="card6_sub1_desc2">Le ciblage des <strong>Investisseurs Qualifiés</strong> permet l'exemption de prospectus (LSFin), alignant le protocole avec les standards institutionnels.</p>
                         </div>
                     </article>
                 </div>
@@ -254,59 +254,59 @@
         <!-- PAGE 5 : FOOTER / LIENS -->
         <section id="ecosystem" class="page page-trust">
             <main class="content-wrapper">
-                <h2 class="section-title">Écosystème & Ressources</h2>
-                <p class="section-desc">Documentation technique, audits et analyses réglementaires.</p>
+                <h2 class="section-title" data-i18n="ecosystem_title">Écosystème & Ressources</h2>
+                <p class="section-desc" data-i18n="ecosystem_desc">Documentation technique, audits et analyses réglementaires.</p>
 
                 <div class="links-container">
                     <div class="link-col">
-                        <h3>Protocole</h3>
+                        <h3 data-i18n="col_protocol">Protocole</h3>
                         <ul class="link-list">
-                            <li><a href="#">Architecture HPIV</a></li>
-                            <li><a href="#">Smart Contracts (Solidity)</a></li>
-                            <li><a href="#">Soft Default Mechanics</a></li>
-                            <li><a href="#">Marché Secondaire DLT</a></li>
+                            <li><a href="#" data-i18n="link_arch">Architecture HPIV</a></li>
+                            <li><a href="#" data-i18n="link_sc">Smart Contracts (Solidity)</a></li>
+                            <li><a href="#" data-i18n="link_soft">Soft Default Mechanics</a></li>
+                            <li><a href="#" data-i18n="link_market">Marché Secondaire DLT</a></li>
                         </ul>
-                        <h3>Organisation</h3>
+                        <h3 data-i18n="col_org">Organisation</h3>
                         <ul class="link-list">
-                            <li><a href="#">À propos</a></li>
-                            <li><a href="#">Partenaires VUSA</a></li>
-                            <li><a href="#">Carrière</a></li>
+                            <li><a href="#" data-i18n="link_about">À propos</a></li>
+                            <li><a href="#" data-i18n="link_partners">Partenaires VUSA</a></li>
+                            <li><a href="#" data-i18n="link_career">Carrière</a></li>
                         </ul>
                     </div>
 
                     <div class="link-col">
-                        <h3>Ressources</h3>
+                        <h3 data-i18n="col_resources">Ressources</h3>
                         <ul class="link-list">
-                            <li><a href="https://github.com/leobtlh/moeba_protocol/blob/main/ressources/whitepaper.md">Whitepaper Technique</a></li>
-                            <li><a href="documentation/index.html">Documentation API</a></li>
-                            <li><a href="https://github.com/leobtlh/moeba_protocol/tree/main">GitHub Repository</a></li>
-                            <li><a href="#">Rapport Mathématique</a></li>
+                            <li><a href="https://github.com/leobtlh/moeba_protocol/blob/main/ressources/whitepaper.md" data-i18n="link_wp">Whitepaper Technique</a></li>
+                            <li><a href="documentation/index.html" data-i18n="link_api">Documentation API</a></li>
+                            <li><a href="https://github.com/leobtlh/moeba_protocol/tree/main" data-i18n="link_repo">GitHub Repository</a></li>
+                            <li><a href="#" data-i18n="link_math">Rapport Mathématique</a></li>
                         </ul>
-                        <h3>Contact</h3>
+                        <h3 data-i18n="col_contact">Contact</h3>
                         <ul class="link-list">
-                            <li><a href="#">Siège : Lausanne, Suisse</a></li>
-                            <li><a href="#">Mail : info@moeba.ch</a></li>
+                            <li><a href="#" data-i18n="link_seat">Siège : Lausanne, Suisse</a></li>
+                            <li><a href="#" data-i18n="link_mail">Mail : info@moeba.ch</a></li>
                             <li><a href="https://discord.gg/HGaYQNJh" target="_blank">Discord</a></li>
                         </ul>
                     </div>
 
                     <div class="link-col">
-                        <h3>Légal & Conformité</h3>
+                        <h3 data-i18n="col_legal">Légal & Conformité</h3>
                         <ul class="link-list">
-                            <li><a href="#">Veille Réglementaire FINMA</a></li>
-                            <li><a href="#">Registre des Droits-Valeurs</a></li>
-                            <li><a href="#">Politique LBA/AML</a></li>
-                            <li><a href="#">Avertissement Risques</a></li>
+                            <li><a href="#" data-i18n="link_finma">Veille Réglementaire FINMA</a></li>
+                            <li><a href="#" data-i18n="link_rights">Registre des Droits-Valeurs</a></li>
+                            <li><a href="#" data-i18n="link_aml">Politique LBA/AML</a></li>
+                            <li><a href="#" data-i18n="link_risk">Avertissement Risques</a></li>
                         </ul>
-                        <h3>Accès</h3>
+                        <h3 data-i18n="col_access">Accès</h3>
                         <ul class="link-list">
-                            <li><a href="backoffice/backoffice.html" target="_blank">Backoffice</a></li>
+                            <li><a href="backoffice/backoffice.html" target="_blank" data-i18n="link_backoffice">Backoffice</a></li>
                         </ul>
                     </div>
                 </div>
 
                 <footer class="site-footer">
-                    <p>© Mœba Protocol 2026 • Infrastructure VUSA Suisse.</p>
+                    <p data-i18n="footer_copy">© Mœba Protocol 2026 • Infrastructure VUSA Suisse.</p>
                 </footer>
             </main>
         </section>

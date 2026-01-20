@@ -12,7 +12,7 @@
 
   /* Layout */
   --container-width: full;
-  --header-height: 80px;
+  --header-height: 65px;
 }
 
 /* Light Mode Override (activé par JS) */
