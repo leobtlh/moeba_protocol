@@ -1,3 +1,16 @@
+// Désactiver la restauration automatique du scroll par le navigateur
+if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+}
+
+// Forcer le retour en haut au chargement
+window.addEventListener('load', function() {
+    window.scrollTo(0, 0);
+
+    // Optionnel : Si tu veux aussi que l'URL affiche proprement ".../#home"
+    // history.replaceState(null, null, '#home');
+});
+
 // 1. Dictionnaire des traductions
 const translations = {
     fr: {
@@ -97,13 +110,13 @@ const translations = {
         ecosystem_title: "Écosystème & Ressources",
         ecosystem_desc: "Documentation technique, audits et analyses réglementaires.",
         col_protocol: "Protocole",
-        link_arch: "Architecture HPIV",
+        link_arch: "HPIV Architecture",
         link_sc: "Smart Contracts (Solidity)",
         link_soft: "Soft Default Mechanics",
-        link_market: "Marché Secondaire DLT",
+        link_market: "DLT Secondary Market",
         col_org: "Organisation",
         link_about: "À propos",
-        link_partners: "Partenaires VUSA",
+        link_partners: "ISPV Partners",
         link_career: "Carrière",
         col_resources: "Ressources",
         link_wp: "Whitepaper Technique",
@@ -115,9 +128,9 @@ const translations = {
         link_mail: "Mail : info@moeba.ch",
         col_legal: "Légal & Conformité",
         link_finma: "Veille Réglementaire FINMA",
-        link_rights: "Registre des Droits-Valeurs",
-        link_aml: "Politique LBA/AML",
-        link_risk: "Avertissement Risques",
+        link_rights: "Ledger-based Securities Registry",
+        link_aml: "AMLA/KYC Policy",
+        link_risk: "Risk Warning",
         col_access: "Accès",
         link_backoffice: "Backoffice",
         footer_copy: "© Mœba Protocol 2026 • Infrastructure VUSA Suisse."
@@ -217,32 +230,32 @@ const translations = {
 
         // Ecosystem & Footer
         ecosystem_title: "Ecosystem & Resources",
-        ecosystem_desc: "Technical documentation, audits, and regulatory analysis.",
-        col_protocol: "Protocol",
+        ecosystem_desc: "Documentation technique, audits, and regulatory analysis.",
+        col_protocol: "Protocole",
         link_arch: "HPIV Architecture",
         link_sc: "Smart Contracts (Solidity)",
         link_soft: "Soft Default Mechanics",
         link_market: "DLT Secondary Market",
-        col_org: "Organization",
-        link_about: "About",
+        col_org: "Organisation",
+        link_about: "À propos",
         link_partners: "ISPV Partners",
-        link_career: "Careers",
-        col_resources: "Resources",
+        link_career: "Carrière",
+        col_resources: "Ressources",
         link_wp: "Technical Whitepaper",
         link_api: "API Documentation",
         link_repo: "GitHub Repository",
-        link_math: "Mathematical Report",
+        link_math: "Rapport Mathématique",
         col_contact: "Contact",
-        link_seat: "HQ: Lausanne, Switzerland",
-        link_mail: "Mail: info@moeba.ch",
-        col_legal: "Legal & Compliance",
-        link_finma: "FINMA Regulatory Watch",
+        link_seat: "Siège : Lausanne, Suisse",
+        link_mail: "Mail : info@moeba.ch",
+        col_legal: "Légal & Conformité",
+        link_finma: "Veille Réglementaire FINMA",
         link_rights: "Ledger-based Securities Registry",
-        link_aml: "AMLA/KYC Policy",
-        link_risk: "Risk Warning",
-        col_access: "Access",
+        link_aml: "Politique LBA/AML",
+        link_risk: "Avertissement Risques",
+        col_access: "Accès",
         link_backoffice: "Backoffice",
-        footer_copy: "© Mœba Protocol 2026 • Swiss ISPV Infrastructure."
+        footer_copy: "© Mœba Protocol 2026 • Infrastructure VUSA Suisse."
     }
 };
 
@@ -408,9 +421,13 @@ const cards = document.querySelectorAll('.card');
 const overlay = document.getElementById('modalOverlay');
 
 function closeAllCards() {
-    cards.forEach(card => card.classList.remove('expanded'));
+    cards.forEach(card => {
+        card.classList.remove('expanded');
+        // AJOUT: Reset explicite du transform pour éviter les conflits
+        card.style.transform = '';
+    });
     overlay.classList.remove('active');
-    document.body.classList.remove('modal-open'); // Réactive le scroll page
+    document.body.classList.remove('modal-open');
 }
 
 cards.forEach(card => {
@@ -511,3 +528,36 @@ document.addEventListener('keydown', (e) => {
         });
     }
 })();
+
+// --- GESTION DU PRELOADER ORGANIQUE (SÉQUENCE FINIE) ---
+const loader = document.getElementById('moebaLoader');
+const cell = document.querySelector('.organic-cell');
+
+if (loader && cell) {
+    // 1. Promesse : la page est complètement chargée
+    const pageLoadPromise = new Promise(resolve => {
+        if (document.readyState === 'complete') {
+            resolve();
+        } else {
+            window.addEventListener('load', resolve);
+        }
+    });
+
+    // 2. Promesse : l'animation CSS est terminée (3s)
+    const animationPromise = new Promise(resolve => {
+        // On écoute la fin de l'animation CSS 'moebaIntro'
+        cell.addEventListener('animationend', resolve, { once: true });
+
+        // Fallback de sécurité : si jamais l'event ne fire pas (ex: tab inactif) on force après 4s
+        setTimeout(resolve, 3500);
+    });
+
+    // 3. Quand les DEUX conditions sont remplies (Page Loaded + Animation Finished), on cache
+    Promise.all([pageLoadPromise, animationPromise]).then(() => {
+        loader.classList.add('hidden');
+        // Nettoyage optionnel du DOM après le fade-out CSS
+        setTimeout(() => {
+            loader.style.display = 'none';
+        }, 1000);
+    });
+}

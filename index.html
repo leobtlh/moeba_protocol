@@ -16,44 +16,48 @@
     </head>
 
     <body>
+        <header class="site-header">
+            <nav class="nav">
+                <div class="nav-brand">
+                    <a href="#home" class="nav-logo">
+                        <img src="img/MoebaLogo.png" alt="MOEBA" class="logo-moeba" onerror="this.src='https://placehold.co/48x48?text=M'"/>
+                        <span class="logo-text">Mœba Protocol</span>
+                    </a>
+
+                    <div class="menu-container">
+                        <button class="menu-toggle nav-link">│ Menu</button>
+
+                        <div class="hide-menu">
+                            <a class="stick" href="#">│</a>
+                            <a class="nav-link" data-i18n="home" href="#home">Home</a><span class="stick"> · </span>
+                            <a class="nav-link" data-i18n="concepts" href="#concepts">Architecture</a><span class="stick"> · </span>
+                            <a class="nav-link" data-i18n="mechanics" href="#mechanics">Mechanics</a><span class="stick"> · </span>
+                            <a class="nav-link" data-i18n="regulation" href="#regulation">Compliance</a><span class="stick"> · </span>
+                            <a class="nav-link" data-i18n="ecosystem" href="#ecosystem">Ecosystem</a>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="nav-actions">
+                    <a class="nav-link" data-i18n="doc" href="documentation/index.html" target="_blank">Docs</a>
+                    <a class="nav-link" data-i18n="whitepaper" href="https://github.com/leobtlh/moeba_protocol/blob/main/ressources/whitepaper.md" target="_blank">Whitepaper</a>
+                    <button id="langToggle" class="menu-language nav-link" onclick="toggleLanguage()" style="font-size: 0.9rem">FR</button>
+                    <button class="nav-btn-icon" id="themeSwitch" aria-label="Toggle Dark Mode"></button>
+                    <a class="btn-primary" data-i18n="launch_dapp" href="app/app.html" target="_blank">Launch dApp</a>
+                </div>
+            </nav>
+        </header>
+        <!-- PRELOADER ORGANIQUE -->
+        <div id="moebaLoader" class="loader-overlay">
+            <div class="organic-cell"></div>
+        </div>
+
         <!-- Overlay pour l'effet modal -->
         <div class="modal-overlay" id="modalOverlay"></div>
 
         <!-- PAGE 1 : HERO & ACCROCHE -->
         <section id="home" class="page page-hero">
-            <header class="site-header">
-                <nav class="nav">
-                    <div class="nav-brand">
-                        <a href="#home" class="nav-logo">
-                            <img src="img/MoebaLogo.png" alt="MOEBA" class="logo-moeba" onerror="this.src='https://placehold.co/48x48?text=M'"/>
-                            <span class="logo-text">Mœba Protocol</span>
-                        </a>
-
-                        <div class="menu-container">
-                            <button class="menu-toggle nav-link">│ Menu</button>
-
-                            <div class="hide-menu">
-                                <a class="stick" href="#">│</a>
-                                <a class="nav-link" data-i18n="home" href="#home">Home</a><span class="stick"> · </span>
-                                <a class="nav-link" data-i18n="concepts" href="#concepts">Architecture</a><span class="stick"> · </span>
-                                <a class="nav-link" data-i18n="mechanics" href="#mechanics">Mechanics</a><span class="stick"> · </span>
-                                <a class="nav-link" data-i18n="regulation" href="#regulation">Compliance</a><span class="stick"> · </span>
-                                <a class="nav-link" data-i18n="ecosystem" href="#ecosystem">Ecosystem</a>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div class="nav-actions">
-                        <a class="nav-link" data-i18n="doc" href="documentation/index.html" target="_blank">Docs</a>
-                        <a class="nav-link" data-i18n="whitepaper" href="https://github.com/leobtlh/moeba_protocol/blob/main/ressources/whitepaper.md" target="_blank">Whitepaper</a>
-                        <button id="langToggle" class="menu-language nav-link" onclick="toggleLanguage()" style="font-size: 0.9rem">FR</button>
-                        <button class="nav-btn-icon" id="themeSwitch" aria-label="Toggle Dark Mode"></button>
-                        <a class="btn-primary" data-i18n="launch_dapp" href="app/app.html" target="_blank">Launch dApp</a>
-                    </div>
-                </nav>
-            </header>
-
             <main class="content-wrapper">
                 <div class="hero-content">
                     <div class="badge" data-i18n="badge_hpiv">Hybrid Parametric Insurance Vault (HPIV)</div>
