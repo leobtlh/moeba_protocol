@@ -86,6 +86,12 @@ body::before {
       0 0;
 }
 
+/* Si le body contient un élément avec la classe "expanded", on coupe le scroll */
+body:has(.card.expanded) {
+    overflow: hidden !important;
+    padding-right: 0; /* Optionnel : empêche le petit saut si la scrollbar disparaît */
+}
+
 a { text-decoration: none; color: inherit; }
 
 /* --- HEADER --- */
@@ -246,26 +252,37 @@ a { text-decoration: none; color: inherit; }
     position: absolute;
     bottom: 0;
     width: 300px;
-    max-width: 20vw; /* Attention: ceci contraint la taille par défaut */
+    max-width: 20vw;
     z-index: 0;
     pointer-events: none;
     opacity: 0.85;
+
+    /* NOUVEAU : Animation */
+    animation: animalFloat 7s ease-in-out infinite;
+    will-change: transform; /* Optimisation performance */
 }
 
 .bg-sheep-left {
     left: 2rem;
+    /* On peut ajouter un petit délai pour décaler le départ */
+    animation-delay: 0s;
 }
 
 /* MODIFICATION CROCO */
 .bg-croco-right {
     position: absolute;
     bottom: 0;
-    right: 0 !important; /* Force le collage à droite */
-    width: 750px !important; /* Force la taille (300px * 2.5) */
-    max-width: 60vw !important; /* Écrase la limite de 20vw de .bg-sheep */
+    right: 0 !important;
+    width: 750px !important;
+    max-width: 60vw !important;
     z-index: 0;
     opacity: 0.85;
     pointer-events: none;
+
+    /* NOUVEAU : Animation (plus lente et inversée) */
+    animation: animalFloat 9s ease-in-out infinite reverse;
+    transform-origin: bottom right; /* L'ancrage du mouvement */
+    will-change: transform;
 }
 
 /* Le contenu doit passer au-dessus des images de fond */
@@ -877,8 +894,12 @@ a { text-decoration: none; color: inherit; }
     100% { transform: translate(10px, -10px); opacity: 0.4; }
 }
 
-/* Si le body contient un élément avec la classe "expanded", on coupe le scroll */
-body:has(.card.expanded) {
-    overflow: hidden !important;
-    padding-right: 0; /* Optionnel : empêche le petit saut si la scrollbar disparaît */
+/* Animation de flottement pour les animaux */
+@keyframes animalFloat {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg);
+    }
+    50% {
+        transform: translateY(-15px) rotate(1.5deg); /* Monte et penche légèrement */
+    }
 }
