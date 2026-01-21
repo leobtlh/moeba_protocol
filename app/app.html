@@ -327,29 +327,21 @@
             return data;
         };
 
-        // --- HELPER FUNCTION : PARSER LES DATES FRANÇAISES (De app.html) ---
-        const parseFrenchDate = (dateStr) => {
-            if (!dateStr || dateStr === "En attente") return null;
+        // --- HELPER FUNCTION : PARSER LES DATES (Standardisé Anglais) ---
+        const parseAppDate = (dateStr) => {
+            // Gestion des cas vides ou "Pending" (anciennement "En attente")
+            if (!dateStr || dateStr === "Pending" || dateStr === "En attente") return null;
 
-             const monthMap = {
-                'Janvier': 'January', 'Février': 'February', 'Mars': 'March',
-                'Avril': 'April', 'Mai': 'May', 'Juin': 'June',
-                'Juillet': 'July', 'Août': 'August', 'Septembre': 'September',
-                'Octobre': 'October', 'Novembre': 'November', 'Décembre': 'December'
-            };
+            // JavaScript parse nativement "12 January 2025"
+            const parsedDate = new Date(dateStr);
 
-            let dateToParse = dateStr;
-            Object.keys(monthMap).forEach(fr => {
-                if(dateStr.includes(fr)) {
-                    dateToParse = dateStr.replace(fr, monthMap[fr]);
-                }
-            });
-            return new Date(dateToParse);
+            // Sécurité : si la date est invalide (ex: "32 Foo 2025"), on retourne null
+            return isNaN(parsedDate.getTime()) ? null : parsedDate;
         };
 
         // --- HELPER FUNCTION : CALCUL DES JOURS RESTANTS ---
         const calculateDaysRemaining = (dateStr) => {
-            const targetDate = parseFrenchDate(dateStr);
+            const targetDate = parseAppDate(dateStr);
             if (!targetDate) return 0;
             const today = new Date();
             const diffTime = targetDate - today;
@@ -444,7 +436,7 @@
         // --- COMPOSANT GRAPHIQUE ---
         const RiskChart = ({ data, triggers }) => {
             const [activeTriggers, setActiveTriggers] = useState([]);
-            if (!LineChart) return <div className="p-4 bg-red-50 text-red-600 rounded">Erreur chargement graphique</div>;
+            if (!LineChart) return <div className="p-4 bg-red-50 text-red-600 rounded">Chart loading error</div>;
 
             const toggleTrigger = (triggerId) => {
                 if (activeTriggers.includes(triggerId)) {
@@ -824,8 +816,8 @@
           };
 
           const parseDateForSort = (dateStr) => {
-              if (!dateStr || dateStr === "En attente") return new Date(9999, 11, 31);
-              const d = parseFrenchDate(dateStr);
+              if (!dateStr || dateStr === "Pending") return new Date(9999, 11, 31);
+              const d = parseAppDate(dateStr);
               return d || new Date();
           };
 
@@ -1114,7 +1106,7 @@
               // Description
               const finalDescription = newVaultData.description && newVaultData.description.trim() !== ""
                   ? newVaultData.description
-                  : "Protection Paramétrique (Générée automatiquement)";
+                  : "Parametric Protection (auto-generated)";
 
               // Dates Finales (Safe check)
               const today = new Date(); today.setHours(0,0,0,0);
@@ -1138,9 +1130,9 @@
 
               const newVault = {
                   id: `0x${Math.floor(Math.random() * 10000)}...new`,
-                  name: newVaultData.name || "Nouveau Cat Bond",
+                  name: newVaultData.name || "New Cat Bond",
                   insurerAddress: userFullAddress,
-                  insurer: newVaultData.companyName || `Assureur (${userAddress})`,
+                  insurer: newVaultData.companyName || `Insurer (${userAddress})`,
                   description: finalDescription,
                   totalCapacity: capVal + premiumVal,
                   claimAmount: claimVal,
@@ -1184,8 +1176,8 @@
              const updatedVaults = vaults.map(v => {
                if (v.id === vaultId) {
                  // CALCUL DE LA DURÉE RÉELLE
-                 const start = parseFrenchDate(v.startDate);
-                 const end = parseFrenchDate(v.maturityDate);
+                 const start = parseAppDate(v.startDate);
+                 const end = parseAppDate(v.maturityDate);
 
                  // Durée du contrat en jours
                  const diffTime = Math.abs(end - start);
@@ -1382,8 +1374,8 @@
               const userSenior = vault.balancesSenior ? (vault.balancesSenior[userFullAddress] || 0) : 0;
 
               // Calculate Time Duration for Yield (simplified year fraction)
-              const start = parseFrenchDate(vault.startDate) || new Date();
-              const end = parseFrenchDate(vault.maturityDate) || new Date();
+              const start = parseAppDate(vault.startDate) || new Date();
+              const end = parseAppDate(vault.maturityDate) || new Date();
               const diffTime = Math.max(0, Math.abs(end - start));
               const durationYear = diffTime / (1000 * 60 * 60 * 24 * 365);
 
@@ -1436,7 +1428,7 @@
           // VERIFICATION STATUS "STARTED" (de app.html)
           const isVaultStarted = (vault) => {
               if (!vault || !vault.startDate) return false;
-              const start = parseFrenchDate(vault.startDate);
+              const start = parseAppDate(vault.startDate);
               return start && new Date() >= start;
           };
 
@@ -1747,7 +1739,7 @@
                                                         </p>
                                                     </div>
 
-                                                    <div className="w-full max-w-[490px] grid grid-cols-[0.7fr_auto_0.7fr_auto_1.4fr] items-center gap-4">
+                                                    <div className="w-full max-w-[500px] grid grid-cols-[0.5fr_auto_0.5fr_auto_1.5fr] items-center gap-4">
 
                                                         {/* --- BLOC 1 : RISQUE --- */}
                                                         <div className="flex flex-col items-start">
@@ -1790,12 +1782,12 @@
 
 
                                                     {/* DÉBUT ET MATURITÉ */}
-                                                    {/* pr-[54px] aligne la boite avec la barre du bas (70px barre - 16px padding = 54px) */}
+                                                    {/* pr-[74px] aligne la boite avec la barre du bas (90px barre - 16px padding = 74px) */}
                                                     <div className="flex flex-wrap items-center gap-14 justify-end pr-[74px] relative">
 
                                                         {/* BOXES (DATES de app.html) */}
                                                         <div className="flex flex-col gap-4">
-                                                            <div className="w-[335px] h-[70px] relative flex items-center gap-4 bg-slate-50 dark:bg-slate-900/50 px-4 py-4 rounded-xl border border-slate-100 dark:border-slate-700 shrink-0">
+                                                            <div className="w-[350px] h-[70px] relative flex items-center gap-4 bg-slate-50 dark:bg-slate-900/50 px-4 py-4 rounded-xl border border-slate-100 dark:border-slate-700 shrink-0">
                                                                 <div>
                                                                     <p className="text-sm text-slate-400 dark:text-slate-500">Beginning</p>
                                                                     <p className="text-sm font-bold text-slate-700 dark:text-slate-300">{vault.startDate || 'N/A'}</p>
@@ -1912,7 +1904,7 @@
                                         <div className="grid grid-cols-2 gap-4 mb-6 text-sm">
                                             {/* Modifié pour inclure Start Date de app.html tout en gardant structure grid */}
                                           <div className="bg-slate-50 dark:bg-slate-900/50 p-3 rounded-lg border border-slate-100 dark:border-slate-700">
-                                            <p className="text-slate-500 dark:text-slate-400 text-xs uppercase tracking-wider mb-1">Beginning (Lock)</p>
+                                            <p className="text-slate-500 dark:text-slate-400 text-xs uppercase tracking-wider mb-1">Inception Date (Lock)</p>
                                             <p className="font-semibold text-slate-900 dark:text-white">{vault.startDate || 'N/A'}</p>
                                           </div>
                                           <div className="bg-slate-50 dark:bg-slate-900/50 p-3 rounded-lg border border-slate-100 dark:border-slate-700">
@@ -1997,7 +1989,7 @@
                                                     {selectedVault.status === 'TRIGGERED' && <span className="px-3 py-1 rounded-full text-xs font-bold bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-400 flex items-center gap-1">DISASTER</span>}
                                                 </div>
                                                 <p className="text-sm text-slate-500 dark:text-slate-400 flex items-center gap-2 mt-1">
-                                                    <Building2 className="h-4 w-4" /> Insurer : <span className="font-semibold">{selectedVault.insurer}</span>
+                                                    <Building2 className="h-4 w-4" /> Insurer: <span className="font-semibold">{selectedVault.insurer}</span>
                                                     <span className="mx-2">•</span>
                                                     ID : <span className="font-mono bg-slate-100 dark:bg-slate-700 px-2 py-0.5 rounded text-xs">{selectedVault.id}</span>
                                                 </p>
@@ -2058,10 +2050,10 @@
                                             <div className="bg-slate-50 dark:bg-slate-900/30 p-4 rounded-xl border border-slate-100 dark:border-slate-700">
                                                 <p className="text-xs text-slate-500 dark:text-slate-400 mb-2 uppercase font-semibold text-green-600 dark:text-green-400">Premium Reserve (Yield)</p>
                                                 <p className="text-xl font-bold text-green-600 dark:text-green-400">{formatCurrency(selectedVault.premium)}</p>
-                                                <p className="text-[10px] text-slate-400 mt-1">Sanctuarized for investors</p>
+                                                <p className="text-[10px] text-slate-400 mt-1">Secured for investors</p>
                                             </div>
                                             <div className="bg-slate-50 dark:bg-slate-900/30 p-4 rounded-xl border border-slate-100 dark:border-slate-700">
-                                                <p className="text-xs text-slate-500 dark:text-slate-400 mb-2 uppercase font-semibold">Starting date (Lock)</p>
+                                                <p className="text-xs text-slate-500 dark:text-slate-400 mb-2 uppercase font-semibold">Inception Date (Lock)</p>
                                                 <p className="text-xl font-bold text-slate-900 dark:text-white">{selectedVault.startDate || 'N/A'}</p>
                                                 <p className="text-[10px] text-slate-400 mt-1">Beginning of the lockdown</p>
                                             </div>
@@ -2183,7 +2175,7 @@
                                                                     </div>
 
                                                                     <div className="relative">
-                                                                        <input type="number" min="0" step="0.01" value={depositAmount} onChange={(e) => { const val = parseFloat(e.target.value); const max = selectedVault.totalCapacity - selectedVault.currentAssets; if (val > max) { setDepositAmount(max.toFixed(4)); } else { setDepositAmount(e.target.value); } }} disabled={selectedVault.currentAssets >= selectedVault.totalCapacity} className="w-full pl-4 pr-16 py-4 border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none font-medium text-lg disabled:opacity-50 disabled:cursor-not-allowed" placeholder={selectedVault.currentAssets >= selectedVault.totalCapacity ? "Complet" : "0.00"} />
+                                                                        <input type="number" min="0" step="0.01" value={depositAmount} onChange={(e) => { const val = parseFloat(e.target.value); const max = selectedVault.totalCapacity - selectedVault.currentAssets; if (val > max) { setDepositAmount(max.toFixed(4)); } else { setDepositAmount(e.target.value); } }} disabled={selectedVault.currentAssets >= selectedVault.totalCapacity} className="w-full pl-4 pr-16 py-4 border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none font-medium text-lg disabled:opacity-50 disabled:cursor-not-allowed" placeholder={selectedVault.currentAssets >= selectedVault.totalCapacity ? "Sold Out" : "0.00"} />
                                                                         <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 font-bold">{selectedVault.asset}</span>
                                                                     </div>
                                                                     {walletConnected && assetBalance > 0 && selectedVault.currentAssets < selectedVault.totalCapacity && (
@@ -2192,7 +2184,7 @@
                                                                 </div>
                                                                 <div className="space-y-3 pt-2">
                                                                     <div className="flex justify-between text-sm"><span className="text-slate-500 dark:text-slate-400">Estimated APR</span><span className={`font-bold ${trancheType === 'junior' ? 'text-indigo-600' : 'text-blue-600'}`}>{trancheType === 'junior' ? juniorApr.toFixed(2) : seniorApr.toFixed(2)}%</span></div>
-                                                                    <div className="flex justify-between text-sm"><span className="text-slate-500 dark:text-slate-400">Admission fees</span><span className="font-medium text-slate-900 dark:text-white">0.00%</span></div>
+                                                                    <div className="flex justify-between text-sm"><span className="text-slate-500 dark:text-slate-400">Deposit fees</span><span className="font-medium text-slate-900 dark:text-white">0.00%</span></div>
                                                                 </div>
                                                                 <button onClick={handleDeposit} disabled={selectedVault.currentAssets >= selectedVault.totalCapacity} className={`w-full py-4 ${trancheType === 'junior' ? 'bg-indigo-600 hover:bg-indigo-700' : 'bg-blue-600 hover:bg-blue-700'} text-white rounded-xl font-bold shadow-lg shadow-blue-200 dark:shadow-none transition-all flex justify-center items-center gap-2 disabled:bg-slate-400 disabled:cursor-not-allowed disabled:shadow-none`}>{selectedVault.currentAssets >= selectedVault.totalCapacity ? "Capacity Reached" : `Confirm Deposit ${trancheType === 'junior' ? 'Junior' : 'Senior'}`} <ArrowRight className="h-4 w-4"/></button>
                                                                 <p className="text-xs text-center text-slate-400 mt-2">Subscription period open until {selectedVault.startDate}.</p>
@@ -2390,7 +2382,7 @@
 
                               {/* CHAMP DATE DEBUT (AJOUT DE APP.HTML) */}
                               <div className={isFormExpanded ? "col-span-2 p-3 bg-blue-50 dark:bg-blue-900/10 rounded-xl border border-blue-100 dark:border-blue-800" : "p-3 bg-blue-50 dark:bg-blue-900/10 rounded-xl border border-blue-100 dark:border-blue-800"}>
-                                   <label className="block text-sm font-bold text-blue-800 dark:text-blue-300 mb-2 flex items-center gap-2"><Calendar className="h-4 w-4"/> Start Date (Lock)</label>
+                                   <label className="block text-sm font-bold text-blue-800 dark:text-blue-300 mb-2 flex items-center gap-2"><Calendar className="h-4 w-4"/> Inception Date (Lock)</label>
                                    <div className="grid grid-cols-3 gap-2">
                                         <input type="number" min="1" max="31" value={newVaultData.startDay} onBlur={handleDateBlur} onChange={e => setNewVaultData({...newVaultData, startDay: e.target.value})} className="p-2 rounded-lg border dark:bg-slate-900 dark:border-slate-600" placeholder="DD" />
                                         <select value={newVaultData.startMonth} onBlur={handleDateBlur} onChange={e => setNewVaultData({...newVaultData, startMonth: e.target.value})} className="p-2 rounded-lg border dark:bg-slate-900 dark:border-slate-600">
@@ -2436,7 +2428,7 @@
                                 <div className="relative"><input type="number" min="0" value={newVaultData.premium} onChange={e => setNewVaultData({...newVaultData, premium: e.target.value})} className="w-full p-3 pl-3 pr-16 border border-green-200 dark:border-green-800 bg-green-50/30 dark:bg-green-900/20 rounded-xl focus:ring-2 focus:ring-green-500 outline-none text-green-800 dark:text-green-400 font-medium" /><span className="absolute right-4 top-1/2 -translate-y-1/2 text-green-600 dark:text-green-400 text-xs font-bold">{newVaultData.asset}</span></div>
                               </div>
                           </div>
-                          <button type="submit" className="w-full mt-4 bg-slate-900 dark:bg-white text-white dark:text-slate-900 py-3.5 rounded-xl font-bold hover:bg-slate-800 dark:hover:bg-slate-200 transition-all shadow-lg shadow-slate-200 dark:shadow-none">Deploy Contract (Simulation)</button>
+                          <button type="submit" className="w-full mt-4 bg-slate-900 dark:bg-white text-white dark:text-slate-900 py-3.5 rounded-xl font-bold hover:bg-slate-800 dark:hover:bg-slate-200 transition-all shadow-lg shadow-slate-200 dark:shadow-none">Deploy Contract</button>
                         </form>
                       </div>
 
