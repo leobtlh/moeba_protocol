@@ -554,6 +554,77 @@
             );
         };
 
+        // --- COMPOSANT FORMULAIRE KYC INVESTISSEUR ---
+        const InvestorKYCModal = ({ isOpen, onClose, onSubmit, isSubmitting }) => {
+            const [formData, setFormData] = useState({ fullName: '', email: '', idHash: '' });
+
+            if (!isOpen) return null;
+
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                onSubmit(formData);
+            };
+
+            return (
+                <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in" onClick={onClose}>
+                    <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-lg border border-slate-200 dark:border-slate-700 overflow-hidden animate-zoom-in" onClick={e => e.stopPropagation()}>
+                         <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
+                            <h3 className="font-bold text-lg text-slate-900 dark:text-white flex items-center gap-2">
+                                <UserCheck className="h-5 w-5 text-blue-600" /> Investor KYC (FinSA)
+                            </h3>
+                            <button onClick={onClose} className="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
+                                <X className="h-5 w-5 text-slate-500" />
+                            </button>
+                        </div>
+                        <div className="p-6">
+                            <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-100 dark:border-blue-800/50 text-sm text-blue-800 dark:text-blue-300">
+                                To deposit into compliant Vaults, you must verify your identity (Qualified Investor Check).
+                            </div>
+                            <form onSubmit={handleSubmit} className="space-y-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Full Legal Name</label>
+                                    <input
+                                        type="text" required
+                                        value={formData.fullName}
+                                        onChange={e => setFormData({...formData, fullName: e.target.value})}
+                                        className="w-full p-3 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
+                                        placeholder="John Doe"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Email (Compliance)</label>
+                                    <input
+                                        type="email" required
+                                        value={formData.email}
+                                        onChange={e => setFormData({...formData, email: e.target.value})}
+                                        className="w-full p-3 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
+                                        placeholder="john@example.com"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">ID/Passport Hash</label>
+                                    <input
+                                        type="text" required
+                                        value={formData.idHash}
+                                        onChange={e => setFormData({...formData, idHash: e.target.value})}
+                                        className="w-full p-3 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm"
+                                        placeholder="0x..."
+                                    />
+                                </div>
+                                <button
+                                    type="submit"
+                                    disabled={isSubmitting}
+                                    className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold shadow-lg shadow-blue-200 dark:shadow-none transition-all flex justify-center items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    {isSubmitting ? "Verifying..." : "Verify & Authorize Wallet"}
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
         // --- APP COMPONENT ---
         function App() {
           const [activeRole, setActiveRole] = useState('investor');
@@ -606,8 +677,12 @@
           // --- MODE LIVE VS SIMULATION ---
           const [isLiveMode, setIsLiveMode] = useState(false);
 
-          // STATUS WHITELIST
+          // STATUS WHITELIST & KYC
           const [isInsurerWhitelisted, setIsInsurerWhitelisted] = useState(false);
+          // --- NOUVEAUX STATES KYC INVESTISSEUR ---
+          const [isInvestorWhitelisted, setIsInvestorWhitelisted] = useState(false);
+          const [showInvestorKYC, setShowInvestorKYC] = useState(false);
+          const [isInvestorRegistering, setIsInvestorRegistering] = useState(false);
 
           // STATUS EXPANSION FORMULAIRE
           const [isFormExpanded, setIsFormExpanded] = useState(false);
@@ -624,15 +699,37 @@
               }, 4000);
           };
 
-          // --- LOGIQUE DE VÉRIFICATION WHITELIST & STATUS DEMANDE ---
+// --- LOGIQUE DE VÉRIFICATION WHITELIST & STATUS DEMANDE (UNIFIÉE) ---
           useEffect(() => {
               const checkWhitelistStatus = async () => {
                   if (!walletConnected || !userFullAddress) {
                       setIsInsurerWhitelisted(false);
+                      setIsInvestorWhitelisted(false);
                       setRegistrationStatus('none');
                       return;
                   }
 
+                  // ADRESSE DE SIMULATION (Hardcoded)
+                  const SIMULATION_ADDRESS = '0xsimulated000000000000000000000000000000';
+
+                  // 1. VERIFICATION INVESTISSEUR
+                  const investorList = JSON.parse(localStorage.getItem('moeba_investor_whitelist') || '[]');
+                  const investorRequests = JSON.parse(localStorage.getItem('moeba_investor_requests') || '[]');
+
+                  // On vérifie le statut de la demande KYC pour cet utilisateur
+                  const myKycRequest = investorRequests.find(r => r.address.toLowerCase() === userFullAddress.toLowerCase());
+                  // On garde cette info pour savoir si c'est pending (utile si vous voulez afficher un statut spécifique plus tard)
+                  const isPendingKyc = myKycRequest && myKycRequest.status === 1;
+
+                  // AJOUT ICI : Si c'est le wallet de simulation OU si dans la whitelist officielle
+                  if (userFullAddress.toLowerCase() === SIMULATION_ADDRESS || investorList.includes(userFullAddress.toLowerCase())) {
+                      setIsInvestorWhitelisted(true);
+                  } else {
+                      setIsInvestorWhitelisted(false);
+                      // Ici, si isPendingKyc est vrai, l'utilisateur est connu mais pas encore approuvé.
+                  }
+
+                  // 2. VERIFICATION ASSUREUR
                   if (isLiveMode) {
                       try {
                           const provider = new window.ethers.providers.Web3Provider(window.ethereum);
@@ -656,7 +753,9 @@
                           setIsInsurerWhitelisted(false);
                       }
                   } else {
+                      // Note: L'adresse de simulation est déjà dans INSURER_WHITELIST_LOCAL définie plus haut dans le fichier
                       const isLocalListed = INSURER_WHITELIST_LOCAL.includes(userFullAddress.toLowerCase());
+
                       if (isLocalListed) {
                           setIsInsurerWhitelisted(true);
                       } else {
@@ -952,7 +1051,7 @@
              showNotification("Disconnected from the application.", 'info');
           };
 
-          // --- GESTION ENREGISTREMENT ASSUREUR ---
+          // --- GESTION ENREGISTREMENT ASSUREUR (KYB) ---
           const handleInsurerRegistration = async (data) => {
               setIsRegistering(true);
               if (isLiveMode) {
@@ -989,6 +1088,43 @@
                   showNotification("Simulated request sent successfully (Stored Locally)", 'success');
               }
               setIsRegistering(false);
+          };
+
+          // --- GESTION ENREGISTREMENT INVESTISSEUR (KYC) ---
+          const handleInvestorKYC = async (data) => {
+              setIsInvestorRegistering(true);
+              await new Promise(resolve => setTimeout(resolve, 1500)); // Simulation délai réseau
+
+              // 1. Création de l'objet de demande (Status 1 = PENDING)
+              const newRequest = {
+                  address: userFullAddress,
+                  fullName: data.fullName,
+                  email: data.email,
+                  idHash: data.idHash,
+                  status: 1, // 1: En attente, 2: Approuvé, 3: Rejeté
+                  date: Date.now()
+              };
+
+              // 2. Sauvegarde dans 'moeba_investor_requests' pour le Backoffice
+              const storedRequests = JSON.parse(localStorage.getItem('moeba_investor_requests') || '[]');
+
+              // On vérifie si une demande existe déjà pour mettre à jour, sinon on ajoute
+              const existingIndex = storedRequests.findIndex(r => r.address.toLowerCase() === userFullAddress.toLowerCase());
+              if (existingIndex >= 0) {
+                  storedRequests[existingIndex] = newRequest;
+              } else {
+                  storedRequests.push(newRequest);
+              }
+
+              localStorage.setItem('moeba_investor_requests', JSON.stringify(storedRequests));
+
+              // 3. Feedback UI
+              setShowInvestorKYC(false);
+              setIsInvestorRegistering(false);
+
+              // Note : On ne met PAS setIsInvestorWhitelisted(true) ici.
+              // L'utilisateur doit attendre la validation dans le backoffice.
+              showNotification("KYC Request sent to Admin. Please wait for approval.", 'info');
           };
 
           const updateJunior = (cap, percent) => {
@@ -1210,6 +1346,25 @@
 
           const handleDeposit = async () => {
             if (!walletConnected) { showNotification("Connect your wallet.", 'error'); return; }
+
+            // --- NOUVEAU : CHECK KYC INVESTISSEUR ---
+            if (!isInvestorWhitelisted) {
+                    // Vérifier si une demande est déjà en cours (Pending)
+                    const requests = JSON.parse(localStorage.getItem('moeba_investor_requests') || '[]');
+                    const myRequest = requests.find(r => r.address.toLowerCase() === userFullAddress.toLowerCase());
+
+                    if (myRequest && myRequest.status === 1) {
+                        showNotification("KYC under review. Please wait for admin validation.", 'info');
+                    } else if (myRequest && myRequest.status === 3) {
+                        showNotification("KYC Rejected by admin.", 'error');
+                    } else {
+                        // Si aucune demande, on ouvre le formulaire
+                        setShowInvestorKYC(true);
+                    }
+                    return;
+                }
+            // ----------------------------------------
+
             if (!selectedVault || !depositAmount) return;
             const amount = parseFloat(depositAmount);
             if (amount <= 0) { showNotification("Invalid amount.", 'error'); return; }
@@ -1438,11 +1593,20 @@
 
               <NotificationToast message={notification.message} type={notification.type} onClose={() => setNotification({message:'', type:'info'})} />
 
+              {/* --- AJOUT DU MODAL KYB ASSUREUR --- */}
               <InsurerRegistrationModal
                   isOpen={showInsurerRegistration}
                   onClose={() => setShowInsurerRegistration(false)}
                   onSubmit={handleInsurerRegistration}
                   isSubmitting={isRegistering}
+              />
+
+              {/* --- AJOUT DU MODAL KYC INVESTISSEUR --- */}
+              <InvestorKYCModal
+                  isOpen={showInvestorKYC}
+                  onClose={() => setShowInvestorKYC(false)}
+                  onSubmit={handleInvestorKYC}
+                  isSubmitting={isInvestorRegistering}
               />
 
               {/* --- MODAL SELECTEUR DE WALLET --- */}
