@@ -7,6 +7,11 @@ import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/utils/math/Math.sol";
 
+// Interface pour le module de conformité (KYC)
+interface ICompliance {
+    function isAllowed(address user) external view returns (bool);
+}
+
 // =============================================================
 // CONTRACT: JUNIOR TOKEN
 // =============================================================
@@ -188,6 +193,7 @@ contract HPIVVault is ERC4626, AccessControl, ReentrancyGuard {
      * Override pour gérer les limites et périodes.
      */
     function deposit(uint256 assets, address receiver) public override nonReentrant returns (uint256) {
+        require(ICompliance(complianceModule).isAllowed(receiver), "KYC Required");
         require(status == VaultStatus.OPEN, "Vault not open");
         require(block.timestamp < START_DATE, "Subscription closed");
         require(totalAssets() + assets <= MAX_CAPACITY, "Max Cap reached");
@@ -203,6 +209,7 @@ contract HPIVVault is ERC4626, AccessControl, ReentrancyGuard {
      * Les Juniors prennent plus de risque pour plus de rendement.
      */
     function depositJunior(uint256 assets) external nonReentrant returns (uint256) {
+        require(ICompliance(complianceModule).isAllowed(msg.sender), "KYC Required");
         require(status == VaultStatus.OPEN, "Vault not open");
         require(block.timestamp < START_DATE, "Subscription closed");
         require(totalAssets() + assets <= MAX_CAPACITY, "Max Cap reached");
