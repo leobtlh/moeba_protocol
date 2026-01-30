@@ -84,7 +84,7 @@
         .dark ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
         .dark ::-webkit-scrollbar-thumb:hover { background: #475569; }
 
-        /* --- CSS POUR CACHER LES FLÈCHES DES INPUTS NUMBER --- */
+        /* --- Cacher les flèches des inputs number --- */
         input::-webkit-outer-spin-button,
         input::-webkit-inner-spin-button {
           -webkit-appearance: none;
@@ -102,7 +102,7 @@
     <script type="text/babel">
         const { useState, useEffect } = React;
 
-        // Importation sécurisée des composants Recharts depuis l'objet global window.Recharts
+        // Importation des composants Recharts depuis l'objet global window.Recharts
         const { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } = window.Recharts || {};
 
         // --- CONSTANTES WEB3 ---
@@ -201,23 +201,14 @@
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
-                    strokeWidth="2" // Important : trait assez épais pour être vu
+                    strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
                 >
-                    {/* 1. Le Cercle extérieur (La base) */}
                     <circle cx="12" cy="12" r="10" />
-
-                    {/* 2. L'Horizontal (Équateur) - Simple et net */}
                     <path d="M2 12h20" />
-
                     <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" style={{ display: 'none' }} />
-                    {/* J'ai caché ton ancien path pour te montrer le nouveau ci-dessous */}
-
-                    {/* Méridien central */}
                     <path d="M12 2v20" />
-
-                    {/* Courbe Gauche et Droite optimisées pour le "Pixel Perfect" */}
                     <path d="M12 2C6 2 6 22 12 22" />
                     <path d="M12 2C18 2 18 22 12 22" />
                 </svg>
@@ -232,7 +223,7 @@
         const Calendar = ({ className }) => <IconWrapper className={className}><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></IconWrapper>;
 
 
-        // Icônes Wallet Spécifiques (SVG Inline Simplifiés)
+        // Icônes Wallet Spécifiques
         const RabbyIcon = () => (
             <img
                 src="https://github.com/RabbyHub.png"
@@ -279,14 +270,13 @@
                 <path d="m17.66 17.66 1.41 1.41" />
                 <path d="M2 12h2" />
                 <path d="M20 12h2" />
-                {/* Correction ci-dessous : 1.41 au lieu de -1.41 sur le dernier paramètre */}
                 <path d="m6.34 17.66-1.41 1.41" />
                 <path d="m19.07 4.93-1.41 1.41" />
             </IconWrapper>
             );
         const Moon = ({ className }) => <IconWrapper className={className}><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></IconWrapper>;
 
-        // --- COMPOSANT NOTIFICATION (TOAST) ---
+        // --- COMPOSANT NOTIFICATION ---
         const NotificationToast = ({ message, type, onClose }) => {
             if (!message) return null;
             const bgClass = type === 'error' ? 'bg-red-500' : type === 'success' ? 'bg-green-600' : 'bg-slate-800 dark:bg-slate-700';
@@ -303,7 +293,7 @@
             );
         };
 
-        // --- GÉNÉRATEUR DE DONNÉES HISTORIQUES (MOCK ORACLE) ---
+        // --- GÉNÉRATEUR DE DONNÉES HISTORIQUES, SIMULATION (MOCK ORACLE) ---
         const generateMockHistory = (type) => {
             const data = [];
             const now = new Date();
@@ -327,19 +317,18 @@
             return data;
         };
 
-        // --- HELPER FUNCTION : PARSER LES DATES (Standardisé Anglais) ---
+        // --- PARSER LES DATES (standard anglais) ---
         const parseAppDate = (dateStr) => {
-            // Gestion des cas vides ou "Pending" (anciennement "En attente")
+            // Gestion des cas vides ou "Pending"
             if (!dateStr || dateStr === "Pending" || dateStr === "En attente") return null;
 
-            // JavaScript parse nativement "12 January 2025"
             const parsedDate = new Date(dateStr);
 
             // Sécurité : si la date est invalide (ex: "32 Foo 2025"), on retourne null
             return isNaN(parsedDate.getTime()) ? null : parsedDate;
         };
 
-        // --- HELPER FUNCTION : CALCUL DES JOURS RESTANTS ---
+        // --- CALCUL DES JOURS RESTANTS ---
         const calculateDaysRemaining = (dateStr) => {
             const targetDate = parseAppDate(dateStr);
             if (!targetDate) return 0;
@@ -424,7 +413,7 @@
             { name: 'October', days: 31 }, { name: 'November', days: 30 }, { name: 'December', days: 31 }
         ];
 
-        // --- HELPER FUNCTION : VALIDATION JOURS DANS MOIS ---
+        // --- VALIDATION JOURS DANS MOIS ---
         const isValidDayInMonth = (day, monthName, year) => {
             const mIndex = MONTHS.findIndex(m => m.name === monthName);
             if (mIndex === -1) return false;
@@ -658,10 +647,10 @@
 
           const [selectedVault, setSelectedVault] = useState(null);
           const [depositAmount, setDepositAmount] = useState('');
-          // NOUVEAUX STATES POUR LE RETRAIT
+          // STATES POUR LE RETRAIT
           const [withdrawAmount, setWithdrawAmount] = useState('');
           const [actionTab, setActionTab] = useState('deposit'); // 'deposit' | 'withdraw'
-          // NOUVEAU STATE TRANCHE (Senior vs Junior)
+          // STATE TRANCHE (Senior vs Junior)
           const [trancheType, setTrancheType] = useState('senior');
 
           // FILTRES & TRI
@@ -679,7 +668,6 @@
 
           // STATUS WHITELIST & KYC
           const [isInsurerWhitelisted, setIsInsurerWhitelisted] = useState(false);
-          // --- NOUVEAUX STATES KYC INVESTISSEUR ---
           const [isInvestorWhitelisted, setIsInvestorWhitelisted] = useState(false);
           const [showInvestorKYC, setShowInvestorKYC] = useState(false);
           const [isInvestorRegistering, setIsInvestorRegistering] = useState(false);
@@ -699,7 +687,7 @@
               }, 4000);
           };
 
-// --- LOGIQUE DE VÉRIFICATION WHITELIST & STATUS DEMANDE (UNIFIÉE) ---
+          // --- LOGIQUE DE VÉRIFICATION WHITELIST & STATUS ---
           useEffect(() => {
               const checkWhitelistStatus = async () => {
                   if (!walletConnected || !userFullAddress) {
@@ -709,27 +697,26 @@
                       return;
                   }
 
-                  // ADRESSE DE SIMULATION (Hardcoded)
+                  // ADRESSE DE SIMULATION
                   const SIMULATION_ADDRESS = '0xsimulated000000000000000000000000000000';
 
-                  // 1. VERIFICATION INVESTISSEUR
+                  // VERIFICATION INVESTISSEUR
                   const investorList = JSON.parse(localStorage.getItem('moeba_investor_whitelist') || '[]');
                   const investorRequests = JSON.parse(localStorage.getItem('moeba_investor_requests') || '[]');
 
-                  // On vérifie le statut de la demande KYC pour cet utilisateur
+                  // Vérification du statut de la demande KYC pour cet utilisateur
                   const myKycRequest = investorRequests.find(r => r.address.toLowerCase() === userFullAddress.toLowerCase());
-                  // On garde cette info pour savoir si c'est pending (utile si vous voulez afficher un statut spécifique plus tard)
                   const isPendingKyc = myKycRequest && myKycRequest.status === 1;
 
-                  // AJOUT ICI : Si c'est le wallet de simulation OU si dans la whitelist officielle
+                  // Wallet de simulation OU whitelist officielle
                   if (userFullAddress.toLowerCase() === SIMULATION_ADDRESS || investorList.includes(userFullAddress.toLowerCase())) {
                       setIsInvestorWhitelisted(true);
                   } else {
                       setIsInvestorWhitelisted(false);
-                      // Ici, si isPendingKyc est vrai, l'utilisateur est connu mais pas encore approuvé.
+                      // si isPendingKyc est vrai, l'utilisateur est connu mais pas encore approuvé.
                   }
 
-                  // 2. VERIFICATION ASSUREUR
+                  // VERIFICATION ASSUREUR
                   if (isLiveMode) {
                       try {
                           const provider = new window.ethers.providers.Web3Provider(window.ethereum);
@@ -753,7 +740,6 @@
                           setIsInsurerWhitelisted(false);
                       }
                   } else {
-                      // Note: L'adresse de simulation est déjà dans INSURER_WHITELIST_LOCAL définie plus haut dans le fichier
                       const isLocalListed = INSURER_WHITELIST_LOCAL.includes(userFullAddress.toLowerCase());
 
                       if (isLocalListed) {
@@ -790,7 +776,7 @@
               checkWhitelistStatus();
           }, [walletConnected, userFullAddress, isLiveMode]);
 
-          // --- EFFET DE RECUPERATION DU SOLDE TOKEN SPECIFIQUE ---
+          // --- RECUPERATION DU SOLDE TOKEN SPECIFIQUE ---
           useEffect(() => {
             const fetchAssetBalance = async () => {
                 if (!walletConnected || !selectedVault || !window.ethereum) {
@@ -825,14 +811,13 @@
             fetchAssetBalance();
           }, [selectedVault, walletConnected, userFullAddress]);
 
-          // --- EFFET CHANGEMENT COMPTE : MISE A JOUR DES SOLDES (MULTI-WALLET) ---
+          // --- EFFET CHANGEMENT COMPTE : MAJ MULTI-WALLET ---
           useEffect(() => {
               setVaults(prevVaults => prevVaults.map(v => {
                   const bals = v.balances || {};
                   // Si un wallet est connecté, on cherche son solde, sinon 0
                   const specificBalance = userFullAddress ? (bals[userFullAddress] || 0) : 0;
 
-                  // Optimisation : on ne met à jour que si différent
                   if (v.userBalance !== specificBalance) {
                       return { ...v, userBalance: specificBalance };
                   }
@@ -979,7 +964,7 @@
           const handleWalletSelect = async (walletType) => {
              setShowWalletSelector(false);
 
-             // --- AJOUT : SIMULATION WALLET LOGIC ---
+             // --- SIMULATION WALLET ---
              if (walletType === 'simulation') {
                  const simAddress = '0xsimulated000000000000000000000000000000';
                  setWalletConnected(true);
@@ -989,7 +974,6 @@
                  showNotification("Connected with Simulation Wallet (Test Mode)", 'success');
                  return;
              }
-             // ---------------------------------------
 
              if (!window.ethers) { showNotification("Technical error: Web3 library not loaded.", 'error'); return; }
              let providerInput = null;
@@ -1093,7 +1077,7 @@
           // --- GESTION ENREGISTREMENT INVESTISSEUR (KYC) ---
           const handleInvestorKYC = async (data) => {
               setIsInvestorRegistering(true);
-              await new Promise(resolve => setTimeout(resolve, 1500)); // Simulation délai réseau
+              await new Promise(resolve => setTimeout(resolve, 1500)); // Simulation à enlever
 
               // 1. Création de l'objet de demande (Status 1 = PENDING)
               const newRequest = {
@@ -1108,7 +1092,7 @@
               // 2. Sauvegarde dans 'moeba_investor_requests' pour le Backoffice
               const storedRequests = JSON.parse(localStorage.getItem('moeba_investor_requests') || '[]');
 
-              // On vérifie si une demande existe déjà pour mettre à jour, sinon on ajoute
+              // Si une demande existe déjà,on la met à jour, sinon on ajoute
               const existingIndex = storedRequests.findIndex(r => r.address.toLowerCase() === userFullAddress.toLowerCase());
               if (existingIndex >= 0) {
                   storedRequests[existingIndex] = newRequest;
@@ -1122,7 +1106,7 @@
               setShowInvestorKYC(false);
               setIsInvestorRegistering(false);
 
-              // Note : On ne met PAS setIsInvestorWhitelisted(true) ici.
+              // On ne met pas setIsInvestorWhitelisted(true) ici.
               // L'utilisateur doit attendre la validation dans le backoffice.
               showNotification("KYC Request sent to Admin. Please wait for approval.", 'info');
           };
@@ -1137,32 +1121,27 @@
               return m ? m.days : 31;
           };
 
-          // --- NOUVELLE LOGIQUE : CORRECTION INTELLIGENTE SUR BLUR ---
           const handleDateBlur = () => {
                 setNewVaultData(current => {
                     const today = new Date();
                     today.setHours(0,0,0,0);
                     const currentYear = today.getFullYear();
 
-                    // Helper: Crée une date valide (Clamp jour/mois)
                     const getValidDateObj = (d, mName, y) => {
                          const mIndex = MONTHS.findIndex(m => m.name === mName);
-                         // Année minimum = Année courante
                          const safeY = Math.max(parseInt(y) || currentYear, currentYear);
-                         // Check nb jours dans le mois
                          const daysInMonth = new Date(safeY, mIndex + 1, 0).getDate();
-                         // Force le jour entre 1 et max (ex: 33 -> 31)
                          const safeD = Math.min(Math.max(1, parseInt(d) || 1), daysInMonth);
                          return new Date(safeY, mIndex, safeD);
                     };
 
-                    // 1. Calcul Date Début Safe
+                    // Calcul Date Début
                     let sDate = getValidDateObj(current.startDay, current.startMonth, current.startYear);
 
-                    // LOGIQUE SPÉCIFIQUE DÉBUT : Si date passée (ex: 12 < 16), on passe au mois suivant (12 Février)
+                    // Si date passée (ex: 12 < 16), on passe au mois suivant (12 Février)
                     if (sDate < today) {
-                        const targetDay = sDate.getDate(); // On garde le jour (ex: 12)
-                        let nextM = sDate.getMonth() + 1;  // On passe au mois suivant
+                        const targetDay = sDate.getDate();
+                        let nextM = sDate.getMonth() + 1;
                         let nextY = sDate.getFullYear();
 
                         // Gestion changement année (Décembre -> Janvier)
@@ -1178,13 +1157,13 @@
                         sDate = new Date(nextY, nextM, safeNextDay);
                     }
 
-                    // Sécurité ultime : Si après projection c'est toujours <= aujourd'hui, on force demain
+                    // Sécurité: Si après projection c'est toujours <= aujourd'hui, on force demain
                     if (sDate <= today) {
                         sDate = new Date(today);
                         sDate.setDate(today.getDate() + 1);
                     }
 
-                    // 2. Calcul Date Fin Safe (Basé sur les inputs actuels)
+                    // Calcul Date Fin
                     let eDate = getValidDateObj(current.day, current.month, current.year);
 
                     // Si on est le même mois/année que le début, mais que le jour de fin est inférieur au jour de début
@@ -1197,7 +1176,7 @@
                         eDate.setMonth(eDate.getMonth() + 1);
                     }
 
-                    // 3. LOGIQUE SIMPLIFIÉE : Si la fin est <= au début, on force Fin = Début + 1 jour
+                    // Si la fin est <= au début, on force Fin = Début + 1 jour
                     if (eDate <= sDate) {
                         eDate = new Date(sDate);
                         eDate.setDate(sDate.getDate() + 1);
@@ -1219,20 +1198,17 @@
                 setNewVaultData(prev => {
                     let val = parseFloat(prev.cap);
                     if (isNaN(val) || val <= 0) val = 1000;
-                    // On recalcule aussi le junior car il dépend de la capacité
+                    // Recalcule de junior qui dépend de la capacité
                     const updatedJunior = updateJunior(val, prev.juniorPercent);
                     return { ...prev, cap: val, junior: updatedJunior };
                 });
           };
 
-          // --- CREATION VAULT (Avec logique de validation SILENCIEUSE) ---
+          // --- CREATION VAULT ---
           const handleCreateVault = async (e) => {
               e.preventDefault();
 
-              // Validation finale silencieuse (au cas où on submit sans sortir des cases)
-              // On réutilise la même logique mais en local pour construire l'objet final
-
-              // Sanitization numérique
+              // Validation finale silencieuse
               let capVal = parseFloat(newVaultData.cap);
               if (isNaN(capVal) || capVal <= 0) capVal = 1000;
               let premiumVal = parseFloat(newVaultData.premium) || 0;
@@ -1244,7 +1220,7 @@
                   ? newVaultData.description
                   : "Parametric Protection (auto-generated)";
 
-              // Dates Finales (Safe check)
+              // Dates Finales
               const today = new Date(); today.setHours(0,0,0,0);
               const currentYear = today.getFullYear();
               const mIndexStart = MONTHS.findIndex(m => m.name === newVaultData.startMonth);
@@ -1259,7 +1235,7 @@
 
               const formatDateStr = (date) => `${date.getDate()} ${MONTHS[date.getMonth()].name} ${date.getFullYear()}`;
 
-              // NOUVEAU: Calcul APR
+              // Calcul APR
               const diffTime = Math.abs(endDate - startDate);
               const durationInDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) || 365;
               const juniorVal = parseFloat(newVaultData.junior || 0);
@@ -1282,12 +1258,10 @@
                   status: "PENDING",
                   chain: newVaultData.chain,
                   asset: newVaultData.asset,
-                  // --- NEW TRANCHE DATA ---
                   balancesJunior: {},
                   balancesSenior: {},
                   totalJuniorDeposits: 0,
                   totalSeniorDeposits: 0,
-                  // ------------------------
                   history: generateMockHistory('WIND')
               };
 
@@ -1306,12 +1280,11 @@
               }));
           };
 
-          // --- INITIALISATION (Calcul APR avec Dates de app.html) ---
+          // --- INITIALISATION (Calcul APR avec Dates) ---
           const handleInitializeVault = (vaultId) => {
              const premiumValue = parseFloat(newVaultData.premium || 0);
              const updatedVaults = vaults.map(v => {
                if (v.id === vaultId) {
-                 // CALCUL DE LA DURÉE RÉELLE
                  const start = parseAppDate(v.startDate);
                  const end = parseAppDate(v.maturityDate);
 
@@ -1347,7 +1320,7 @@
           const handleDeposit = async () => {
             if (!walletConnected) { showNotification("Connect your wallet.", 'error'); return; }
 
-            // --- NOUVEAU : CHECK KYC INVESTISSEUR ---
+            // --- CHECK KYC INVESTISSEUR ---
             if (!isInvestorWhitelisted) {
                     // Vérifier si une demande est déjà en cours (Pending)
                     const requests = JSON.parse(localStorage.getItem('moeba_investor_requests') || '[]');
@@ -1363,7 +1336,6 @@
                     }
                     return;
                 }
-            // ----------------------------------------
 
             if (!selectedVault || !depositAmount) return;
             const amount = parseFloat(depositAmount);
@@ -1375,7 +1347,7 @@
                 return;
             }
 
-            // MODIFICATION: Gestion Multi-Wallet via 'balances' + TRANCHES
+            // Gestion Multi-Wallet via 'balances' + TRANCHES
             const currentBalances = selectedVault.balances || {};
             const newUserBalance = (currentBalances[userFullAddress] || 0) + amount;
             const newBalances = { ...currentBalances, [userFullAddress]: newUserBalance };
@@ -1410,7 +1382,7 @@
             setDepositAmount('');
           };
 
-          // --- FONCTION DE RETRAIT (DE app.html) ---
+          // --- FONCTION DE RETRAIT (de app.html) ---
           const handleWithdraw = async () => {
              if (!walletConnected) return;
              const amount = parseFloat(withdrawAmount);
@@ -1421,7 +1393,7 @@
 
              if (amount <= 0 || amount > available) { showNotification(`Invalid amount or insufficient ${trancheType} balance.`, 'error'); return; }
 
-             // MODIFICATION: Gestion Multi-Wallet via 'balances'
+             // Gestion Multi-Wallet via 'balances'
              const currentBalances = selectedVault.balances || {};
              const newUserBalance = (currentBalances[userFullAddress] || 0) - amount;
              const newBalances = { ...currentBalances, [userFullAddress]: newUserBalance };
@@ -1461,22 +1433,22 @@
             showNotification(<AlertTriangle className="h-8 w-8" /> && "ORACLE ALERT : Catastrophe confirmed. Soft Default activated.", 'error');
           };
 
-          // CALCUL CASCADE DE PERTE (Reste inchangé, la logique de perte First-Loss est correcte)
+          // CALCUL CASCADE DE PERTE
           const calculateClaimStats = (vault) => {
               const claimNeeded = vault.claimAmount || vault.totalCapacity; // Total Loss
               const insurerCover = vault.juniorCapital; // First Loss (Assurance)
 
-              // 1. Insurer pays first
+              // Insurer pays first
               const insurerLoss = Math.min(claimNeeded, insurerCover);
               let remainingLoss = Math.max(0, claimNeeded - insurerLoss);
 
-              // 2. Junior Investors pay second
+              // Junior Investors pay second
               const juniorPool = vault.totalJuniorDeposits || 0;
               const juniorLoss = Math.min(remainingLoss, juniorPool);
               remainingLoss = Math.max(0, remainingLoss - juniorLoss);
               const juniorRecoveryRatio = juniorPool > 0 ? (juniorPool - juniorLoss) / juniorPool : 0;
 
-              // 3. Senior Investors pay last
+              // Senior Investors pay last
               const seniorPool = vault.totalSeniorDeposits || 0;
               const seniorLoss = Math.min(remainingLoss, seniorPool);
               // remainingLoss after senior is uncovered loss
@@ -1488,47 +1460,46 @@
           const calculatePayoutDetails = (vault) => {
               const baseApr = parseFloat(vault.apr || 0);
 
-              // --- LOGIQUE WATERFALL MODIFIÉE ---
+              // --- LOGIQUE WATERFALL ---
 
-              // 1. Récupération des capitaux globaux (Pool complet)
+              // Récupération des capitaux globaux
               const totalSenior = vault.totalSeniorDeposits || 0;
               const totalJunior = vault.totalJuniorDeposits || 0;
               const totalInvested = totalSenior + totalJunior;
 
-              // 2. Fixer l'APR Senior à 70% du Base APR (Sécurité = rendement plus faible)
+              // Fixer l'APR Senior à 70% du Base APR
               const seniorApr = baseApr * 0.7;
 
-              // 3. Calcul dynamique du Junior APR (Le Junior récupère tout le reste)
+              // Calcul dynamique du Junior APR
               let juniorApr = 0;
 
               if (totalJunior > 0) {
-                  // A. Prime Totale théorique générée par l'ensemble du capital investi
-                  // (On assume que baseApr représente le rendement moyen pondéré du Vault)
+                  // Prime Totale théorique générée par l'ensemble du capital investi
                   const totalImpliedYield = totalInvested * (baseApr / 100);
 
-                  // B. Coût de la tranche Senior
+                  // Coût de la tranche Senior
                   const seniorPayoutCost = totalSenior * (seniorApr / 100);
 
-                  // C. Reste pour le Junior
+                  // Reste pour le Junior
                   const juniorPayoutPot = totalImpliedYield - seniorPayoutCost;
 
-                  // D. Conversion en % pour la tranche Junior
+                  // Conversion en % pour la tranche Junior
                   // YieldJunior = (Prime Totale - (Capital Senior × APRSenior)) / Capital Junior
                   juniorApr = (juniorPayoutPot / totalJunior) * 100;
 
-                  // Sécurité : éviter APR négatif si le Senior "mange" tout (cas rare mais possible mathématiquement)
+                  // Évite un APR négatif si le Senior "mange" tout
+                  // cas rare mais possible mathématiquement
                   if (juniorApr < 0) juniorApr = 0;
               } else {
                   // Fallback d'affichage s'il n'y a pas encore de Junior
                   juniorApr = baseApr;
               }
-              // ----------------------------------
 
               // Get User Balances in Tranches
               const userJunior = vault.balancesJunior ? (vault.balancesJunior[userFullAddress] || 0) : 0;
               const userSenior = vault.balancesSenior ? (vault.balancesSenior[userFullAddress] || 0) : 0;
 
-              // Calculate Time Duration for Yield (simplified year fraction)
+              // Calculate Time Duration for Yield
               const start = parseAppDate(vault.startDate) || new Date();
               const end = parseAppDate(vault.maturityDate) || new Date();
               const diffTime = Math.max(0, Math.abs(end - start));
@@ -1560,10 +1531,10 @@
               const details = calculatePayoutDetails(vault);
               showNotification(`Claim of ${formatCurrency(details.totalPayout)} paid.`, 'success');
 
-              // MODIFICATION: Mise à jour balance utilisateur courant
+              // Mise à jour balance utilisateur courant
               const currentBalances = vault.balances || {};
               const newBalances = { ...currentBalances, [userFullAddress]: 0 };
-              // Clear Tranche Balances too
+              // Clear Tranche Balances
               const newBalancesJunior = { ...(vault.balancesJunior || {}), [userFullAddress]: 0 };
               const newBalancesSenior = { ...(vault.balancesSenior || {}), [userFullAddress]: 0 };
 
@@ -1593,7 +1564,7 @@
 
               <NotificationToast message={notification.message} type={notification.type} onClose={() => setNotification({message:'', type:'info'})} />
 
-              {/* --- AJOUT DU MODAL KYB ASSUREUR --- */}
+              {/* --- MODAL KYB ASSUREUR --- */}
               <InsurerRegistrationModal
                   isOpen={showInsurerRegistration}
                   onClose={() => setShowInsurerRegistration(false)}
@@ -1601,7 +1572,7 @@
                   isSubmitting={isRegistering}
               />
 
-              {/* --- AJOUT DU MODAL KYC INVESTISSEUR --- */}
+              {/* --- MODAL KYC INVESTISSEUR --- */}
               <InvestorKYCModal
                   isOpen={showInvestorKYC}
                   onClose={() => setShowInvestorKYC(false)}
@@ -1855,7 +1826,6 @@
 
                             {/* CONTENEUR GRILLE / LISTE */}
                             <div className={`grid gap-6 ${viewMode === 'grid' ? 'grid-cols-1 lg:grid-cols-2' : 'grid-cols-1'}`}>
-                              {/* UTILISATION DE FILTEREDVAULTS AU LIEU DE VAULTS */}
                               {filteredVaults.length === 0 ? (
                                   <div className="col-span-full py-12 text-center text-slate-400 bg-slate-50 dark:bg-slate-900/50 rounded-2xl border border-dashed border-slate-200 dark:border-slate-700">
                                       No vault found with these criteria.
@@ -1864,11 +1834,11 @@
                                   filteredVaults.map((vault) => {
                                     // Vérification si le vault est complet
                                     const isFull = vault.currentAssets >= vault.totalCapacity;
-                                    // CHECK STATUT DE DEMARRAGE (NEW from app.html)
+                                    // CHECK STATUT DE DEMARRAGE
                                     const started = isVaultStarted(vault);
 
                                     if (viewMode === 'list') {
-                                        // VUE LISTE COMPACTE (NOUVEAU)
+                                        // VUE LISTE COMPACTE
                                         return (
                                             <div
                                                 key={vault.id}
@@ -1879,10 +1849,9 @@
                                                     isFull && vault.status === 'OPEN' ? 'bg-slate-100/50 dark:bg-slate-800/50 border-slate-300 dark:border-slate-600 opacity-90' :
                                                     'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 hover:border-blue-300 dark:hover:border-blue-500'}`}
                                             >
-                                                {/* PADDING AUGMENTÉ (p-6 au lieu de p-4) */}
                                                 <div className="p-4 relative flex flex-col md:flex-row md:items-center gap-6">
 
-                                                    {/* 1. MAIN INFO & BADGES */}
+                                                    {/* MAIN INFO & BADGES */}
                                                     <div className="flex-1 min-w-0">
                                                         <div className="flex flex-wrap items-center gap-2 mb-2">
                                                             <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-300 border border-slate-200 dark:border-slate-600 uppercase tracking-wider">
@@ -1949,10 +1918,9 @@
 
 
                                                     {/* DÉBUT ET MATURITÉ */}
-                                                    {/* pr-[74px] aligne la boite avec la barre du bas (90px barre - 16px padding = 74px) */}
                                                     <div className="flex flex-wrap items-center gap-14 justify-end pr-[74px] relative">
 
-                                                        {/* BOXES (DATES de app.html) */}
+                                                        {/* BOXES */}
                                                         <div className="flex flex-col gap-4">
                                                             <div className="w-[350px] h-[70px] relative flex items-center gap-4 bg-slate-50 dark:bg-slate-900/50 px-4 py-4 rounded-xl border border-slate-100 dark:border-slate-700 shrink-0">
                                                                 <div>
@@ -1968,7 +1936,6 @@
                                                                     <div className="h-8 w-px bg-slate-200 dark:bg-slate-700"></div>
                                                                 </div>
 
-                                                                {/* Maturité : Positionné en 'right-4' pour toucher exactement le bord droit du padding de la boite */}
                                                                 <div className="absolute top-1/2 -translate-y-1/2 right-4 flex items-center gap-10 pointer-events-none">
                                                                     <div className="text-right">
                                                                         <p className="text-sm text-slate-400 dark:text-slate-500">Maturity</p>
@@ -1998,7 +1965,7 @@
                                         );
                                     }
 
-                                    // VUE GRILLE (LAYOUT ORIGINAL backup_app.html AVEC AJOUTS DATE)
+                                    // VUE GRILLE
                                     return (
                                     <div
                                         key={vault.id}
@@ -2010,7 +1977,7 @@
                                             'border-slate-200 dark:border-slate-700 hover:border-blue-300 dark:hover:border-blue-500 hover:shadow-lg'}`}
                                     >
                                       <div className="absolute top-6 right-6 flex flex-col items-end gap-2">
-                                        {/* BADGES AVEC LOGIQUE "STARTED" */}
+                                        {/* BADGES */}
                                         {vault.status === 'OPEN' && !started && !isFull && <span className="px-3 py-1 rounded-full text-xs font-bold bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-400 flex items-center gap-1"><CheckCircle2 className="h-3 w-3" /> OPEN</span>}
                                         {vault.status === 'OPEN' && started && <span className="px-3 py-1 rounded-full text-xs font-bold bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-400 flex items-center gap-1"><Lock className="h-3 w-3" /> LOCKED</span>}
                                         {vault.status === 'OPEN' && isFull && !started && <span className="px-3 py-1 rounded-full text-xs font-bold bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 flex items-center gap-1"><Lock className="h-3 w-3" /> SOLD OUT</span>}
@@ -2069,7 +2036,6 @@
                                         </div>
 
                                         <div className="grid grid-cols-2 gap-4 mb-6 text-sm">
-                                            {/* Modifié pour inclure Start Date de app.html tout en gardant structure grid */}
                                           <div className="bg-slate-50 dark:bg-slate-900/50 p-3 rounded-lg border border-slate-100 dark:border-slate-700">
                                             <p className="text-slate-500 dark:text-slate-400 text-xs uppercase tracking-wider mb-1">Inception Date (Lock)</p>
                                             <p className="font-semibold text-slate-900 dark:text-white">{vault.startDate || 'N/A'}</p>
@@ -2093,28 +2059,24 @@
 
                     {/* VUE DÉTAILLÉE DU VAULT */}
                     {selectedVault && (() => {
-                        // 1. Récupération des données de base
+                        // Récupération des données de base
                         const baseApr = parseFloat(selectedVault.apr || 0);
 
-                        // 2. Calcul APR Senior (Selon ta consigne : APR * 0.8)
+                        // Calcul APR Senior
                         const seniorApr = baseApr * 0.7;
 
-                        // 3. Calcul APR Junior Dynamique (Effet de Levier)
-                        // On utilise les capitaux réels. Si le Junior est à 0 (début), on prend le capital initial pour éviter la division par zéro.
+                        // Calcul APR Junior Dynamique
                         const senCap = selectedVault.totalSeniorDeposits || 0;
                         const junCap = selectedVault.totalJuniorDeposits > 0 ? selectedVault.totalJuniorDeposits : (selectedVault.juniorCapital || 1);
 
                         const totalInvested = senCap + junCap;
 
-                        // Formule : (Yield Total généré par tout l'argent - Yield payé aux Seniors) / Argent des Juniors
                         const totalYieldGenerated = totalInvested * (baseApr / 100);
                         const costOfSenior = senCap * (seniorApr / 100);
                         const yieldForJunior = totalYieldGenerated - costOfSenior;
 
-                        // Résultat en %
                         let juniorApr = (yieldForJunior / junCap) * 100;
 
-                        // Fallback de sécurité : Si aucun dépôt senior, le Junior touche l'APR de base.
                         if (senCap === 0 && selectedVault.totalJuniorDeposits === 0) {
                             juniorApr = baseApr; // Par défaut avant investissement
                         }
@@ -2286,7 +2248,6 @@
                                             </h3>
 
                                             {selectedVault.status === 'OPEN' ? (
-                                                // ... (Tout le code du bloc OPEN reste identique) ...
                                                 isVaultStarted(selectedVault) ? (
                                                     <div className="text-center py-6 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-dashed border-slate-300 dark:border-slate-600">
                                                         <Lock className="h-8 w-8 text-slate-400 mx-auto mb-3" />
@@ -2298,8 +2259,6 @@
                                                     </div>
                                                 ) : (
                                                     <div>
-                                                        {/* ... (Tout le code du formulaire de dépôt/retrait OPEN ici) ... */}
-                                                        {/* Pour abréger ici, gardez tout le contenu du bloc "CAS 2" de votre code actuel */}
                                                         <div className="flex bg-slate-100 dark:bg-slate-700 p-1 rounded-xl mb-6">
                                                             <button onClick={() => setActionTab('deposit')} className={`flex-1 py-2 rounded-lg text-sm font-bold transition-all ${actionTab === 'deposit' ? 'bg-white dark:bg-slate-800 shadow-sm text-blue-600 dark:text-blue-400' : 'text-slate-500 dark:text-slate-400'}`}>Deposit</button>
                                                             <button onClick={() => setActionTab('withdraw')} className={`flex-1 py-2 rounded-lg text-sm font-bold transition-all ${actionTab === 'withdraw' ? 'bg-white dark:bg-slate-800 shadow-sm text-orange-600 dark:text-orange-400' : 'text-slate-500 dark:text-slate-400'}`}>Withdrawal</button>
@@ -2330,7 +2289,6 @@
                                                                     <div className="mb-4 p-3 bg-slate-100 dark:bg-slate-700 rounded-xl text-center"><span className="font-bold text-slate-500 dark:text-slate-300">This vault has reached its maximum capacity.</span></div>
                                                                 )}
                                                                 <div className="space-y-4">
-                                                                    {/* MODIFICATION ICI : items-start pour aligner en haut + pt-1 sur le label */}
                                                                     <div className="flex justify-between items-start mb-1">
                                                                         <label className="text-sm font-medium text-slate-700 dark:text-slate-300 pt-1">
                                                                             Amount ({trancheType === 'senior' ? 'Senior' : 'Junior'})
@@ -2394,7 +2352,7 @@
                                                     </button>
                                                 </div>
                                             ) : selectedVault.status === 'PENDING' ? (
-                                                /* --- NOUVEAU BLOC POUR PENDING --- */
+                                                /* --- BLOC POUR PENDING --- */
                                                 <div className="space-y-4">
                                                     <div className="bg-amber-50 dark:bg-amber-900/30 p-4 rounded-xl border border-amber-100 dark:border-amber-800 mb-4">
                                                         <div className="flex flex-col items-center text-center">
@@ -2456,7 +2414,6 @@
                 )}
 
                 {/* --- VUE ASSUREUR (COMPLÈTE DE BACKUP_APP) --- */}
-                {/* ... avec intégration des champs Date de Début de app.html ... */}
                 {activeRole === 'insurer' && (
                   <>
                   {/* ETAT 1: WALLET NON CONNECTÉ */}
@@ -2520,7 +2477,6 @@
                         </div>
 
                         <form onSubmit={(e) => { handleCreateVault(e); setIsFormExpanded(false); }} className="space-y-4">
-                           {/* ... Formulaire identique ... */}
                            <div className={isFormExpanded ? "grid grid-cols-2 gap-4" : "space-y-4"}>
                                <div className={isFormExpanded ? "col-span-2" : ""}>
                                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Risk Name</label>
@@ -2547,7 +2503,7 @@
                                 <textarea value={newVaultData.description} onChange={e => setNewVaultData({...newVaultData, description: e.target.value})} className="w-full p-3 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all h-24 resize-none text-sm" placeholder="Conditions..."></textarea>
                               </div>
 
-                              {/* CHAMP DATE DEBUT (AJOUT DE APP.HTML) */}
+                              {/* CHAMP DATE DEBUT */}
                               <div className={isFormExpanded ? "col-span-2 p-3 bg-blue-50 dark:bg-blue-900/10 rounded-xl border border-blue-100 dark:border-blue-800" : "p-3 bg-blue-50 dark:bg-blue-900/10 rounded-xl border border-blue-100 dark:border-blue-800"}>
                                    <label className="block text-sm font-bold text-blue-800 dark:text-blue-300 mb-2 flex items-center gap-2"><Calendar className="h-4 w-4"/> Inception Date (Lock)</label>
                                    <div className="grid grid-cols-3 gap-2">
@@ -2612,14 +2568,14 @@
                     <div className={`transition-all duration-500 ease-in-out min-w-0 ${isFormExpanded ? 'lg:flex-1' : 'lg:flex-[2]'}`} onClick={() => setIsFormExpanded(false)}>
                         <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-6">Your Managed Vaults</h3>
                         <div className="space-y-4">
-                        {/* NOUVELLE LOGIQUE : Vérification si la liste est vide */}
+                        {/* Vérification si la liste est vide */}
                         {(() => {
-                            // 1. On filtre d'abord les vaults de l'utilisateur
+                            // On filtre les vaults de l'utilisateur
                             const myVaults = vaults.filter(vault =>
                                 vault.insurerAddress && vault.insurerAddress.toLowerCase() === userFullAddress.toLowerCase()
                             );
 
-                            // 2. Si aucun vault, on affiche le message d'état vide
+                            // Si aucun vault, on affiche le message d'état vide
                             if (myVaults.length === 0) {
                                 return (
                                     <div className="flex flex-col items-center justify-center py-12 px-4 border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-2xl bg-slate-50/50 dark:bg-slate-900/30 text-center animate-fade-in group cursor-pointer hover:border-indigo-300 dark:hover:border-indigo-700 transition-colors" onClick={() => setIsFormExpanded(true)}>
@@ -2739,7 +2695,7 @@
                           const userJunior = vault.balancesJunior ? (vault.balancesJunior[userFullAddress] || 0) : 0;
                           const userSenior = vault.balancesSenior ? (vault.balancesSenior[userFullAddress] || 0) : 0;
 
-                          // Calcul APR Dynamique (Même logique que le détail du Vault)
+                          // Calcul APR Dynamique
                           const baseApr = parseFloat(vault.apr || 0);
                           const seniorApr = baseApr * 0.7;
 
