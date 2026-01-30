@@ -1457,43 +1457,33 @@
               return { juniorRecoveryRatio, seniorRecoveryRatio };
           };
 
-          const calculatePayoutDetails = (vault) => {
+          // Fonction utilitaire pour centraliser le calcul des APRs
+          const getTrancheAprs = (vault) => {
               const baseApr = parseFloat(vault.apr || 0);
 
-              // --- LOGIQUE WATERFALL ---
-
-              // Récupération des capitaux globaux
-              const totalSenior = vault.totalSeniorDeposits || 0;
-              const totalJunior = vault.totalJuniorDeposits || 0;
-              const totalInvested = totalSenior + totalJunior;
-
-              // Fixer l'APR Senior à 70% du Base APR
               const seniorApr = baseApr * 0.7;
 
-              // Calcul dynamique du Junior APR
-              let juniorApr = 0;
+              const senCap = vault.totalSeniorDeposits || 0;
+              const junCap = vault.totalJuniorDeposits > 0 ? vault.totalJuniorDeposits : (vault.juniorCapital || 1);
 
-              if (totalJunior > 0) {
-                  // Prime Totale théorique générée par l'ensemble du capital investi
-                  const totalImpliedYield = totalInvested * (baseApr / 100);
+              const totalInvested = senCap + junCap;
+              const totalYield = totalInvested * (baseApr / 100);
+              const seniorCost = senCap * (seniorApr / 100);
 
-                  // Coût de la tranche Senior
-                  const seniorPayoutCost = totalSenior * (seniorApr / 100);
+              let juniorApr = ((totalYield - seniorCost) / junCap) * 100;
 
-                  // Reste pour le Junior
-                  const juniorPayoutPot = totalImpliedYield - seniorPayoutCost;
-
-                  // Conversion en % pour la tranche Junior
-                  // YieldJunior = (Prime Totale - (Capital Senior × APRSenior)) / Capital Junior
-                  juniorApr = (juniorPayoutPot / totalJunior) * 100;
-
-                  // Évite un APR négatif si le Senior "mange" tout
-                  // cas rare mais possible mathématiquement
-                  if (juniorApr < 0) juniorApr = 0;
-              } else {
-                  // Fallback d'affichage s'il n'y a pas encore de Junior
+              // Fallback si vide
+              if (senCap === 0 && vault.totalJuniorDeposits === 0) {
                   juniorApr = baseApr;
               }
+
+              return { seniorApr, juniorApr: Math.max(0, juniorApr) };
+          };
+
+          const calculatePayoutDetails = (vault) => {
+              // Appel au Helper
+              const { seniorApr, juniorApr } = getTrancheAprs(vault);
+
 
               // Get User Balances in Tranches
               const userJunior = vault.balancesJunior ? (vault.balancesJunior[userFullAddress] || 0) : 0;
@@ -2059,28 +2049,8 @@
 
                     {/* VUE DÉTAILLÉE DU VAULT */}
                     {selectedVault && (() => {
-                        // Récupération des données de base
-                        const baseApr = parseFloat(selectedVault.apr || 0);
-
-                        // Calcul APR Senior
-                        const seniorApr = baseApr * 0.7;
-
-                        // Calcul APR Junior Dynamique
-                        const senCap = selectedVault.totalSeniorDeposits || 0;
-                        const junCap = selectedVault.totalJuniorDeposits > 0 ? selectedVault.totalJuniorDeposits : (selectedVault.juniorCapital || 1);
-
-                        const totalInvested = senCap + junCap;
-
-                        const totalYieldGenerated = totalInvested * (baseApr / 100);
-                        const costOfSenior = senCap * (seniorApr / 100);
-                        const yieldForJunior = totalYieldGenerated - costOfSenior;
-
-                        let juniorApr = (yieldForJunior / junCap) * 100;
-
-                        if (senCap === 0 && selectedVault.totalJuniorDeposits === 0) {
-                            juniorApr = baseApr; // Par défaut avant investissement
-                        }
-                        if (juniorApr < 0) juniorApr = 0; // Sécurité
+                        // UTILISATION DU HELPER (Notez 'selectedVault' ici)
+                        const { seniorApr, juniorApr } = getTrancheAprs(selectedVault);
 
                         return (
                         <div className="space-y-6">
@@ -2689,41 +2659,26 @@
                       </div>
 
                       <div className="divide-y divide-slate-100 dark:divide-slate-700">
-                        {vaults.filter(v => v.userBalance > 0).map(vault => {
+                          {vaults.filter(v => v.userBalance > 0).map(vault => {
 
-                          // --- CALCULS DES VALEURS ESTIMÉES ET APR PAR TRANCHE ---
-                          const userJunior = vault.balancesJunior ? (vault.balancesJunior[userFullAddress] || 0) : 0;
-                          const userSenior = vault.balancesSenior ? (vault.balancesSenior[userFullAddress] || 0) : 0;
+                              // --- CALCULS DES VALEURS ESTIMÉES ET APR PAR TRANCHE ---
+                              const userJunior = vault.balancesJunior ? (vault.balancesJunior[userFullAddress] || 0) : 0;
+                              const userSenior = vault.balancesSenior ? (vault.balancesSenior[userFullAddress] || 0) : 0;
 
-                          // Calcul APR Dynamique
-                          const baseApr = parseFloat(vault.apr || 0);
-                          const seniorApr = baseApr * 0.7;
+                              // Appel au Helper
+                              const { seniorApr, juniorApr } = getTrancheAprs(vault);
 
-                          const senCap = vault.totalSeniorDeposits || 0;
-                          const junCap = vault.totalJuniorDeposits > 0 ? vault.totalJuniorDeposits : (vault.juniorCapital || 1);
-                          const totalInvestedPool = senCap + junCap;
+                              // Calcul Temps Restant
+                              const daysRemaining = calculateDaysRemaining(vault.maturityDate);
+                              const yearFraction = daysRemaining / 365;
 
-                          // Formule Yield Junior
-                          const totalYieldGenerated = totalInvestedPool * (baseApr / 100);
-                          const costOfSenior = senCap * (seniorApr / 100);
-                          const yieldForJunior = totalYieldGenerated - costOfSenior;
-                          let juniorApr = (yieldForJunior / junCap) * 100;
-                          if (senCap === 0 && vault.totalJuniorDeposits === 0) juniorApr = baseApr; // Fallback
-                          if (juniorApr < 0) juniorApr = 0;
+                              // Valeurs de Fin Estimées
+                              const estimatedSeniorEnd = userSenior * (1 + (seniorApr / 100) * yearFraction);
+                              const estimatedJuniorEnd = userJunior * (1 + (juniorApr / 100) * yearFraction);
+                              const totalEstimatedEnd = estimatedSeniorEnd + estimatedJuniorEnd;
 
-                          // Calcul Temps Restant
-                          const daysRemaining = calculateDaysRemaining(vault.maturityDate);
-                          const yearFraction = daysRemaining / 365;
-
-                          // Valeurs de Fin Estimées
-                          const estimatedSeniorEnd = userSenior * (1 + (seniorApr / 100) * yearFraction);
-                          const estimatedJuniorEnd = userJunior * (1 + (juniorApr / 100) * yearFraction);
-                          const totalEstimatedEnd = estimatedSeniorEnd + estimatedJuniorEnd;
-
-                          // --- RENDU ---
-
-                          // SI LE VAULT EST TERMINÉ AVEC SUCCÈS (MATURED)
-                          if (vault.status === 'MATURED') {
+                              // --- RENDU ---
+                              if (vault.status === 'MATURED') {
                               const details = calculatePayoutDetails(vault);
                               return (
                                   <div key={vault.id} className="p-4 bg-green-50/50 dark:bg-green-900/10 relative overflow-hidden">
