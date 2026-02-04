@@ -1,8 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { ethers } from 'ethers';
-import { useToast } from './ToastContext';
-import { TOKEN_MAP } from '../constants/mocks';
-import { ERC20_ABI } from '../constants/abis';
+import { useToast } from './ToastContext.jsx';
+import { TOKEN_MAP } from '../constants/mocks.js';
+import { ERC20_ABI } from '../constants/abis.js';
 
 const Web3Context = createContext();
 
@@ -38,7 +38,7 @@ export const Web3Provider = ({ children }) => {
         }
     }, [showToast]);
 
-    // Fonction principale de connexion (Logique de app.html)
+    // Fonction principale de connexion
     const connectWallet = async (walletType) => {
         // 1. GESTION SIMULATION
         if (walletType === 'simulation') {
@@ -52,33 +52,16 @@ export const Web3Provider = ({ children }) => {
         }
 
         // 2. GESTION WEB3 RÉEL
-        if (!window.ethers && !ethers) {
-            showToast("Technical error: Web3 library not loaded.", 'error');
+        if (!window.ethereum) {
+            showToast("No crypto wallet found. Please install MetaMask or Rabby.", 'error');
             return;
         }
 
-        let providerInput = null;
+        let providerInput = window.ethereum;
 
-        // Détection du provider selon le type choisi
-        if (walletType === 'zerion') {
-            if (window.zerionWallet) providerInput = window.zerionWallet;
-            else if (window.ethereum && window.ethereum.isZerion) providerInput = window.ethereum;
-            else providerInput = window.ethereum;
-        } else if (walletType === 'rabby') {
-            if (window.ethereum && window.ethereum.isRabby) providerInput = window.ethereum;
-            else providerInput = window.ethereum;
-        } else if (walletType === 'metamask') {
-            if (window.ethereum) providerInput = window.ethereum;
-        } else if (walletType === 'walletconnect') {
-            if (window.ethereum) providerInput = window.ethereum;
-        } else {
-            providerInput = window.ethereum;
-        }
-
-        if (!providerInput) {
-            showToast("No compatible wallet detected.", 'error');
-            return;
-        }
+        // Détection du provider selon le type choisi (Logique simplifiée pour v6)
+        if (walletType === 'zerion' && window.zerionWallet) providerInput = window.zerionWallet;
+        // Pour les autres, on utilise window.ethereum par défaut, la plupart des wallets l'injectent
 
         try {
             const accounts = await providerInput.request({ method: 'eth_requestAccounts' });
@@ -87,11 +70,14 @@ export const Web3Provider = ({ children }) => {
                 return;
             }
 
-            const provider = new ethers.providers.Web3Provider(providerInput);
-            const signer = provider.getSigner();
+            // --- MIGRATION Ethers v6: BrowserProvider au lieu de providers.Web3Provider ---
+            const provider = new ethers.BrowserProvider(providerInput);
+
+            // --- MIGRATION Ethers v6: getSigner est ASYNC ---
+            const signer = await provider.getSigner();
             const address = await signer.getAddress();
 
-            // Signature Message (Sécurité présente dans app.html)
+            // Signature Message
             try {
                 const messageToSign = `Mœba Protocol Login\n\nWallet: ${address}\nNonce: ${Date.now()}`;
                 showToast("Please sign the request in your wallet...", 'info');
@@ -104,7 +90,8 @@ export const Web3Provider = ({ children }) => {
             }
 
             const balanceBig = await provider.getBalance(address);
-            const balanceFmt = ethers.utils.formatEther(balanceBig);
+            // --- MIGRATION Ethers v6: formatEther est à la racine, pas dans utils ---
+            const balanceFmt = ethers.formatEther(balanceBig);
             const shortAddress = `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
 
             setWalletConnected(true);
@@ -112,12 +99,7 @@ export const Web3Provider = ({ children }) => {
             setUserFullAddress(address);
             setUserBalance(parseFloat(balanceFmt).toFixed(4));
 
-            let walletName = 'Wallet';
-            if (walletType === 'zerion' || providerInput.isZerion) walletName = 'Zerion';
-            else if (walletType === 'rabby' || providerInput.isRabby) walletName = 'Rabby';
-            else if (walletType === 'metamask' || providerInput.isMetaMask) walletName = 'MetaMask';
-
-            showToast(`Connected with ${walletName}`, 'success');
+            showToast(`Connected successfully`, 'success');
 
         } catch (error) {
             console.error(error);
@@ -133,21 +115,21 @@ export const Web3Provider = ({ children }) => {
         showToast("Disconnected from the application.", 'info');
     };
 
-    // Helper pour récupérer la balance d'un Token spécifique (Asset Balance)
-    // Logique extraite du useEffect "fetchAssetBalance" de app.html
     const getAssetBalance = async (vaultChain, vaultAsset) => {
         if (!walletConnected || !window.ethereum) return '0.00';
 
-        // En mode simulation, on retourne une fausse balance infinie
+        // En mode simulation
         if (userFullAddress === '0xsimulated000000000000000000000000000000') {
             return '50000.00';
         }
 
         try {
-            const provider = new ethers.providers.Web3Provider(window.ethereum);
+            // --- MIGRATION Ethers v6 ---
+            const provider = new ethers.BrowserProvider(window.ethereum);
             const tokenAddress = TOKEN_MAP[vaultChain] ? TOKEN_MAP[vaultChain][vaultAsset] : null;
 
-            let balance = ethers.BigNumber.from(0);
+            // v6 utilise des BigInt natifs (0n)
+            let balance = 0n;
             let decimals = 18;
 
             if (tokenAddress) {
@@ -158,7 +140,8 @@ export const Web3Provider = ({ children }) => {
                 balance = await provider.getBalance(userFullAddress);
             }
 
-            const formatted = ethers.utils.formatUnits(balance, decimals);
+            // --- MIGRATION Ethers v6 ---
+            const formatted = ethers.formatUnits(balance, decimals);
             return parseFloat(formatted);
         } catch (err) {
             console.error("Error fetching asset balance", err);
