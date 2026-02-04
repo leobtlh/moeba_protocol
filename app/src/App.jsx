@@ -17,7 +17,6 @@ import Navbar from './components/Layout/Navbar';
 import MarketplacePage from './pages/MarketplacePage';       // Vue "Investor" par défaut
 import PortfolioPage from './pages/PortfolioPage';           // Vue "Dashboard" / "Active Positions"
 import InsurerDashboardPage from './pages/InsurerDashboardPage'; // Vue "Insurer" + Formulaire création
-import OracleDashboardPage from './pages/OracleDashboardPage';   // Vue "Oracle" (Monitoring)
 import VaultDetailsPage from './pages/VaultDetailsPage';     // Vue "Selected Vault"
 
 // --- 4. COMPOSANTS UI (Design System) ---
@@ -85,7 +84,7 @@ import {
 function App() {
   // --- STATE DE NAVIGATION INTERNE ---
   // Sert uniquement à switcher entre les grandes "Pages" importées ci-dessus
-  const [activeView, setActiveView] = useState('marketplace'); // 'marketplace', 'portfolio', 'insurer', 'oracle', 'details'
+  const [activeView, setActiveView] = useState('marketplace'); // 'marketplace', 'portfolio', 'insurer', 'details'
   const [selectedVaultId, setSelectedVaultId] = useState(null);
 
   /**
@@ -120,10 +119,6 @@ function App() {
 
               {activeView === 'insurer' && (
                 <InsurerDashboardPage />
-              )}
-
-              {activeView === 'oracle' && (
-                <OracleDashboardPage />
               )}
 
               {activeView === 'details' && selectedVaultId && (
