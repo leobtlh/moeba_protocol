@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    Activity, CheckCircle2, AlertTriangle, ChevronDown, Coins, ArrowRight
+    CheckCircle2, AlertTriangle, ChevronDown, Coins, ArrowRight
 } from '../ui/Icons';
 import { getTrancheAprs, calculatePayoutDetails } from '../../utils/finance';
 import { formatCurrency, calculateDaysRemaining } from '../../utils/formatting';

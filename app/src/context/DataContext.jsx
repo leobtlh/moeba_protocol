@@ -5,7 +5,7 @@ import { useWeb3 } from './Web3Context';
 import { INITIAL_VAULTS } from '../constants/mocks';
 import { FACTORY_ADDRESS_LIVE, FACTORY_ABI_EXTENDED, INSURER_WHITELIST_LOCAL } from '../constants/abis';
 import { generateMockHistory } from '../utils/generators';
-import { formatCurrency } from '../utils/formatting';
+// import { formatCurrency } from '../utils/formatting'; // -> RETIRÉ : non utilisé
 
 const DataContext = createContext();
 
@@ -46,7 +46,7 @@ export const DataProvider = ({ children }) => {
 
             // 1. VERIFICATION INVESTISSEUR
             const investorList = JSON.parse(localStorage.getItem('moeba_investor_whitelist') || '[]');
-            const investorRequests = JSON.parse(localStorage.getItem('moeba_investor_requests') || '[]');
+            // const investorRequests = JSON.parse(localStorage.getItem('moeba_investor_requests') || '[]'); // Retiré : déclaré mais jamais utilisé
 
             // Si c'est la simu ou si l'user est dans la liste locale
             if (userFullAddress.toLowerCase() === SIMULATION_ADDRESS || investorList.includes(userFullAddress.toLowerCase())) {
@@ -57,9 +57,9 @@ export const DataProvider = ({ children }) => {
 
             // 2. VERIFICATION ASSUREUR
             if (isLiveMode) {
-                // Mode LIVE (Blockchain)
+                // Mode LIVE (Blockchain) - CORRECTION Ethers v6
                 try {
-                    const provider = new ethers.providers.Web3Provider(window.ethereum);
+                    const provider = new ethers.BrowserProvider(window.ethereum);
                     // Si adresse nulle, on considère pas whitelisté
                     if (FACTORY_ADDRESS_LIVE === "0x0000000000000000000000000000000000000000") {
                         setIsInsurerWhitelisted(false);
@@ -135,7 +135,7 @@ export const DataProvider = ({ children }) => {
             currentAssets: 0,
             juniorCapital: formData.juniorCapital,
             premium: formData.premium,
-            startDate: formData.startDateStr,
+            startDate: formData.startDateStr, // Si venant du form, s'assurer que form envoie ces champs ou maj ici
             maturityDate: formData.endDateStr,
             apr: formData.apr,
             riskProb: (Math.random() * 19 + 1).toFixed(1),
@@ -299,9 +299,10 @@ export const DataProvider = ({ children }) => {
     // Envoi demande Assureur (KYB)
     const registerInsurer = async (data) => {
         if (isLiveMode) {
+            // CORRECTION Ethers v6 : BrowserProvider et getSigner() async
             try {
-                const provider = new ethers.providers.Web3Provider(window.ethereum);
-                const signer = provider.getSigner();
+                const provider = new ethers.BrowserProvider(window.ethereum);
+                const signer = await provider.getSigner();
                 const factoryContract = new ethers.Contract(FACTORY_ADDRESS_LIVE, FACTORY_ABI_EXTENDED, signer);
                 const tx = await factoryContract.registerInsurer(data.companyName, data.kybLink);
                 await tx.wait();

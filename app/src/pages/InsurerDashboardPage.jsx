@@ -29,7 +29,7 @@ const InsurerDashboardPage = () => {
         setIsFormExpanded(false);
     };
 
-    const handleInsurerRegistration = async (data) => {
+    const handleInsurerRegistration = async () => {
         // La logique réelle est dans le composant Modal ou DataContext,
         // ici on simule juste le feedback UI local si besoin,
         // mais idéalement tout est géré dans le Context.
@@ -117,7 +117,7 @@ const InsurerDashboardPage = () => {
 
                 <CreateVaultForm
                     isExpanded={isFormExpanded}
-                    onToggle={() => setIsFormExpanded(true)} // Note: Le bouton collapse est géré dans le composant via props aussi
+                    onToggle={(state) => setIsFormExpanded(state)} // Note: Le bouton collapse est géré dans le composant via props aussi
                     onCreate={handleCreateVault}
                     userAddress={userAddress}
                 />

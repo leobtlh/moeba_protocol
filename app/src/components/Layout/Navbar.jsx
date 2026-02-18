@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {
-    Sun, Moon, Wallet, LogOut, RefreshCw, Zap, Globe
+    Sun, Moon, Wallet, LogOut, Zap, Globe // J'ai retiré RefreshCw
 } from '../ui/Icons';
 import { useTheme } from '../../context/ThemeContext';
 import { useWeb3 } from '../../context/Web3Context';
@@ -9,14 +9,12 @@ import ConnectWalletModal from '../Modals/ConnectWalletModal';
 const Navbar = ({ activeView, setActiveView }) => {
     // Contexts Global state
     const { isDarkMode, toggleTheme } = useTheme();
-    const { walletConnected, userAddress, userFullAddress, disconnectWallet } = useWeb3();
+    // J'ai ajouté isLiveMode et setIsLiveMode ici
+    const { walletConnected, userAddress, userFullAddress, disconnectWallet, isLiveMode, setIsLiveMode } = useWeb3();
 
     // Local UI State
     const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
     const [showWalletMenu, setShowWalletMenu] = useState(false);
-
-    // UI Toggle for Simulation Mode (Visual parity with app.html)
-    const [isLiveMode, setIsLiveMode] = useState(false);
 
     // Navigation Mapping (React View -> HTML Role)
     const handleNav = (view) => {
@@ -34,7 +32,8 @@ const Navbar = ({ activeView, setActiveView }) => {
                         </a>
 
                         <div className="hidden md:flex items-center gap-2 bg-slate-100 dark:bg-slate-800 p-1 rounded-full ml-4">
-                            <button onClick={() => setIsLiveMode(false)} className={`px-3 py-1 text-xs font-bold rounded-full transition-all flex items-center gap-1 ${!isLiveMode ? 'bg-white dark:bg-slate-600 shadow text-slate-900 dark:text-white' : 'text-slate-500 hover:text-slate-700'}`}><RefreshCw className="h-3 w-3" /> Simulation</button>
+                            {/* Les boutons utilisent maintenant l'état global */}
+                            <button onClick={() => setIsLiveMode(false)} className={`px-3 py-1 text-xs font-bold rounded-full transition-all flex items-center gap-1 ${!isLiveMode ? 'bg-white dark:bg-slate-600 shadow text-slate-900 dark:text-white' : 'text-slate-500 hover:text-slate-700'}`}>Simulation</button>
                             <button onClick={() => setIsLiveMode(true)} className={`px-3 py-1 text-xs font-bold rounded-full transition-all flex items-center gap-1 ${isLiveMode ? 'bg-red-500 shadow text-white' : 'text-slate-500 hover:text-slate-700'}`}><Zap className="h-3 w-3" /> Live</button>
                         </div>
                     </div>

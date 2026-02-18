@@ -26,15 +26,7 @@ export const calculateDaysRemaining = (dateStr) => {
     return diffDays > 0 ? diffDays : 0;
 };
 
-// Validation jours dans mois (pour formulaire)
-export const isValidDayInMonth = (day, monthName, year) => {
-    const mIndex = MONTHS.findIndex(m => m.name === monthName);
-    if (mIndex === -1) return false;
-    const daysInMonth = new Date(year, mIndex + 1, 0).getDate();
-    return day > 0 && day <= daysInMonth;
-};
-
-// Récupérer le nombre de jours max d'un mois donné
+// Récupérer le nombre de jours max d'un mois donné (SOURCE DE VÉRITÉ UNIQUE)
 export const getMaxDays = (monthName) => {
     const m = MONTHS.find(mo => mo.name === monthName);
     return m ? m.days : 31;

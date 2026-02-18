@@ -5,11 +5,13 @@ import {
 } from '../components/ui/Icons.jsx';
 import RiskChart from '../components/Charts/RiskChart.jsx';
 import InvestorKYCModal from '../components/Modals/InvestorKYCModal.jsx';
+import TrancheSelector from '../components/Vaults/TrancheSelector.jsx';
+import VaultWaterfall from '../components/Vaults/VaultWaterfall.jsx';
 import { useData } from '../context/DataContext.jsx';
 import { useWeb3 } from '../context/Web3Context.jsx';
 import { useToast } from '../context/ToastContext.jsx';
-import { getTrancheAprs, calculatePayoutDetails } from '../utils/finance.js';
-import { formatCurrency, parseAppDate } from '../utils/formatting.js';
+import { getTrancheAprs, calculatePayoutDetails, isVaultStarted } from '../utils/finance.js';
+import { formatCurrency } from '../utils/formatting.js';
 
 const VaultDetailsPage = ({ vaultId, onBack }) => {
     // --- GLOBAL CONTEXT ---
@@ -33,13 +35,6 @@ const VaultDetailsPage = ({ vaultId, onBack }) => {
 
     // Get Current Vault
     const selectedVault = vaults.find(v => v.id === vaultId);
-
-    // --- HELPERS FROM APP.HTML ---
-    const isVaultStarted = (vault) => {
-        if (!vault || !vault.startDate) return false;
-        const start = parseAppDate(vault.startDate);
-        return start && new Date() >= start;
-    };
 
     const isInvestorWhitelisted = useMemo(() => {
         // Mock whitelist check based on local storage or hardcoded simulation logic from app.html
@@ -73,15 +68,6 @@ const VaultDetailsPage = ({ vaultId, onBack }) => {
 
     const handleDeposit = async () => {
         if (!walletConnected) { showToast("Connect your wallet.", 'error'); return; }
-
-        // KYC CHECK (Simplified for React Port)
-        // In app.html this checks local storage. Here we trigger modal if context says so.
-        // For strict parity, if we want to simulate the modal:
-        /* if (!isInvestorWhitelisted) {
-             setShowInvestorKYC(true);
-             return;
-        }
-        */
 
         if (!selectedVault || !depositAmount) return;
         const amount = parseFloat(depositAmount);
@@ -331,29 +317,18 @@ const VaultDetailsPage = ({ vaultId, onBack }) => {
                                             <button onClick={() => setActionTab('deposit')} className={`flex-1 py-2 rounded-lg text-sm font-bold transition-all ${actionTab === 'deposit' ? 'bg-white dark:bg-slate-800 shadow-sm text-blue-600 dark:text-blue-400' : 'text-slate-500 dark:text-slate-400'}`}>Deposit</button>
                                             <button onClick={() => setActionTab('withdraw')} className={`flex-1 py-2 rounded-lg text-sm font-bold transition-all ${actionTab === 'withdraw' ? 'bg-white dark:bg-slate-800 shadow-sm text-orange-600 dark:text-orange-400' : 'text-slate-500 dark:text-slate-400'}`}>Withdrawal</button>
                                         </div>
-                                        {/* SÉLECTEUR DE TRANCHE (Senior vs Junior) */}
-                                        <div className="mb-6 grid grid-cols-2 gap-3">
-                                            <label className="cursor-pointer">
-                                                <input type="radio" name="tranche" value="senior" checked={trancheType === 'senior'} onChange={() => setTrancheType('senior')} className="hidden peer" />
-                                                <div className="p-3 rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 peer-checked:border-blue-500 peer-checked:bg-blue-50 dark:peer-checked:bg-blue-900/20 text-center transition-all h-full flex flex-col justify-center">
-                                                    <div className="font-bold text-slate-700 dark:text-slate-200">Senior</div>
-                                                    <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">APR { seniorApr.toFixed(2) }%</div>
-                                                    <div className="text-[10px] text-green-600 mt-1 font-medium">Payment Priority</div>
-                                                </div>
-                                            </label>
-                                            <label className="cursor-pointer">
-                                                <input type="radio" name="tranche" value="junior" checked={trancheType === 'junior'} onChange={() => setTrancheType('junior')} className="hidden peer" />
-                                                <div className="p-3 rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 peer-checked:border-indigo-500 peer-checked:bg-indigo-50 dark:peer-checked:bg-indigo-900/20 text-center transition-all h-full flex flex-col justify-center">
-                                                    <div className="font-bold text-slate-700 dark:text-slate-200">Junior</div>
-                                                    <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">APR { juniorApr.toFixed(2) }%</div>
-                                                    <div className="text-[10px] text-orange-500 mt-1 font-medium">Boost Yield</div>
-                                                </div>
-                                            </label>
-                                        </div>
+
+                                        {/* SÉLECTEUR DE TRANCHE CENTRALISÉ */}
+                                        <TrancheSelector
+                                            trancheType={trancheType}
+                                            setTrancheType={setTrancheType}
+                                            seniorApr={seniorApr}
+                                            juniorApr={juniorApr}
+                                        />
 
                                         {actionTab === 'deposit' ? (
                                             <div className="space-y-6 animate-fade-in">
-                                                {selectedVault.currentAssets >= selectedVault.totalCapacity && (
+                                                {isFull && (
                                                     <div className="mb-4 p-3 bg-slate-100 dark:bg-slate-700 rounded-xl text-center"><span className="font-bold text-slate-500 dark:text-slate-300">This vault has reached its maximum capacity.</span></div>
                                                 )}
                                                 <div className="space-y-4">
@@ -368,10 +343,10 @@ const VaultDetailsPage = ({ vaultId, onBack }) => {
                                                     </div>
 
                                                     <div className="relative">
-                                                        <input type="number" min="0" step="0.01" value={depositAmount} onChange={(e) => { const val = parseFloat(e.target.value); const max = selectedVault.totalCapacity - selectedVault.currentAssets; if (val > max) { setDepositAmount(max.toFixed(4)); } else { setDepositAmount(e.target.value); } }} disabled={selectedVault.currentAssets >= selectedVault.totalCapacity} className="w-full pl-4 pr-16 py-4 border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none font-medium text-lg disabled:opacity-50 disabled:cursor-not-allowed" placeholder={selectedVault.currentAssets >= selectedVault.totalCapacity ? "Sold Out" : "0.00"} />
+                                                        <input type="number" min="0" step="0.01" value={depositAmount} onChange={(e) => { const val = parseFloat(e.target.value); const max = selectedVault.totalCapacity - selectedVault.currentAssets; if (val > max) { setDepositAmount(max.toFixed(4)); } else { setDepositAmount(e.target.value); } }} disabled={isFull} className="w-full pl-4 pr-16 py-4 border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none font-medium text-lg disabled:opacity-50 disabled:cursor-not-allowed" placeholder={isFull ? "Sold Out" : "0.00"} />
                                                         <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 font-bold">{selectedVault.asset}</span>
                                                     </div>
-                                                    {walletConnected && assetBalance > 0 && selectedVault.currentAssets < selectedVault.totalCapacity && (
+                                                    {walletConnected && assetBalance > 0 && !isFull && (
                                                         <div className="flex gap-2">{[25, 50, 75, 100].map(pct => (<button key={pct} onClick={() => handleSetPercentage(pct)} className="flex-1 py-1.5 text-xs font-bold rounded-lg bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 hover:text-blue-600">{pct}%</button>))}</div>
                                                     )}
                                                 </div>
@@ -379,7 +354,7 @@ const VaultDetailsPage = ({ vaultId, onBack }) => {
                                                     <div className="flex justify-between text-sm"><span className="text-slate-500 dark:text-slate-400">Estimated APR</span><span className={`font-bold ${trancheType === 'junior' ? 'text-indigo-600' : 'text-blue-600'}`}>{trancheType === 'junior' ? juniorApr.toFixed(2) : seniorApr.toFixed(2)}%</span></div>
                                                     <div className="flex justify-between text-sm"><span className="text-slate-500 dark:text-slate-400">Deposit fees</span><span className="font-medium text-slate-900 dark:text-white">0.00%</span></div>
                                                 </div>
-                                                <button onClick={handleDeposit} disabled={selectedVault.currentAssets >= selectedVault.totalCapacity} className={`w-full py-4 ${trancheType === 'junior' ? 'bg-indigo-600 hover:bg-indigo-700' : 'bg-blue-600 hover:bg-blue-700'} text-white rounded-xl font-bold shadow-lg shadow-blue-200 dark:shadow-none transition-all flex justify-center items-center gap-2 disabled:bg-slate-400 disabled:cursor-not-allowed disabled:shadow-none`}>{selectedVault.currentAssets >= selectedVault.totalCapacity ? "Capacity Reached" : `Confirm Deposit ${trancheType === 'junior' ? 'Junior' : 'Senior'}`} <ArrowRight className="h-4 w-4"/></button>
+                                                <button onClick={handleDeposit} disabled={isFull} className={`w-full py-4 ${trancheType === 'junior' ? 'bg-indigo-600 hover:bg-indigo-700' : 'bg-blue-600 hover:bg-blue-700'} text-white rounded-xl font-bold shadow-lg shadow-blue-200 dark:shadow-none transition-all flex justify-center items-center gap-2 disabled:bg-slate-400 disabled:cursor-not-allowed disabled:shadow-none`}>{isFull ? "Capacity Reached" : `Confirm Deposit ${trancheType === 'junior' ? 'Junior' : 'Senior'}`} <ArrowRight className="h-4 w-4"/></button>
                                                 <p className="text-xs text-center text-slate-400 mt-2">Subscription period open until {selectedVault.startDate}.</p>
                                             </div>
                                         ) : (
@@ -472,6 +447,9 @@ const VaultDetailsPage = ({ vaultId, onBack }) => {
                                 </div>
                             )}
                         </div>
+
+                        {/* WATERFALL STRUCTURE COMPONENT */}
+                        <VaultWaterfall />
 
                         <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-5 border border-slate-200 dark:border-slate-700">
                             <h5 className="font-bold text-slate-900 dark:text-white text-sm mb-3">Need help?</h5>

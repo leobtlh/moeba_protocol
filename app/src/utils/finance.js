@@ -92,8 +92,15 @@ export const calculatePayoutDetails = (vault, userAddress) => {
     return { principalRecovered, yieldPayout: totalYield, loss: totalLoss, totalPayout };
 };
 
-// Helper pour formulaire création
+// Helper pour formulaire création (SOURCE DE VÉRITÉ UNIQUE)
 export const updateJunior = (cap, percent) => {
     const calculatedJunior = (parseFloat(cap || 0) * parseFloat(percent || 0)) / 100;
     return calculatedJunior;
+};
+
+// Helper global pour vérifier si le Vault a démarré
+export const isVaultStarted = (vault) => {
+    if (!vault || !vault.startDate) return false;
+    const start = parseAppDate(vault.startDate);
+    return start && new Date() >= start;
 };

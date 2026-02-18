@@ -3,7 +3,8 @@ import {
     Plus, Minimize2, Calendar
 } from '../ui/Icons';
 import { AVAILABLE_CHAINS, AVAILABLE_ASSETS, MONTHS } from '../../constants/mocks';
-import { formatCurrency } from '../../utils/formatting';
+import { formatCurrency, getMaxDays } from '../../utils/formatting';
+import { updateJunior } from '../../utils/finance';
 import { generateMockHistory } from '../../utils/generators';
 
 const CreateVaultForm = ({ isExpanded, onToggle, onCreate, userAddress }) => {
@@ -28,16 +29,6 @@ const CreateVaultForm = ({ isExpanded, onToggle, onCreate, userAddress }) => {
     const [isOvercollateralized, setIsOvercollateralized] = useState(false);
 
     // --- HELPERS LOGIQUES (Internes au formulaire) ---
-    const updateJunior = (cap, percent) => {
-        const calculatedJunior = (parseFloat(cap || 0) * parseFloat(percent || 0)) / 100;
-        return calculatedJunior;
-    };
-
-    const getMaxDays = (monthName) => {
-        const m = MONTHS.find(mo => mo.name === monthName);
-        return m ? m.days : 31;
-    };
-
     const handleDateBlur = () => {
         setNewVaultData(current => {
             const today = new Date();
@@ -47,6 +38,7 @@ const CreateVaultForm = ({ isExpanded, onToggle, onCreate, userAddress }) => {
             const getValidDateObj = (d, mName, y) => {
                 const mIndex = MONTHS.findIndex(m => m.name === mName);
                 const safeY = Math.max(parseInt(y) || currentYear, currentYear);
+                // C'est cette ligne qui fait le travail intelligent (bissextile etc.) :
                 const daysInMonth = new Date(safeY, mIndex + 1, 0).getDate();
                 const safeD = Math.min(Math.max(1, parseInt(d) || 1), daysInMonth);
                 return new Date(safeY, mIndex, safeD);
@@ -157,14 +149,14 @@ const CreateVaultForm = ({ isExpanded, onToggle, onCreate, userAddress }) => {
     return (
         <div
             className={`bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6 shadow-sm transition-all ${isExpanded ? 'ring-2 ring-indigo-500/20' : ''}`}
-            onClick={onToggle}
-            onFocus={onToggle}
+            onClick={() => onToggle(true)}
+            onFocus={() => onToggle(true)}
         >
             <div className="flex items-center gap-3 mb-6 pb-6 border-b border-slate-100 dark:border-slate-700">
                 <div className="p-2 bg-indigo-50 dark:bg-indigo-900/30 rounded-lg text-indigo-600 dark:text-indigo-400"><Plus className="h-5 w-5" /></div>
                 <div><h2 className="text-lg font-bold text-slate-900 dark:text-white">New Vault</h2><p className="text-xs text-slate-500 dark:text-slate-400">Factory Deployment</p></div>
                 {isExpanded && (
-                    <button onClick={(e) => { e.stopPropagation(); onToggle(e); }} className="ml-auto text-xs bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 px-3 py-1.5 rounded-lg text-slate-500 dark:text-slate-400 font-bold flex items-center gap-1 transition-colors"><Minimize2 className="h-3 w-3" /> Collapse</button>
+                    <button onClick={(e) => { e.stopPropagation(); onToggle(false); }} className="ml-auto text-xs bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 px-3 py-1.5 rounded-lg text-slate-500 dark:text-slate-400 font-bold flex items-center gap-1 transition-colors"><Minimize2 className="h-3 w-3" /> Collapse</button>
                 )}
             </div>
 

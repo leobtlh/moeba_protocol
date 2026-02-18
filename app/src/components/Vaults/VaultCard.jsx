@@ -1,22 +1,15 @@
 import React from 'react';
 import {
     ArrowRight, CheckCircle2, Lock, Activity, AlertTriangle, Building2
-} from '../ui/Icons'; // Assure-toi que le chemin vers Icons est bon
-import { formatCurrency, parseAppDate } from '../../utils/formatting';
-
-// Helper local pour le statut (identique à l'original)
-const isVaultStarted = (vault) => {
-    if (!vault || !vault.startDate) return false;
-    const start = parseAppDate(vault.startDate);
-    return start && new Date() >= start;
-};
+} from '../ui/Icons';
+import { formatCurrency } from '../../utils/formatting';
+import { isVaultStarted } from '../../utils/finance';
 
 const VaultCard = ({ vault, viewMode = 'grid', onClick }) => {
-    // Calculs identiques à l'original
     const isFull = vault.currentAssets >= vault.totalCapacity;
     const started = isVaultStarted(vault);
 
-    // --- LOGIQUE BARRE DE PROGRESSION (Partagée pour éviter la répétition de code, mais classes identiques) ---
+    // --- LOGIQUE BARRE DE PROGRESSION ---
     const ProgressBar = ({ heightClass }) => (
         <div className={`w-full bg-slate-100 dark:bg-slate-700 rounded-full ${heightClass} mb-4 overflow-hidden`}>
             <div
@@ -52,9 +45,10 @@ const VaultCard = ({ vault, viewMode = 'grid', onClick }) => {
                             <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300 border border-blue-100 dark:border-blue-800 uppercase tracking-wider">
                                 {vault.asset}
                             </span>
-                            {/* Badges spécifiques Liste (copiés de l'original) */}
-                            {vault.status === 'OPEN' && !started && <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-400 flex items-center gap-1"><CheckCircle2 className="h-3 w-3" /> OPEN</span>}
+                            {/* Badges */}
+                            {vault.status === 'OPEN' && !started && !isFull && <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-400 flex items-center gap-1"><CheckCircle2 className="h-3 w-3" /> OPEN</span>}
                             {vault.status === 'OPEN' && started && <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-400 flex items-center gap-1"><Lock className="h-3 w-3" /> LOCKED</span>}
+                            {vault.status === 'OPEN' && isFull && !started && <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 flex items-center gap-1"><Lock className="h-3 w-3" /> SOLD OUT</span>}
                             {vault.status === 'MATURED' && <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-400 flex items-center gap-1"><CheckCircle2 className="h-3 w-3" /> COMPLETED</span>}
                             {vault.status === 'PENDING' && <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-400 flex items-center gap-1"><Activity className="h-3 w-3" /> PENDING</span>}
                             {vault.status === 'TRIGGERED' && <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-400 flex items-center gap-1"><AlertTriangle className="h-3 w-3" /> DISASTER</span>}
@@ -107,7 +101,7 @@ const VaultCard = ({ vault, viewMode = 'grid', onClick }) => {
                         </div>
                     </div>
 
-                    {/* DÉBUT ET MATURITÉ (Ce bloc manquait dans ma réponse précédente) */}
+                    {/* DÉBUT ET MATURITÉ */}
                     <div className="flex flex-wrap items-center gap-14 justify-end pr-[74px] relative">
                         {/* BOXES */}
                         <div className="flex flex-col gap-4">
@@ -159,7 +153,7 @@ const VaultCard = ({ vault, viewMode = 'grid', onClick }) => {
                 'border-slate-200 dark:border-slate-700 hover:border-blue-300 dark:hover:border-blue-500 hover:shadow-lg'}`}
         >
             <div className="absolute top-6 right-6 flex flex-col items-end gap-2">
-                {/* BADGES GRILLE (Specifiques à la grille) */}
+                {/* BADGES GRILLE */}
                 {vault.status === 'OPEN' && !started && !isFull && <span className="px-3 py-1 rounded-full text-xs font-bold bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-400 flex items-center gap-1"><CheckCircle2 className="h-3 w-3" /> OPEN</span>}
                 {vault.status === 'OPEN' && started && <span className="px-3 py-1 rounded-full text-xs font-bold bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-400 flex items-center gap-1"><Lock className="h-3 w-3" /> LOCKED</span>}
                 {vault.status === 'OPEN' && isFull && !started && <span className="px-3 py-1 rounded-full text-xs font-bold bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 flex items-center gap-1"><Lock className="h-3 w-3" /> SOLD OUT</span>}
