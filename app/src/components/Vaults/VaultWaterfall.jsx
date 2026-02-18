@@ -27,7 +27,7 @@ const VaultWaterfall = () => {
                         <span>3. Senior Tranche</span>
                         <span>Secured</span>
                     </div>
-                    <div className="font-bold">Your Investment</div>
+                    <div className="font-bold">Protected Capital</div>
                 </div>
             </div>
         </div>
