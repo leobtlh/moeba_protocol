@@ -1,0 +1,7 @@
+{
+  "name": "moeba-protocol",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "mkdir -p dist_root && cp -r index.html static img documentation backoffice dist_root/ && cd app && npm install && npm run build && cp -r dist ../dist_root/app"
+  }
+}
