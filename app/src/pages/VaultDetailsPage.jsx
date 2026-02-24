@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     ArrowLeft, Globe, AlertTriangle, CheckCircle2, Lock, Building2,
     FileText, Activity, TrendingUp, Coins, Wallet, ArrowRight, ChevronDown
@@ -14,37 +14,26 @@ import { getTrancheAprs, calculatePayoutDetails, isVaultStarted } from '../utils
 import { formatCurrency } from '../utils/formatting.js';
 
 const VaultDetailsPage = ({ vaultId, onBack }) => {
-    // --- GLOBAL CONTEXT ---
     const { vaults, depositToVault, withdrawFromVault, claimFromVault, initializeVault, triggerOracle } = useData();
     const { walletConnected, userFullAddress, getAssetBalance } = useWeb3();
     const { showToast } = useToast();
 
-    // --- LOCAL STATE (Matching app.html) ---
     const [depositAmount, setDepositAmount] = useState('');
     const [withdrawAmount, setWithdrawAmount] = useState('');
-    const [actionTab, setActionTab] = useState('deposit'); // 'deposit' | 'withdraw'
-    const [trancheType, setTrancheType] = useState('senior'); // 'senior' | 'junior'
+    const [actionTab, setActionTab] = useState('deposit');
+    const [trancheType, setTrancheType] = useState('senior');
 
-    // Asset Balance Logic
     const [assetBalance, setAssetBalance] = useState(0);
     const [assetBalanceFormatted, setAssetBalanceFormatted] = useState('0.00');
 
-    // KYC Modal State
     const [showInvestorKYC, setShowInvestorKYC] = useState(false);
     const [isInvestorRegistering, setIsInvestorRegistering] = useState(false);
 
-    // Get Current Vault
+    // FIX KYC : Le statut whitelist n'est plus forcé à "true", il est géré par l'état
+    const [isInvestorWhitelisted, setIsInvestorWhitelisted] = useState(false);
+
     const selectedVault = vaults.find(v => v.id === vaultId);
 
-    const isInvestorWhitelisted = useMemo(() => {
-        // Mock whitelist check based on local storage or hardcoded simulation logic from app.html
-        // In a real app, this comes from Web3Context or DataContext.
-        // For now, we assume true or rely on context check if available.
-        // We'll use a simple check for simulation.
-        return true;
-    }, [userFullAddress]);
-
-    // --- EFFECT: FETCH BALANCE ---
     useEffect(() => {
         if (walletConnected && selectedVault) {
             getAssetBalance(selectedVault.chain, selectedVault.asset).then(bal => {
@@ -53,9 +42,6 @@ const VaultDetailsPage = ({ vaultId, onBack }) => {
             });
         }
     }, [walletConnected, selectedVault, getAssetBalance]);
-
-
-    // --- HANDLERS (Mapped to Context) ---
 
     const handleSetPercentage = (percent) => {
         if (assetBalance <= 0) return;
@@ -69,6 +55,12 @@ const VaultDetailsPage = ({ vaultId, onBack }) => {
     const handleDeposit = async () => {
         if (!walletConnected) { showToast("Connect your wallet.", 'error'); return; }
 
+        // FIX KYC : Interception du clic pour forcer le KYC
+        if (!isInvestorWhitelisted) {
+            setShowInvestorKYC(true);
+            return;
+        }
+
         if (!selectedVault || !depositAmount) return;
         const amount = parseFloat(depositAmount);
         if (amount <= 0) { showToast("Invalid amount.", 'error'); return; }
@@ -79,7 +71,6 @@ const VaultDetailsPage = ({ vaultId, onBack }) => {
             return;
         }
 
-        // Call Context
         await depositToVault(selectedVault.id, amount.toString(), trancheType);
         setDepositAmount('');
     };
@@ -88,14 +79,12 @@ const VaultDetailsPage = ({ vaultId, onBack }) => {
         if (!walletConnected) return;
         const amount = parseFloat(withdrawAmount);
 
-        // Verify specific tranche balance
         const currentJunior = selectedVault.balancesJunior ? (selectedVault.balancesJunior[userFullAddress] || 0) : 0;
         const currentSenior = selectedVault.balancesSenior ? (selectedVault.balancesSenior[userFullAddress] || 0) : 0;
         const available = trancheType === 'junior' ? currentJunior : currentSenior;
 
         if (amount <= 0 || amount > available) { showToast(`Invalid amount or insufficient ${trancheType} balance.`, 'error'); return; }
 
-        // Call Context
         await withdrawFromVault(selectedVault.id, amount.toString(), trancheType);
         setWithdrawAmount('');
     };
@@ -112,19 +101,19 @@ const VaultDetailsPage = ({ vaultId, onBack }) => {
         }
     };
 
-    // Handle KYC Submission (Mock)
+    // FIX KYC : Mise à jour du statut Whitelist une fois le formulaire rempli
     const handleInvestorKYC = (data) => {
         setIsInvestorRegistering(true);
         setTimeout(() => {
             setIsInvestorRegistering(false);
             setShowInvestorKYC(false);
-            showToast("KYC Request sent to Admin.", 'info');
+            setIsInvestorWhitelisted(true); // L'utilisateur est désormais autorisé !
+            showToast("KYC Approved. You can now deposit.", 'success');
         }, 1500);
     };
 
     if (!selectedVault) return <div>Loading...</div>;
 
-    // Derived values
     const { seniorApr, juniorApr } = getTrancheAprs(selectedVault);
     const isFull = selectedVault.currentAssets >= selectedVault.totalCapacity;
 
@@ -180,7 +169,6 @@ const VaultDetailsPage = ({ vaultId, onBack }) => {
                         </div>
                     </div>
 
-                    {/* ALERTE CATASTROPHE */}
                     {selectedVault.status === 'TRIGGERED' && (
                         <div className="bg-red-50 dark:bg-red-900/20 border-l-4 border-red-600 p-6 rounded-r-xl">
                             <h4 className="text-xl font-bold text-red-800 dark:text-red-300 mb-2 flex items-center gap-2">
@@ -192,7 +180,6 @@ const VaultDetailsPage = ({ vaultId, onBack }) => {
                         </div>
                     )}
 
-                    {/* INFO VAULT TERMINÉ (SUCCÈS) */}
                     {selectedVault.status === 'MATURED' && (
                         <div className="bg-green-50 dark:bg-green-900/20 border-l-4 border-green-600 p-6 rounded-r-xl">
                             <h4 className="text-xl font-bold text-green-800 dark:text-green-300 mb-2 flex items-center gap-2">
@@ -204,7 +191,6 @@ const VaultDetailsPage = ({ vaultId, onBack }) => {
                         </div>
                     )}
 
-                    {/* DESCRIPTION */}
                     <section className="bg-white dark:bg-slate-800 rounded-2xl p-8 border border-slate-200 dark:border-slate-700">
                         <h4 className="text-lg font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-4 flex items-center gap-2">
                             <FileText className="h-5 w-5 text-blue-600 dark:text-blue-400"/> Trigger Conditions
@@ -214,7 +200,6 @@ const VaultDetailsPage = ({ vaultId, onBack }) => {
                         </div>
                     </section>
 
-                    {/* DONNÉES FINANCIÈRES */}
                     <section className="bg-white dark:bg-slate-800 rounded-2xl p-8 border border-slate-200 dark:border-slate-700">
                         <h4 className="text-lg font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-6 flex items-center gap-2">
                             <Activity className="h-5 w-5 text-green-600 dark:text-green-400"/> Financial Data
@@ -257,7 +242,6 @@ const VaultDetailsPage = ({ vaultId, onBack }) => {
                         </div>
                     </section>
 
-                    {/* GRAPHIQUE RISQUE */}
                     <section className="bg-white dark:bg-slate-800 rounded-2xl p-8 border border-slate-200 dark:border-slate-700">
                         <h4 className="text-lg font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-6 flex items-center gap-2">
                             <TrendingUp className="h-5 w-5 text-orange-600 dark:text-orange-400"/> Risk Evolution & Triggers
@@ -270,7 +254,6 @@ const VaultDetailsPage = ({ vaultId, onBack }) => {
                 <div className="lg:col-span-1">
                     <div className="sticky top-24 space-y-6">
 
-                        {/* CARTE DE POSITION UTILISATEUR */}
                         {selectedVault.userBalance > 0 && (
                             <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-green-200 dark:border-green-800 shadow-sm relative overflow-hidden">
                                 <div className="absolute top-0 right-0 p-3 opacity-10">
@@ -290,11 +273,10 @@ const VaultDetailsPage = ({ vaultId, onBack }) => {
                             </div>
                         )}
 
-                        {/* CARTE D'ACTION (DÉPÔT / RETRAIT) */}
                         <div className={`bg-white dark:bg-slate-800 rounded-2xl p-6 border shadow-xl ${
                             selectedVault.status === 'TRIGGERED' ? 'border-red-200 dark:border-red-800 shadow-red-100 dark:shadow-none' :
                             selectedVault.status === 'MATURED' ? 'border-green-200 dark:border-green-800 shadow-green-100 dark:shadow-none' :
-                            selectedVault.status === 'PENDING' ? 'border-amber-200 dark:border-amber-800 shadow-amber-100 dark:shadow-none' : // Style pour PENDING
+                            selectedVault.status === 'PENDING' ? 'border-amber-200 dark:border-amber-800 shadow-amber-100 dark:shadow-none' :
                             'border-slate-200 dark:border-slate-700 shadow-slate-100 dark:shadow-none'
                         }`}>
                             <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
@@ -318,7 +300,6 @@ const VaultDetailsPage = ({ vaultId, onBack }) => {
                                             <button onClick={() => setActionTab('withdraw')} className={`flex-1 py-2 rounded-lg text-sm font-bold transition-all ${actionTab === 'withdraw' ? 'bg-white dark:bg-slate-800 shadow-sm text-orange-600 dark:text-orange-400' : 'text-slate-500 dark:text-slate-400'}`}>Withdrawal</button>
                                         </div>
 
-                                        {/* SÉLECTEUR DE TRANCHE CENTRALISÉ */}
                                         <TrancheSelector
                                             trancheType={trancheType}
                                             setTrancheType={setTrancheType}
@@ -395,7 +376,6 @@ const VaultDetailsPage = ({ vaultId, onBack }) => {
                                     </button>
                                 </div>
                             ) : selectedVault.status === 'PENDING' ? (
-                                /* --- BLOC POUR PENDING --- */
                                 <div className="space-y-4">
                                     <div className="bg-amber-50 dark:bg-amber-900/30 p-4 rounded-xl border border-amber-100 dark:border-amber-800 mb-4">
                                         <div className="flex flex-col items-center text-center">
@@ -408,7 +388,6 @@ const VaultDetailsPage = ({ vaultId, onBack }) => {
                                             </p>
                                         </div>
                                     </div>
-                                    {/* SIMULATION: INITIALIZE BUTTON (If User is Insurer or Simulation Mode) */}
                                     <div className="text-center">
                                         <button
                                             onClick={() => handleInitializeVault(selectedVault.id)}
@@ -425,7 +404,6 @@ const VaultDetailsPage = ({ vaultId, onBack }) => {
                                     </div>
                                 </div>
                             ) : (
-                                /* --- BLOC TRIGGERED (CATASTROPHE) --- */
                                 <div className="space-y-4">
                                     <div className="bg-red-50 dark:bg-red-900/30 p-4 rounded-xl border border-red-100 dark:border-red-800 mb-4">
                                         <p className="text-sm text-red-800 dark:text-red-200 font-medium text-center">
@@ -448,7 +426,6 @@ const VaultDetailsPage = ({ vaultId, onBack }) => {
                             )}
                         </div>
 
-                        {/* WATERFALL STRUCTURE COMPONENT */}
                         <VaultWaterfall />
 
                         <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-5 border border-slate-200 dark:border-slate-700">
@@ -460,7 +437,6 @@ const VaultDetailsPage = ({ vaultId, onBack }) => {
                             </ul>
                         </div>
 
-                        {/* BOUTON SIMULATION CATASTROPHE (Uniquement si OPEN) */}
                         {selectedVault.status === 'OPEN' && (
                             <div className="flex flex-col gap-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800 rounded-xl">
                                 <div className="flex items-center gap-3">

@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
-import {
-    Plus, Minimize2, Calendar
-} from '../ui/Icons';
+import { Plus, Minimize2, Calendar } from '../ui/Icons';
 import { AVAILABLE_CHAINS, AVAILABLE_ASSETS, MONTHS } from '../../constants/mocks';
 import { formatCurrency, getMaxDays } from '../../utils/formatting';
 import { updateJunior } from '../../utils/finance';
@@ -28,7 +26,7 @@ const CreateVaultForm = ({ isExpanded, onToggle, onCreate, userAddress }) => {
     });
     const [isOvercollateralized, setIsOvercollateralized] = useState(false);
 
-    // --- HELPERS LOGIQUES (Internes au formulaire) ---
+    // --- HELPERS LOGIQUES ---
     const handleDateBlur = () => {
         setNewVaultData(current => {
             const today = new Date();
@@ -38,13 +36,11 @@ const CreateVaultForm = ({ isExpanded, onToggle, onCreate, userAddress }) => {
             const getValidDateObj = (d, mName, y) => {
                 const mIndex = MONTHS.findIndex(m => m.name === mName);
                 const safeY = Math.max(parseInt(y) || currentYear, currentYear);
-                // C'est cette ligne qui fait le travail intelligent (bissextile etc.) :
                 const daysInMonth = new Date(safeY, mIndex + 1, 0).getDate();
                 const safeD = Math.min(Math.max(1, parseInt(d) || 1), daysInMonth);
                 return new Date(safeY, mIndex, safeD);
             };
 
-            // Date Début
             let sDate = getValidDateObj(current.startDay, current.startMonth, current.startYear);
             if (sDate < today) {
                 const targetDay = sDate.getDate();
@@ -59,7 +55,6 @@ const CreateVaultForm = ({ isExpanded, onToggle, onCreate, userAddress }) => {
                 sDate.setDate(today.getDate() + 1);
             }
 
-            // Date Fin
             let eDate = getValidDateObj(current.day, current.month, current.year);
             if (eDate.getMonth() === sDate.getMonth() && eDate.getFullYear() === sDate.getFullYear() && eDate.getDate() < sDate.getDate()) {
                 eDate.setMonth(eDate.getMonth() + 1);
@@ -103,11 +98,17 @@ const CreateVaultForm = ({ isExpanded, onToggle, onCreate, userAddress }) => {
             ? newVaultData.description
             : "Parametric Protection (auto-generated)";
 
-        // Construction Dates
+        // FIX DATES : Sécurisation avec un fallback si le champ est resté vide
         const mIndexStart = MONTHS.findIndex(m => m.name === newVaultData.startMonth);
-        const startDate = new Date(newVaultData.startYear, mIndexStart, newVaultData.startDay);
+        const safeStartDay = parseInt(newVaultData.startDay) || new Date().getDate();
+        const safeStartYear = parseInt(newVaultData.startYear) || new Date().getFullYear();
+        const startDate = new Date(safeStartYear, mIndexStart, safeStartDay);
+
         const mIndexEnd = MONTHS.findIndex(m => m.name === newVaultData.month);
-        const endDate = new Date(newVaultData.year, mIndexEnd, newVaultData.day);
+        const safeEndDay = parseInt(newVaultData.day) || 1;
+        const safeEndYear = parseInt(newVaultData.year) || new Date().getFullYear();
+        const endDate = new Date(safeEndYear, mIndexEnd, safeEndDay);
+
         const formatDateStr = (date) => `${date.getDate()} ${MONTHS[date.getMonth()].name} ${date.getFullYear()}`;
 
         // Calcul APR
@@ -128,6 +129,7 @@ const CreateVaultForm = ({ isExpanded, onToggle, onCreate, userAddress }) => {
             apr: ((capVal - juniorVal) > 0 ? ((premiumVal * 100 * 365) / ((capVal - juniorVal) * durationInDays)).toFixed(2) : "0.00"),
             chain: newVaultData.chain,
             asset: newVaultData.asset,
+            status: 'PENDING', // FIX INITIALISATION : Ajout du status PENDING
             history: generateMockHistory('WIND')
         };
 
@@ -156,7 +158,7 @@ const CreateVaultForm = ({ isExpanded, onToggle, onCreate, userAddress }) => {
                 <div className="p-2 bg-indigo-50 dark:bg-indigo-900/30 rounded-lg text-indigo-600 dark:text-indigo-400"><Plus className="h-5 w-5" /></div>
                 <div><h2 className="text-lg font-bold text-slate-900 dark:text-white">New Vault</h2><p className="text-xs text-slate-500 dark:text-slate-400">Factory Deployment</p></div>
                 {isExpanded && (
-                    <button onClick={(e) => { e.stopPropagation(); onToggle(false); }} className="ml-auto text-xs bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 px-3 py-1.5 rounded-lg text-slate-500 dark:text-slate-400 font-bold flex items-center gap-1 transition-colors"><Minimize2 className="h-3 w-3" /> Collapse</button>
+                    <button type="button" onClick={(e) => { e.stopPropagation(); onToggle(false); }} className="ml-auto text-xs bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 px-3 py-1.5 rounded-lg text-slate-500 dark:text-slate-400 font-bold flex items-center gap-1 transition-colors"><Minimize2 className="h-3 w-3" /> Collapse</button>
                 )}
             </div>
 

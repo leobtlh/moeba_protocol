@@ -3,9 +3,9 @@ import { formatCurrency } from '../../utils/formatting';
 
 const InsurerVaultCard = ({ vault, isCompact, onInitialize }) => {
     return (
-        <div className={`bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 flex flex-col ${isCompact ? 'md:flex-row' : ''} items-center justify-between gap-6 hover:shadow-md transition-shadow cursor-pointer`}>
+        <div className={`bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 flex flex-col ${!isCompact ? 'md:flex-row' : ''} items-center justify-between gap-6 hover:shadow-md transition-shadow cursor-pointer`}>
             {/* MODE COMPACT (QUAND LE FORMULAIRE EST OUVERT) */}
-            {!isCompact ? (
+            {isCompact ? (
                 <div className="flex justify-between items-center w-full">
                     <div className="min-w-0">
                         <h4 className="font-bold text-slate-900 dark:text-white truncate">{vault.name}</h4>
