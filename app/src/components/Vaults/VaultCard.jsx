@@ -45,6 +45,11 @@ const VaultCard = ({ vault, viewMode = 'grid', onClick }) => {
                             <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300 border border-blue-100 dark:border-blue-800 uppercase tracking-wider">
                                 {vault.asset}
                             </span>
+                            {vault.category && (
+                                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-300 border border-purple-100 dark:border-purple-800 uppercase tracking-wider">
+                                    {vault.category}
+                                </span>
+                            )}
                             {/* Badges */}
                             {vault.status === 'OPEN' && !started && !isFull && <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-400 flex items-center gap-1"><CheckCircle2 className="h-3 w-3" /> OPEN</span>}
                             {vault.status === 'OPEN' && started && <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-400 flex items-center gap-1"><Lock className="h-3 w-3" /> LOCKED</span>}
@@ -171,6 +176,11 @@ const VaultCard = ({ vault, viewMode = 'grid', onClick }) => {
                         <span className="px-2 py-0.5 rounded-md bg-blue-50 dark:bg-blue-900/30 text-[10px] font-bold text-blue-600 dark:text-blue-300 border border-blue-100 dark:border-blue-800 uppercase tracking-wider">
                             {vault.asset}
                         </span>
+                        {vault.category && (
+                            <span className="px-2 py-0.5 rounded-md bg-purple-50 dark:bg-purple-900/30 text-[10px] font-bold text-purple-600 dark:text-purple-300 border border-purple-100 dark:border-purple-800 uppercase tracking-wider">
+                                {vault.category}
+                            </span>
+                        )}
                     </div>
 
                     <h3 className="text-xl font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{vault.name}</h3>

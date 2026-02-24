@@ -7,8 +7,11 @@ import { generateMockHistory } from '../../utils/generators';
 
 const CreateVaultForm = ({ isExpanded, onToggle, onCreate, userAddress }) => {
     // --- LOCAL STATE DU FORMULAIRE ---
+    const CATEGORIES = ['Hurricane', 'Earthquake', 'Wildfire', 'Flood', 'Avalanche', 'Landslide', 'Other'];
+
     const [newVaultData, setNewVaultData] = useState({
         name: '',
+        category: '',
         description: '',
         cap: 40000000,
         coverage: 40000000,
@@ -118,6 +121,7 @@ const CreateVaultForm = ({ isExpanded, onToggle, onCreate, userAddress }) => {
 
         const newVault = {
             name: newVaultData.name || "New Cat Bond",
+            category: newVaultData.category,
             insurer: newVaultData.companyName || `Insurer (${userAddress})`,
             description: finalDescription,
             totalCapacity: capVal + premiumVal,
@@ -167,6 +171,13 @@ const CreateVaultForm = ({ isExpanded, onToggle, onCreate, userAddress }) => {
                     <div className={isExpanded ? "col-span-2" : ""}>
                         <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Risk Name</label>
                         <input type="text" value={newVaultData.name} onChange={e => setNewVaultData({ ...newVaultData, name: e.target.value })} className="w-full p-3 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all" placeholder="Ex: Florida Wind 2026" />
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Category</label>
+                        <select value={newVaultData.category} onChange={e => setNewVaultData({ ...newVaultData, category: e.target.value })} className="w-full p-3 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none">
+                            {CATEGORIES.map(cat => (<option key={cat} value={cat}>{cat}</option>))}
+                        </select>
                     </div>
 
                     <div className={isExpanded ? "grid grid-cols-2 gap-4 col-span-2" : "grid grid-cols-2 gap-4"}>

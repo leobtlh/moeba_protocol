@@ -12,6 +12,11 @@ const InsurerVaultCard = ({ vault, isCompact, onInitialize }) => {
                         <p className="text-xs text-slate-500 dark:text-slate-400 font-mono truncate">{vault.id}</p>
                     </div>
                     <div className="shrink-0 ml-2">
+                        {vault.category && (
+                            <span className="px-2 py-0.5 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 text-[10px] font-bold uppercase rounded-md border border-slate-200 dark:border-slate-600">
+                                {vault.category}
+                            </span>
+                        )}
                         {vault.status === 'PENDING' && <span className="px-2.5 py-1 bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-400 text-xs font-bold rounded-md">PENDING</span>}
                         {vault.status === 'OPEN' && <span className="px-2.5 py-1 bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-400 text-xs font-bold rounded-md">ACTIVE</span>}
                     </div>
@@ -22,6 +27,11 @@ const InsurerVaultCard = ({ vault, isCompact, onInitialize }) => {
                     <div className="flex-1">
                         <div className="flex items-center gap-3 mb-2">
                             <h4 className="text-lg font-bold text-slate-900 dark:text-white">{vault.name}</h4>
+                            {vault.category && (
+                                <span className="px-2 py-0.5 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 text-[10px] font-bold uppercase rounded-md border border-slate-200 dark:border-slate-600">
+                                    {vault.category}
+                                </span>
+                            )}
                             {vault.status === 'PENDING' && <span className="px-2.5 py-1 bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-400 text-xs font-bold rounded-md">PENDING</span>}
                             {vault.status === 'OPEN' && <span className="px-2.5 py-1 bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-400 text-xs font-bold rounded-md">ACTIVE</span>}
                             {vault.status === 'MATURED' && <span className="px-2.5 py-1 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-400 text-xs font-bold rounded-md">ENDED</span>}

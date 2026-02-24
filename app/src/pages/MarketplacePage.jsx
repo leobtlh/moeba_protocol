@@ -15,6 +15,7 @@ const MarketplacePage = ({ onVaultSelect }) => {
     const [maturitySort, setMaturitySort] = useState('neutral');
     const [riskSort, setRiskSort] = useState('neutral');
     const [viewMode, setViewMode] = useState('list'); // 'list' | 'grid'
+    const [selectedCategory, setSelectedCategory] = useState('All');
 
     // --- LOGIQUE DE TRI ---
     const toggleChainFilter = (chain) => {
@@ -43,8 +44,11 @@ const MarketplacePage = ({ onVaultSelect }) => {
     };
 
     // --- FILTRAGE ET TRI DES VAULTS ---
+    const availableCategories = ['All', ...new Set(vaults.map(v => v.category).filter(Boolean))];
+
     const filteredVaults = vaults.filter(vault => {
         if (selectedChains.length > 0 && !selectedChains.includes(vault.chain)) return false;
+        if (selectedCategory !== 'All' && vault.category !== selectedCategory) return false;
         if (searchQuery) {
             const q = searchQuery.toLowerCase();
             return vault.asset.toLowerCase().includes(q) || vault.name.toLowerCase().includes(q);
@@ -168,18 +172,45 @@ const MarketplacePage = ({ onVaultSelect }) => {
                         {riskSort === 'desc' && <span>↑</span>}
                     </button>
 
-                    {/* CHAMP RECHERCHE */}
-                    <div className="relative ml-auto flex-1 min-w-[200px] max-w-sm">
-                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <Search className="h-4 w-4 text-slate-400" />
+                    {/* CONTENEUR DROITE : FILTRE CATEGORIE + RECHERCHE */}
+                    <div className="ml-auto flex items-center gap-3 flex-1 justify-end max-w-[500px]">
+
+                        {/* MENU DEROULANT CATEGORIE (STYLE BOUTON) */}
+                        <div className="relative shrink-0">
+                            <select
+                                value={selectedCategory}
+                                onChange={(e) => setSelectedCategory(e.target.value)}
+                                className={`appearance-none pl-4 pr-8 py-2 rounded-xl transition-all border outline-none font-bold text-sm cursor-pointer ${
+                                    selectedCategory !== 'All'
+                                    ? 'bg-purple-50 dark:bg-purple-900/30 border-purple-200 dark:border-purple-800 text-purple-700 dark:text-purple-300 shadow-sm'
+                                    : 'bg-white dark:bg-slate-800/30 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'
+                                }`}
+                            >
+                                {availableCategories.map(cat => (
+                                    <option key={cat} value={cat} className="text-slate-900 dark:text-slate-100 bg-white dark:bg-slate-800">
+                                        {cat === 'All' ? 'Categories' : cat}
+                                    </option>
+                                ))}
+                            </select>
+                            {/* Petite flèche personnalisée pour ressembler aux flèches des boutons de tri */}
+                            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </div>
                         </div>
-                        <input
-                            type="text"
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            className="block w-full pl-10 pr-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm"
-                            placeholder="Search (e.g., USDC, Florida...)"
-                        />
+
+                        {/* CHAMP RECHERCHE */}
+                        <div className="relative flex-1 min-w-[200px]">
+                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <Search className="h-4 w-4 text-slate-400" />
+                            </div>
+                            <input
+                                type="text"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className="block w-full pl-10 pr-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm"
+                                placeholder="Search (e.g., USDC...)"
+                            />
+                        </div>
                     </div>
                 </div>
             </div>

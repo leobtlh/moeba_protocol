@@ -156,6 +156,11 @@ const VaultDetailsPage = ({ vaultId, onBack }) => {
                                     <span className="px-2.5 py-1 rounded-md bg-blue-50 dark:bg-blue-900/30 text-xs font-bold text-blue-600 dark:text-blue-300 border border-blue-100 dark:border-blue-800 uppercase tracking-wide">
                                         {selectedVault.asset}
                                     </span>
+                                    {selectedVault.category && (
+                                        <span className="px-2.5 py-1 rounded-md bg-purple-50 dark:bg-purple-900/30 text-xs font-bold text-purple-600 dark:text-purple-300 border border-purple-100 dark:border-purple-800 uppercase tracking-wide">
+                                            {selectedVault.category}
+                                        </span>
+                                    )}
                                 </div>
                                 <div className="flex items-center gap-3 mb-2">
                                     <h1 className={`text-3xl font-bold flex items-center gap-3 ${selectedVault.status === 'TRIGGERED' ? 'text-red-700 dark:text-red-400' : selectedVault.status === 'MATURED' ? 'text-green-700 dark:text-green-400' : 'text-slate-900 dark:text-white'}`}>
