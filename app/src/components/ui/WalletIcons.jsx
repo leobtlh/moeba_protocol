@@ -2,7 +2,7 @@ import React from 'react';
 
 export const RabbyIcon = () => (
     <img
-        src="https://github.com/RabbyHub.png"
+        src="/img/Rabby.png"
         alt="Rabby Wallet"
         className="w-8 h-8 rounded-lg shadow-sm bg-white"
     />
@@ -10,7 +10,7 @@ export const RabbyIcon = () => (
 
 export const ZerionIcon = () => (
     <img
-        src="https://github.com/zeriontech.png"
+        src="/img/Zerion.png"
         alt="Zerion Wallet"
         className="w-8 h-8 rounded-lg shadow-sm bg-white"
     />
@@ -18,7 +18,7 @@ export const ZerionIcon = () => (
 
 export const MetaMaskIcon = () => (
     <img
-        src="https://github.com/MetaMask.png"
+        src="/img/MetaMask.png"
         alt="MetaMask"
         className="w-8 h-8 rounded-lg shadow-sm bg-white"
     />
@@ -26,7 +26,7 @@ export const MetaMaskIcon = () => (
 
 export const WalletConnectIcon = () => (
      <img
-        src="https://github.com/WalletConnect.png"
+        src="/img/WalletConnect.png"
         alt="WalletConnect"
         className="w-8 h-8 rounded-lg shadow-sm bg-white"
     />
