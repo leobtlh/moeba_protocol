@@ -135,8 +135,8 @@ export const DataProvider = ({ children }) => {
             currentAssets: 0,
             juniorCapital: formData.juniorCapital,
             premium: formData.premium,
-            startDate: formData.startDateStr, // Si venant du form, s'assurer que form envoie ces champs ou maj ici
-            maturityDate: formData.endDateStr,
+            startDate: formData.startDate,
+            maturityDate: formData.maturityDate,
             apr: formData.apr,
             riskProb: (Math.random() * 19 + 1).toFixed(1),
             status: "PENDING",

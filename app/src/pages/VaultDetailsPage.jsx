@@ -29,8 +29,14 @@ const VaultDetailsPage = ({ vaultId, onBack }) => {
     const [showInvestorKYC, setShowInvestorKYC] = useState(false);
     const [isInvestorRegistering, setIsInvestorRegistering] = useState(false);
 
-    // FIX KYC : Le statut whitelist n'est plus forcé à "true", il est géré par l'état
-    const [isInvestorWhitelisted, setIsInvestorWhitelisted] = useState(false);
+    // Exemple de vraie liste d'adresses (à remplacer par ton DataContext plus tard)
+    const WHITELISTED_ADDRESSES = [
+        "0x5B757b308b8842698035C53b8ea0844240ac485B", // Zerion
+        "0xsimulated000000000000000000000000000000"   // Simulation
+    ];
+
+    // Vérifie si l'adresse connectée est dans la liste
+    const isInvestorWhitelisted = WHITELISTED_ADDRESSES.includes(userFullAddress);
 
     const selectedVault = vaults.find(v => v.id === vaultId);
 
@@ -101,13 +107,15 @@ const VaultDetailsPage = ({ vaultId, onBack }) => {
         }
     };
 
-    // FIX KYC : Mise à jour du statut Whitelist une fois le formulaire rempli
     const handleInvestorKYC = (data) => {
         setIsInvestorRegistering(true);
         setTimeout(() => {
             setIsInvestorRegistering(false);
             setShowInvestorKYC(false);
-            setIsInvestorWhitelisted(true); // L'utilisateur est désormais autorisé !
+
+            // En mode réel, ton DataContext devrait mettre à jour la base de données ici
+            WHITELISTED_ADDRESSES.push(userFullAddress);
+
             showToast("KYC Approved. You can now deposit.", 'success');
         }, 1500);
     };
