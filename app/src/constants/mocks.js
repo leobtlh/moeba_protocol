@@ -1,4 +1,4 @@
-export const AVAILABLE_CHAINS = ['Base', 'Ethereum', 'Polygon', 'Arbitrum', 'Optimism'];
+export const AVAILABLE_CHAINS = ['Base', 'Ethereum', 'Polygon', 'Arbitrum', 'Optimism', 'Sepolia'];
 export const AVAILABLE_ASSETS = ['USDC', 'USDT', 'DAI', 'WETH'];
 
 export const CHAIN_LOGOS = {
@@ -6,7 +6,8 @@ export const CHAIN_LOGOS = {
     'Ethereum': 'https://cryptologos.cc/logos/ethereum-eth-logo.svg?v=026',
     'Polygon': 'https://cryptologos.cc/logos/polygon-matic-logo.svg?v=026',
     'Arbitrum': 'https://cryptologos.cc/logos/arbitrum-arb-logo.svg?v=026',
-    'Optimism': 'https://cryptologos.cc/logos/optimism-ethereum-op-logo.svg?v=026'
+    'Optimism': 'https://cryptologos.cc/logos/optimism-ethereum-op-logo.svg?v=026',
+    'Sepolia': 'https://cryptologos.cc/logos/ethereum-eth-logo.svg?v=026' // Même logo qu'Ethereum
 };
 
 export const TOKEN_MAP = {
@@ -15,6 +16,9 @@ export const TOKEN_MAP = {
         'USDT': '0xdAC17F958D2ee523a2206206994597C13D831ec7',
         'DAI': '0x6B175474E89094C44Da98b954EedeAC495271d0F',
         'WETH': '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
+    },
+    'Sepolia': {
+        'USDC': '0x468Fb30609B36E9cA2F984bc9832309b2023C09E', // <-- Ton Mock USDC ici !
     },
     'Base': {
         'USDC': '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',

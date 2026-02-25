@@ -95,3 +95,16 @@ Les contrats se trouvent dans le dossier `/app`.
 
 Ce code est une implémentation de référence (Proof of Concept).
 Bien que l'architecture respecte les principes de la **Loi DLT suisse** (Droits-Valeurs Inscrits) et les exigences de capital pour les **VUSA** (Véhicules à Usage Spécifique d'Assurance), il n'a pas fait l'objet d'un audit de sécurité complet. Utilisez à vos propres risques.
+
+
+*altux2@leo:~/Documents/moeba_protocol$ npx hardhat run scripts/deploy.js --network sepolia*
+
+*Déploiement avec le compte : 0x03ADfA8b478dc5b121a0f1448Db9C1EF2146db78*
+*Déploiement de MockUSDC...*
+*✅ MockUSDC déployé à : 0x468Fb30609B36E9cA2F984bc9832309b2023C09E*
+*Déploiement de HPIVFactory...*
+*✅ HPIVFactory déployée à : 0xd275efAe3Bd8D2174088Cf0b4565d626F4303E5f*
+
+*--- RÉSUMÉ POUR LE FRONTEND ---*
+*FACTORY_ADDRESS_LIVE: "0xd275efAe3Bd8D2174088Cf0b4565d626F4303E5f"*
+*USDC_SEPOLIA_ADDRESS: "0x468Fb30609B36E9cA2F984bc9832309b2023C09E"*
