@@ -6,13 +6,33 @@ import { updateJunior } from '../../utils/finance';
 import { generateMockHistory } from '../../utils/generators';
 
 const CreateVaultForm = ({ isExpanded, onToggle, onCreate, userAddress }) => {
-    // --- LOCAL STATE DU FORMULAIRE ---
     const CATEGORIES = ['Hurricane', 'Earthquake', 'Wildfire', 'Flood', 'Avalanche', 'Landslide', 'Other'];
 
+    // --- LOCAL STATE DU FORMULAIRE ---
     const [newVaultData, setNewVaultData] = useState({
         name: '',
-        category: '',
-        description: '',
+        category: 'Hurricane', // Défaut pour afficher les bonnes options
+
+        // Nouveaux champs de localisation
+        country: '',
+        region: '',
+        city: '',
+        radius: 50, // Rayon par défaut en km
+
+        // Nouveaux paramètres dynamiques
+        triggerParams: {
+            windSpeed: 180,
+            hurricaneCategory: 3,
+            magnitude: 6.0,
+            acresBurned: 10000,
+            waterLevel: 2.5,
+            duration: 48,
+            avalancheSize: 4,
+            soilDisplacement: 50000,
+            customMetric: 'Specific condition',
+            customThreshold: 'Threshold value'
+        },
+
         cap: 40000000,
         coverage: 40000000,
         juniorPercent: 10,
@@ -29,7 +49,44 @@ const CreateVaultForm = ({ isExpanded, onToggle, onCreate, userAddress }) => {
     });
     const [isOvercollateralized, setIsOvercollateralized] = useState(false);
 
-    // --- HELPERS LOGIQUES ---
+    // --- GENERATEUR DE CONDITION UMA ORACLE ---
+    const generateOracleDescription = (data) => {
+        const { category, country, region, city, radius, triggerParams: p } = data;
+
+        // Construction de la chaîne de localisation
+        const locParts = [city, region, country].filter(Boolean);
+        const locationStr = locParts.length > 0 ? locParts.join(', ') : 'the insured zone';
+        const zoneStr = radius ? `within a ${radius}-km radius of ${locationStr}` : `in ${locationStr}`;
+
+        switch(category) {
+            case 'Hurricane':
+                return `Sustained wind speeds exceeding ${p.windSpeed} km/h (Category ${p.hurricaneCategory}+) ${zoneStr}, as asserted and verified by the UMA Optimistic Oracle.`;
+            case 'Earthquake':
+                return `Moment magnitude (Mw) of ${p.magnitude} or greater with an epicenter located ${zoneStr}, as asserted and verified by the UMA Optimistic Oracle.`;
+            case 'Wildfire':
+                return `More than ${p.acresBurned} contiguous acres burned ${zoneStr}, as asserted and verified by the UMA Optimistic Oracle.`;
+            case 'Flood':
+                return `Water levels exceeding ${p.waterLevel} meters above baseline at the nearest official gauge to ${locationStr} for a continuous period of ${p.duration} hours, as asserted and verified by the UMA Optimistic Oracle.`;
+            case 'Avalanche':
+                return `Avalanche event reaching size ${p.avalancheSize} on the destructive scale, impacting ${zoneStr}, as asserted and verified by the UMA Optimistic Oracle.`;
+            case 'Landslide':
+                return `Soil displacement exceeding ${p.soilDisplacement} cubic meters ${zoneStr} over a ${p.duration}-hour period, as asserted and verified by the UMA Optimistic Oracle.`;
+            case 'Other':
+                return `Custom parametric trigger: ${p.customMetric} exceeding ${p.customThreshold} ${zoneStr}, as asserted and verified by the UMA Optimistic Oracle.`;
+            default:
+                return "Parametric Protection (auto-generated)";
+        }
+    };
+
+    // Helper pour mettre à jour les paramètres spécifiques
+    const handleTriggerParamChange = (key, value) => {
+        setNewVaultData(prev => ({
+            ...prev,
+            triggerParams: { ...prev.triggerParams, [key]: value }
+        }));
+    };
+
+    // --- HELPERS LOGIQUES (Dates & Cap) ---
     const handleDateBlur = () => {
         setNewVaultData(current => {
             const today = new Date();
@@ -97,11 +154,9 @@ const CreateVaultForm = ({ isExpanded, onToggle, onCreate, userAddress }) => {
         if (premiumVal < 0) premiumVal = 0;
         let claimVal = isOvercollateralized ? (parseFloat(newVaultData.coverage) || capVal) : capVal;
 
-        const finalDescription = newVaultData.description && newVaultData.description.trim() !== ""
-            ? newVaultData.description
-            : "Parametric Protection (auto-generated)";
+        // On utilise la description générée automatiquement ici
+        const finalDescription = generateOracleDescription(newVaultData);
 
-        // FIX DATES : Sécurisation avec un fallback si le champ est resté vide
         const mIndexStart = MONTHS.findIndex(m => m.name === newVaultData.startMonth);
         const safeStartDay = parseInt(newVaultData.startDay) || new Date().getDate();
         const safeStartYear = parseInt(newVaultData.startYear) || new Date().getFullYear();
@@ -114,7 +169,6 @@ const CreateVaultForm = ({ isExpanded, onToggle, onCreate, userAddress }) => {
 
         const formatDateStr = (date) => `${date.getDate()} ${MONTHS[date.getMonth()].name} ${date.getFullYear()}`;
 
-        // Calcul APR
         const diffTime = Math.abs(endDate - startDate);
         const durationInDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) || 365;
         const juniorVal = parseFloat(newVaultData.junior || 0);
@@ -133,18 +187,20 @@ const CreateVaultForm = ({ isExpanded, onToggle, onCreate, userAddress }) => {
             apr: ((capVal - juniorVal) > 0 ? ((premiumVal * 100 * 365) / ((capVal - juniorVal) * durationInDays)).toFixed(2) : "0.00"),
             chain: newVaultData.chain,
             asset: newVaultData.asset,
-            status: 'PENDING', // FIX INITIALISATION : Ajout du status PENDING
+            status: 'PENDING',
             history: generateMockHistory('WIND')
         };
 
         onCreate(newVault);
 
-        // Reset
+        // Reset partiel
         const today = new Date();
         setNewVaultData(prev => ({
             ...prev,
             name: '',
-            description: '',
+            country: '',
+            region: '',
+            city: '',
             cap: 40000000,
             startDay: today.getDate(),
             startMonth: MONTHS[today.getMonth()].name,
@@ -173,13 +229,6 @@ const CreateVaultForm = ({ isExpanded, onToggle, onCreate, userAddress }) => {
                         <input type="text" value={newVaultData.name} onChange={e => setNewVaultData({ ...newVaultData, name: e.target.value })} className="w-full p-3 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all" placeholder="Ex: Florida Wind 2026" />
                     </div>
 
-                    <div>
-                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Category</label>
-                        <select value={newVaultData.category} onChange={e => setNewVaultData({ ...newVaultData, category: e.target.value })} className="w-full p-3 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none">
-                            {CATEGORIES.map(cat => (<option key={cat} value={cat}>{cat}</option>))}
-                        </select>
-                    </div>
-
                     <div className={isExpanded ? "grid grid-cols-2 gap-4 col-span-2" : "grid grid-cols-2 gap-4"}>
                         <div>
                             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Blockchain</label>
@@ -196,8 +245,80 @@ const CreateVaultForm = ({ isExpanded, onToggle, onCreate, userAddress }) => {
                     </div>
 
                     <div className={isExpanded ? "col-span-2" : ""}>
-                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Trigger Conditions</label>
-                        <textarea value={newVaultData.description} onChange={e => setNewVaultData({ ...newVaultData, description: e.target.value })} className="w-full p-3 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all h-24 resize-none text-sm" placeholder="Conditions..."></textarea>
+                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Category</label>
+                        <select value={newVaultData.category} onChange={e => setNewVaultData({ ...newVaultData, category: e.target.value })} className="w-full p-3 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none">
+                            {CATEGORIES.map(cat => (<option key={cat} value={cat}>{cat}</option>))}
+                        </select>
+                    </div>
+
+                    {/* --- NOUVELLE SECTION : LOCALISATION --- */}
+                    <div className={isExpanded ? "col-span-2 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700" : "hidden"}>
+                        <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-3">Location & Impact Zone</h3>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div>
+                                <label className="block text-xs font-medium text-slate-700 dark:text-slate-400 mb-1">Country</label>
+                                <input type="text" value={newVaultData.country} onChange={e => setNewVaultData({...newVaultData, country: e.target.value})} className="w-full p-2 text-sm border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="Ex: Switzerland" />
+                            </div>
+                            <div>
+                                <label className="block text-xs font-medium text-slate-700 dark:text-slate-400 mb-1">Region / State</label>
+                                <input type="text" value={newVaultData.region} onChange={e => setNewVaultData({...newVaultData, region: e.target.value})} className="w-full p-2 text-sm border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="Ex: Valais" />
+                            </div>
+                            <div>
+                                <label className="block text-xs font-medium text-slate-700 dark:text-slate-400 mb-1">City / Map Point</label>
+                                <input type="text" value={newVaultData.city} onChange={e => setNewVaultData({...newVaultData, city: e.target.value})} className="w-full p-2 text-sm border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="Ex: Zermatt" />
+                            </div>
+                            <div>
+                                <label className="block text-xs font-medium text-slate-700 dark:text-slate-400 mb-1">Radius (km)</label>
+                                <input type="number" min="0" value={newVaultData.radius} onChange={e => setNewVaultData({...newVaultData, radius: e.target.value})} className="w-full p-2 text-sm border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="15" />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* --- NOUVELLE SECTION : CONDITIONS DYNAMIQUES --- */}
+                    <div className={isExpanded ? "col-span-2 p-4 bg-indigo-50/50 dark:bg-indigo-900/20 rounded-xl border border-indigo-100 dark:border-indigo-800/30" : "hidden"}>
+                        <h3 className="text-sm font-bold text-indigo-800 dark:text-indigo-300 mb-3">Trigger Parameters ({newVaultData.category})</h3>
+
+                        <div className="grid grid-cols-2 gap-4 mb-4">
+                            {newVaultData.category === 'Hurricane' && (
+                                <>
+                                    <div><label className="block text-xs font-medium text-slate-700 dark:text-slate-400 mb-1">Min. Wind Speed (km/h)</label><input type="number" value={newVaultData.triggerParams.windSpeed} onChange={e => handleTriggerParamChange('windSpeed', e.target.value)} className="w-full p-2 text-sm border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 rounded-lg" /></div>
+                                    <div><label className="block text-xs font-medium text-slate-700 dark:text-slate-400 mb-1">Min. Category (Saffir-Simpson)</label><input type="number" min="1" max="5" value={newVaultData.triggerParams.hurricaneCategory} onChange={e => handleTriggerParamChange('hurricaneCategory', e.target.value)} className="w-full p-2 text-sm border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 rounded-lg" /></div>
+                                </>
+                            )}
+                            {newVaultData.category === 'Earthquake' && (
+                                <div><label className="block text-xs font-medium text-slate-700 dark:text-slate-400 mb-1">Min. Magnitude (Mw)</label><input type="number" step="0.1" value={newVaultData.triggerParams.magnitude} onChange={e => handleTriggerParamChange('magnitude', e.target.value)} className="w-full p-2 text-sm border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 rounded-lg" /></div>
+                            )}
+                            {newVaultData.category === 'Wildfire' && (
+                                <div><label className="block text-xs font-medium text-slate-700 dark:text-slate-400 mb-1">Min. Acres Burned</label><input type="number" value={newVaultData.triggerParams.acresBurned} onChange={e => handleTriggerParamChange('acresBurned', e.target.value)} className="w-full p-2 text-sm border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 rounded-lg" /></div>
+                            )}
+                            {newVaultData.category === 'Flood' && (
+                                <>
+                                    <div><label className="block text-xs font-medium text-slate-700 dark:text-slate-400 mb-1">Water Level Above Baseline (meters)</label><input type="number" step="0.1" value={newVaultData.triggerParams.waterLevel} onChange={e => handleTriggerParamChange('waterLevel', e.target.value)} className="w-full p-2 text-sm border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 rounded-lg" /></div>
+                                    <div><label className="block text-xs font-medium text-slate-700 dark:text-slate-400 mb-1">Continuous Duration (hours)</label><input type="number" value={newVaultData.triggerParams.duration} onChange={e => handleTriggerParamChange('duration', e.target.value)} className="w-full p-2 text-sm border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 rounded-lg" /></div>
+                                </>
+                            )}
+                            {newVaultData.category === 'Avalanche' && (
+                                <div><label className="block text-xs font-medium text-slate-700 dark:text-slate-400 mb-1">Min. Size (Destructive Scale 1-5)</label><input type="number" min="1" max="5" value={newVaultData.triggerParams.avalancheSize} onChange={e => handleTriggerParamChange('avalancheSize', e.target.value)} className="w-full p-2 text-sm border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 rounded-lg" /></div>
+                            )}
+                            {newVaultData.category === 'Landslide' && (
+                                <>
+                                    <div><label className="block text-xs font-medium text-slate-700 dark:text-slate-400 mb-1">Min. Soil Displacement (m³)</label><input type="number" value={newVaultData.triggerParams.soilDisplacement} onChange={e => handleTriggerParamChange('soilDisplacement', e.target.value)} className="w-full p-2 text-sm border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 rounded-lg" /></div>
+                                    <div><label className="block text-xs font-medium text-slate-700 dark:text-slate-400 mb-1">Measurement Period (hours)</label><input type="number" value={newVaultData.triggerParams.duration} onChange={e => handleTriggerParamChange('duration', e.target.value)} className="w-full p-2 text-sm border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 rounded-lg" /></div>
+                                </>
+                            )}
+                            {newVaultData.category === 'Other' && (
+                                <>
+                                    <div><label className="block text-xs font-medium text-slate-700 dark:text-slate-400 mb-1">Metric Name</label><input type="text" value={newVaultData.triggerParams.customMetric} onChange={e => handleTriggerParamChange('customMetric', e.target.value)} className="w-full p-2 text-sm border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 rounded-lg" /></div>
+                                    <div><label className="block text-xs font-medium text-slate-700 dark:text-slate-400 mb-1">Threshold Condition</label><input type="text" value={newVaultData.triggerParams.customThreshold} onChange={e => handleTriggerParamChange('customThreshold', e.target.value)} className="w-full p-2 text-sm border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 rounded-lg" /></div>
+                                </>
+                            )}
+                        </div>
+
+                        {/* Aperçu UMA en temps réel */}
+                        <div className="p-3 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700">
+                            <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1 block">UMA Oracle Final Condition (Preview)</span>
+                            <p className="text-sm text-slate-800 dark:text-slate-200 italic">"{generateOracleDescription(newVaultData)}"</p>
+                        </div>
                     </div>
 
                     <div className={isExpanded ? "col-span-2 p-3 bg-blue-50 dark:bg-blue-900/10 rounded-xl border border-blue-100 dark:border-blue-800" : "p-3 bg-blue-50 dark:bg-blue-900/10 rounded-xl border border-blue-100 dark:border-blue-800"}>
