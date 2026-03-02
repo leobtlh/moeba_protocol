@@ -3,11 +3,11 @@ export const AVAILABLE_ASSETS = ['USDC', 'USDT', 'DAI', 'WETH'];
 
 export const CHAIN_LOGOS = {
     'Base': 'https://avatars.githubusercontent.com/u/108554348?s=200&v=4',
-    'Ethereum': 'https://cryptologos.cc/logos/ethereum-eth-logo.svg?v=026',
-    'Polygon': 'https://cryptologos.cc/logos/polygon-matic-logo.svg?v=026',
-    'Arbitrum': 'https://cryptologos.cc/logos/arbitrum-arb-logo.svg?v=026',
-    'Optimism': 'https://cryptologos.cc/logos/optimism-ethereum-op-logo.svg?v=026',
-    'Sepolia': 'https://cryptologos.cc/logos/ethereum-eth-logo.svg?v=026' // Même logo qu'Ethereum
+    'Ethereum': 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/info/logo.png',
+    'Polygon': 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/info/logo.png',
+    'Arbitrum': 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/arbitrum/info/logo.png',
+    'Optimism': 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/optimism/info/logo.png',
+    'Sepolia': 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/info/logo.png'
 };
 
 export const TOKEN_MAP = {

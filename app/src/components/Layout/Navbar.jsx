@@ -5,6 +5,7 @@ import {
 import { useTheme } from '../../context/ThemeContext';
 import { useWeb3 } from '../../context/Web3Context';
 import ConnectWalletModal from '../Modals/ConnectWalletModal';
+import moebaLogo from '../../assets/img/MoebaLogo.png';
 
 const Navbar = ({ activeView, setActiveView }) => {
     // Contexts Global state
@@ -28,7 +29,7 @@ const Navbar = ({ activeView, setActiveView }) => {
 
                     <div className="flex items-center gap-4">
                         <a href="#" className="flex items-center" onClick={(e) => { e.preventDefault(); handleNav('marketplace'); }}>
-                            <img src="/img/MoebaLogo.png" alt="MOEBA" className="h-12 w-auto" />
+                            <img src={moebaLogo} alt="MOEBA" className="h-12 w-auto" />
                         </a>
 
                         <div className="hidden md:flex items-center gap-2 bg-slate-100 dark:bg-slate-800 p-1 rounded-full ml-4">
