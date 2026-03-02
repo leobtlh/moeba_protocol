@@ -28,12 +28,15 @@ const Navbar = ({ activeView, setActiveView }) => {
                 <div className="flex justify-between h-16 items-center">
 
                     <div className="flex items-center gap-4">
-                        <a href="#" className="flex items-center" onClick={(e) => { e.preventDefault(); handleNav('marketplace'); }}>
+                        <a href="#" className="flex items-center gap-3" onClick={(e) => { e.preventDefault(); handleNav('marketplace'); }}>
                             <img
-                            src={moebaLogo}
-                            alt="MOEBA"
-                            className="h-16 w-auto filter drop-shadow-[0_2px_8px_rgba(100,108,255,0.6)] brightness-110"
+                                src={moebaLogo}
+                                alt="MOEBA"
+                                className="h-14 w-auto filter drop-shadow-[0_2px_6px_rgba(100,108,255,0.6)] brightness-110"
                             />
+                            <span className="text-2xl font-bold text-blue-300">
+                                Moeba
+                            </span>
                         </a>
 
                         <div className="hidden md:flex items-center gap-2 bg-slate-100 dark:bg-slate-800 p-1 rounded-full ml-4">
