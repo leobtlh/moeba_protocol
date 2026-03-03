@@ -531,7 +531,7 @@ document.addEventListener('keydown', (e) => {
 
 // --- GESTION DU PRELOADER ORGANIQUE (SÉQUENCE FINIE) ---
 const loader = document.getElementById('moebaLoader');
-const cell = document.querySelector('.organic-cell');
+const cell = document.querySelector('.fusion-container');
 
 if (loader && cell) {
     // 1. Promesse : la page est complètement chargée
@@ -545,10 +545,10 @@ if (loader && cell) {
 
     // 2. Promesse : l'animation CSS est terminée (3s)
     const animationPromise = new Promise(resolve => {
-        // On écoute la fin de l'animation CSS 'moebaIntro'
+        // On écoute la fin de l'animation CSS 'moebaFusionSequence'
         cell.addEventListener('animationend', resolve, { once: true });
 
-        // Fallback de sécurité : si jamais l'event ne fire pas (ex: tab inactif) on force après 4s
+        // Fallback de sécurité : si jamais l'event ne fire pas (ex: tab inactif) on force après 3.5s
         setTimeout(resolve, 3500);
     });
 

@@ -743,7 +743,7 @@ a { text-decoration: none; color: inherit; }
 }
 
 
-/* --- MOEBA LOADER (LOGO ANIMÉ - FINITE VERSION) --- */
+/* --- MOEBA LOADER (FUSION CELLULAIRE ORGANIQUE) --- */
 .loader-overlay {
     position: fixed;
     top: 0;
@@ -751,7 +751,7 @@ a { text-decoration: none; color: inherit; }
     width: 100vw;
     height: 100vh;
     background-color: var(--bg-main);
-    z-index: 10000; /* Au-dessus de tout */
+    z-index: 10000;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -764,45 +764,129 @@ a { text-decoration: none; color: inherit; }
     pointer-events: none;
 }
 
-/* Le Logo qui respire : Cycle de 3 secondes, joue une fois puis s'arrête */
-.organic-cell {
-    width: 80px;
-    height: 80px;
-    /* Forme de départ (invisible) */
-    transform: scale(0);
-    opacity: 0;
-
-    /* Animation unique : Apparition -> Respiration -> Stabilisation -> Fin */
-    animation: moebaIntro 3s ease-in-out forwards;
+/* Conteneur principal qui gère l'orbite globale et l'explosion finale */
+.fusion-container {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* Rotation fluide qui s'accélère au moment critique */
+    animation: moebaFusionSequence 3s cubic-bezier(0.5, 0, 0.2, 1) forwards;
     will-change: transform, opacity;
 }
 
+/* Membranes organiques de base */
+.moeba-half {
+    position: absolute;
+    width: 45px;
+    height: 55px;
+    will-change: transform, border-radius, opacity;
+}
 
-/* KEYFRAMES INTRO (3 secondes) Modifié pour ne pas déformer le logo transparent */
-@keyframes moebaIntro {
+.moeba-pink {
+    background-color: #E83D81;
+    animation: pinkAlive 3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.moeba-green {
+    background-color: #B5E833;
+    animation: greenAlive 3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Le vrai logo qui pop à la fin de la fusion */
+.moeba-final {
+    position: absolute;
+    width: 90px;
+    height: 90px;
+    opacity: 0;
+    animation: finalBirth 3s ease-in-out forwards;
+    will-change: transform, opacity, filter;
+}
+
+/* 1. SÉQUENCE GLOBALE : Orbite, Contraction, Explosion */
+@keyframes moebaFusionSequence {
+    0%   { transform: scale(1) rotate(0deg); opacity: 1; }
+    40%  { transform: scale(1.1) rotate(180deg); opacity: 1; }
+    70%  { transform: scale(1) rotate(540deg); opacity: 1; } /* L'orbite s'accélère */
+    75%  { transform: scale(1.1) rotate(600deg); opacity: 1; } /* Choc : léger rebond du conteneur */
+    85%  { transform: scale(0.9) rotate(630deg); opacity: 1; } /* Contraction de l'organisme avant l'explosion */
+    100% { transform: scale(25) rotate(720deg); opacity: 0; } /* Zoom à travers l'écran */
+}
+
+/* 2. CELLULE ROSE : Arrive de gauche, s'écrase à droite */
+@keyframes pinkAlive {
     0% {
-        transform: scale(0) rotate(0deg);
-        opacity: 0;
+        transform: translateX(-150px) scale(0.5);
+        border-radius: 50% 50% 50% 70% / 50% 50% 70% 50%;
     }
-    20% {
-        /* Apparition rapide + Rotation Linéaire (72deg) */
+    30% {
+        transform: translateX(-40px) scale(0.8);
+        border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; /* Respiration */
+    }
+    55% {
+        transform: translateX(-25px) scale(0.9);
+        border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+    }
+    70% {
+        transform: translateX(-16px) scale(1) scaleX(1.1); /* S'étire vers la verte (attraction) */
+        border-radius: 60% 30% 30% 60% / 50% 20% 20% 50%; /* Le mur droit commence à se former */
+    }
+    75% {
+        /* IMPACT : Aplatissement total à droite, conservation du volume (Stretch Y) */
+        transform: translateX(-10px) scale(1) scaleX(0.7) scaleY(1.3);
+        border-radius: 60% 5% 5% 60% / 50% 2% 2% 50%;
         opacity: 1;
-        transform: scale(0.8) rotate(72deg);
     }
-    50% {
-        /* Inspiration (Gros) + Rotation Linéaire (180deg) */
-        transform: scale(1.3) rotate(180deg);
+    76% { opacity: 0; } /* Remplacement par le vrai logo */
+    100% { transform: translateX(-10px); opacity: 0; }
+}
+
+/* 3. CELLULE VERTE : Arrive de droite, s'écrase à gauche */
+@keyframes greenAlive {
+    0% {
+        transform: translateX(150px) scale(0.5);
+        border-radius: 50% 50% 70% 50% / 50% 70% 50% 50%;
     }
-    80% {
-        /* Expiration (Normal) + Rotation Linéaire (288deg) */
-        transform: scale(1.0) rotate(288deg);
+    30% {
+        transform: translateX(40px) scale(0.8);
+        border-radius: 30% 70% 60% 40% / 50% 60% 40% 70%; /* Respiration asymétrique */
+    }
+    55% {
+        transform: translateX(25px) scale(0.9);
+        border-radius: 70% 30% 40% 60% / 60% 40% 50% 40%;
+    }
+    70% {
+        transform: translateX(16px) scale(1) scaleX(1.1); /* S'étire vers la rose */
+        border-radius: 30% 60% 60% 30% / 20% 50% 50% 20%;
+    }
+    75% {
+        /* IMPACT : Aplatissement total à gauche, conservation du volume (Stretch Y) */
+        transform: translateX(10px) scale(1) scaleX(0.7) scaleY(1.3);
+        border-radius: 5% 60% 60% 5% / 2% 50% 50% 2%;
         opacity: 1;
     }
-    100% {
-        /* EXPLOSION FINALE : Échelle géante pour simuler l'explosion */
-        transform: scale(20) rotate(360deg);
-        opacity: 0;
+    76% { opacity: 0; }
+    100% { transform: translateX(10px); opacity: 0; }
+}
+
+/* 4. RÉVÉLATION DU LOGO : Naissance et Flash lumineux */
+@keyframes finalBirth {
+    0%, 74% { opacity: 0; transform: scale(0.5); filter: brightness(2); }
+    75% {
+        /* Le logo apparaît au moment exact de l'écrasement maximum */
+        opacity: 1;
+        transform: scale(1.05); /* Léger "pop" d'apparition */
+        /* Double aura lumineuse rose et verte pour l'énergie de la fusion */
+        filter: drop-shadow(0 0 30px rgba(232, 61, 129, 0.8)) drop-shadow(0 0 30px rgba(181, 232, 51, 0.8)) brightness(1.2);
     }
+    85% {
+        /* Rétractation organique avant le bond final (synchronisé avec le container) */
+        transform: scale(0.95);
+        filter: drop-shadow(0 0 10px rgba(181, 232, 51, 0.3)) brightness(1);
+    }
+    100% { opacity: 1; transform: scale(1); }
 }
 
 /* ========================================================== */
