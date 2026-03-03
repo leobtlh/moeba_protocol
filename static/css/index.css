@@ -56,15 +56,15 @@ body::before {
   z-index: 0;
   pointer-events: none;
 
-  /* --- FOND : VOIE LACTÉE (déplacé ici) --- */
+  /* --- FOND : VOIE LACTÉE (déplacé ici, avec des étoiles roses Mœba) --- */
   background-image:
       radial-gradient(white, rgba(255,255,255,.1) 0.5px, transparent 1px),
       radial-gradient(white, rgba(255,255,255,.1) 0.5px, transparent 1px),
       radial-gradient(#B5E833, rgba(181,232,51,.4) 1px, transparent 2px),
       radial-gradient(#B5E833, rgba(181,232,51,.6) 1.5px, transparent 2.5px),
-      radial-gradient(rgba(255,255,255,1), rgba(255,255,255,.2) 1px, transparent 2px),
+      radial-gradient(#E83D81, rgba(232,61,129,.4) 1px, transparent 2px),
       radial-gradient(#B5E833, rgba(181,232,51,.2) 2px, transparent 5px),
-      radial-gradient(white, rgba(181,232,51,.5) 3px, transparent 6px),
+      radial-gradient(#E83D81, rgba(232,61,129,.5) 3px, transparent 6px),
       radial-gradient(circle at top left, rgba(181,232,51, 0.03), transparent 70%);
 
   background-size:
@@ -519,7 +519,7 @@ a { text-decoration: none; color: inherit; }
     left: 0;
     width: 100%;
     height: 100%;
-/*    background: rgba(15, 23, 42, 0.85);
+/* background: rgba(15, 23, 42, 0.85);
     backdrop-filter: blur(5px);*/
     z-index: 999;
     opacity: 0;
@@ -743,7 +743,7 @@ a { text-decoration: none; color: inherit; }
 }
 
 
-/* --- MOEBA LOADER (ORGANIC BREATHING CELL - FINITE VERSION) --- */
+/* --- MOEBA LOADER (LOGO ANIMÉ - FINITE VERSION) --- */
 .loader-overlay {
     position: fixed;
     top: 0;
@@ -764,42 +764,23 @@ a { text-decoration: none; color: inherit; }
     pointer-events: none;
 }
 
-/* La cellule qui respire : Cycle de 3 secondes, joue une fois puis s'arrête */
+/* Le Logo qui respire : Cycle de 3 secondes, joue une fois puis s'arrête */
 .organic-cell {
     width: 80px;
     height: 80px;
-    background: linear-gradient(135deg, var(--accent), var(--accent-hover));
     /* Forme de départ (invisible) */
     transform: scale(0);
     opacity: 0;
-    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
 
     /* Animation unique : Apparition -> Respiration -> Stabilisation -> Fin */
     animation: moebaIntro 3s ease-in-out forwards;
-
-    box-shadow: 0 0 50px rgba(181, 232, 51, 0.15);
-    will-change: border-radius, transform, opacity;
+    will-change: transform, opacity;
 }
 
-/* Noyau interne subtil */
-.organic-cell::after {
-    content: '';
-    position: absolute;
-    top: 20%;
-    left: 20%;
-    width: 60%;
-    height: 60%;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.15);
-    filter: blur(8px);
-    /* Animation douce pour le noyau */
-    animation: moebaInternal 3s ease-in-out forwards;
-}
 
-/* KEYFRAMES INTRO (3 secondes) */
+/* KEYFRAMES INTRO (3 secondes) Modifié pour ne pas déformer le logo transparent */
 @keyframes moebaIntro {
     0% {
-        border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
         transform: scale(0) rotate(0deg);
         opacity: 0;
     }
@@ -810,27 +791,18 @@ a { text-decoration: none; color: inherit; }
     }
     50% {
         /* Inspiration (Gros) + Rotation Linéaire (180deg) */
-        border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
         transform: scale(1.3) rotate(180deg);
     }
     80% {
         /* Expiration (Normal) + Rotation Linéaire (288deg) */
-        border-radius: 70% 30% 50% 60% / 30% 60% 40% 60%;
         transform: scale(1.0) rotate(288deg);
         opacity: 1;
     }
     100% {
         /* EXPLOSION FINALE : Échelle géante pour simuler l'explosion */
-        border-radius: 50%;
         transform: scale(20) rotate(360deg);
         opacity: 0;
     }
-}
-
-@keyframes moebaInternal {
-    0% { transform: translate(0, 0); opacity: 0; }
-    50% { opacity: 0.6; }
-    100% { transform: translate(5px, -5px); opacity: 0.4; }
 }
 
 /* ========================================================== */
