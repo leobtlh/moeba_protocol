@@ -32,9 +32,9 @@ const Navbar = ({ activeView, setActiveView }) => {
                             <img
                                 src={moebaLogo}
                                 alt="MOEBA"
-                                className="h-14 w-auto filter drop-shadow-[0_2px_6px_rgba(100,108,255,0.6)] brightness-110"
+                                className="h-12 w-auto transition-all duration-300 filter drop-shadow-[0_2px_4px_rgba(100,108,255,0.3)] brightness-100 dark:drop-shadow-[0_2px_6px_rgba(100,108,255,0.6)] dark:brightness-50"
                             />
-                            <span className="text-2xl font-bold text-blue-300">
+                            <span className="text-2xl font-bold text-blue-800 dark:text-blue-300 transition-colors duration-300">
                                 Moeba
                             </span>
                         </a>
