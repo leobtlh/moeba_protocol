@@ -23,12 +23,14 @@ interface ICompliance {
  */
 contract HPIVJuniorToken is ERC20, AccessControl {
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
+    address public complianceModule; // <-- AJOUT
 
-    constructor(string memory name, string memory symbol, address _vault)
+    constructor(string memory name, string memory symbol, address _vault, address _compliance)
         ERC20(name, symbol)
     {
         _grantRole(DEFAULT_ADMIN_ROLE, _vault);
         _grantRole(MINTER_ROLE, _vault);
+        complianceModule = _compliance; // <-- AJOUT
     }
 
     function mint(address to, uint256 amount) external onlyRole(MINTER_ROLE) {
@@ -37,6 +39,16 @@ contract HPIVJuniorToken is ERC20, AccessControl {
 
     function burn(address from, uint256 amount) external onlyRole(MINTER_ROLE) {
         _burn(from, amount);
+    }
+
+    // <-- SURCHARGE DE LA FONCTION DE TRANSFERT -->
+    function _update(address from, address to, uint256 value) internal virtual override {
+        // Bloque le transfert P2P si le destinataire n'est pas KYC.
+        // On exclut address(0) car c'est utilisé lors du minting et burning.
+        if (from != address(0) && to != address(0)) {
+            require(ICompliance(complianceModule).isAllowed(to), "JuniorToken: Receiver must be KYC whitelisted");
+        }
+        super._update(from, to, value);
     }
 }
 
@@ -139,7 +151,8 @@ contract HPIVVault is ERC4626, AccessControl, ReentrancyGuard {
         juniorToken = new HPIVJuniorToken(
             string.concat("Junior ", _tokenName),
             string.concat("j", _tokenSymbol),
-            address(this)
+            address(this),
+            _compliance
         );
     }
 
@@ -405,5 +418,21 @@ contract HPIVVault is ERC4626, AccessControl, ReentrancyGuard {
 
         uint256 juniorShareOfPremium = (premiumReserve * juniorPrincipal) / totalPrincipal;
         return juniorPrincipal + juniorShareOfPremium;
+    }
+
+    // =============================================================
+    // 6. CONFORMITÉ LBA (ANTI-BLANCHIMENT)
+    // =============================================================
+
+    /**
+     * @dev Surcharge de la fonction de transfert ERC20 pour imposer la Whitelist.
+     * C'est le cœur de la conformité : rend le token "Permissioned".
+     */
+    function _update(address from, address to, uint256 value) internal virtual override {
+        // Bloque les transferts P2P vers des adresses inconnues
+        if (from != address(0) && to != address(0)) {
+            require(ICompliance(complianceModule).isAllowed(to), "SeniorToken: Receiver must be KYC whitelisted");
+        }
+        super._update(from, to, value);
     }
 }

@@ -91,6 +91,22 @@ Les contrats se trouvent dans le dossier `/app`.
 
 ---
 
+## Roadmap & Conformité Réglementaire
+
+Le déploiement de Mœba Protocol suit une feuille de route stricte alignée sur les exigences de la FINMA pour la démocratisation des instruments financiers (Retail).
+
+* **Phase 1 : Structuration Légale (En cours)**
+    * Création de l'entité légale (Société Anonyme) requise pour le statut de Véhicule à Usage Spécifique d'Assurance (VUSA).
+    * Affiliation à un Organisme d'Autorégulation (OAR) pour la conformité LBA (KYC/AML).
+    * Rédaction de la "Convention d'Inscription" liant le token à la créance selon la Loi DLT.
+* **Q3 2026 :** Audit de sécurité des contrats `HPIVVault` et `HPIVFactory`.
+* **Q4 2026 :** Lancement du Testnet, intégration KYC Web3 (ex: Fractal ID), et approbation du Prospectus (LSFin) par l'organe de révision.
+* **Q1 2027 :** Déploiement Mainnet du premier Vault Pilote ("Florida Wind").
+* **Q2 2027 :** Ouverture du marché secondaire permissionné pour l'échange des parts Junior/Senior.
+* **Q4 2027 :** Transition vers une gouvernance DAO pour la gestion des paramètres de risque.
+
+---
+
 ## Avertissement & Conformité
 
 Ce code est une implémentation de référence (Proof of Concept).

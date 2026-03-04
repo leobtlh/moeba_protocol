@@ -5,7 +5,7 @@ import { useWeb3 } from './Web3Context';
 import { INITIAL_VAULTS } from '../constants/mocks';
 import { FACTORY_ADDRESS_LIVE, FACTORY_ABI_EXTENDED, INSURER_WHITELIST_LOCAL } from '../constants/abis';
 import { generateMockHistory } from '../utils/generators';
-// import { formatCurrency } from '../utils/formatting'; // -> RETIRÉ : non utilisé
+// import { formatCurrency } from '../utils/formatting';
 
 const DataContext = createContext();
 
