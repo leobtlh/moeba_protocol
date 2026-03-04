@@ -7,7 +7,7 @@ import { useWeb3 } from '../../context/Web3Context';
 import ConnectWalletModal from '../Modals/ConnectWalletModal';
 import moebaLogo from '../../assets/img/IconTest04.png';
 
-// --- THEMES (Sans "Learn Protocol") ---
+// --- THEMES ---
 const THEMES = [
     { id: 'climate', label: 'Climate & Weather', color: 'text-blue-500 dark:text-blue-400' },
     { id: 'cyber', label: 'Cybersecurity', color: 'text-red-500 dark:text-red-400' },
@@ -18,16 +18,13 @@ const THEMES = [
 ];
 
 const Navbar = ({ activeView, setActiveView, activeTheme, setActiveTheme, isLearnMode, setIsLearnMode }) => {
-    // Contexts Global state
     const { isDarkMode, toggleTheme } = useTheme();
     const { walletConnected, userAddress, userFullAddress, disconnectWallet, isLiveMode, setIsLiveMode } = useWeb3();
 
-    // Local UI State (Uniquement pour l'affichage des menus de la navbar)
     const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
     const [showWalletMenu, setShowWalletMenu] = useState(false);
     const [showThemeMenu, setShowThemeMenu] = useState(false);
 
-    // Navigation Mapping
     const handleNav = (view) => {
         setActiveView(view);
     };
@@ -50,7 +47,6 @@ const Navbar = ({ activeView, setActiveView, activeTheme, setActiveTheme, isLear
                             </span>
                         </a>
 
-                        {/* MENU DEROULANT DES THEMES (Reste visible en mode Academy) */}
                         <div className="relative hidden lg:block ml-2">
                             <button
                                 onClick={() => setShowThemeMenu(!showThemeMenu)}
@@ -79,7 +75,6 @@ const Navbar = ({ activeView, setActiveView, activeTheme, setActiveTheme, isLear
 
                                     <div className="my-1 border-t border-slate-100 dark:border-slate-700"></div>
 
-                                    {/* Toggle Simulation / Live DANS le dropdown */}
                                     <div className="flex items-center justify-between gap-1 bg-slate-100 dark:bg-slate-900 p-1 rounded-lg">
                                         <button
                                             onClick={() => setIsLiveMode(false)}
@@ -101,7 +96,6 @@ const Navbar = ({ activeView, setActiveView, activeTheme, setActiveTheme, isLear
                         {/* TOGGLE : ACADEMY / MARKETPLACE */}
                         <div className="hidden md:flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-full ml-4 border border-slate-200 dark:border-slate-700 shadow-inner">
                             <button
-                                /* LE CHANGEMENT EST ICI : on force l'affichage du marketplace en arrière-plan */
                                 onClick={() => { setIsLearnMode(true); handleNav('marketplace'); }}
                                 className={`px-5 py-1.5 text-xs font-bold rounded-full transition-all flex items-center gap-2 ${isLearnMode ? 'bg-indigo-500 shadow-md text-white' : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'}`}
                             >
@@ -119,17 +113,14 @@ const Navbar = ({ activeView, setActiveView, activeTheme, setActiveTheme, isLear
                     {/* --- DROITE : NAVIGATION & WALLET --- */}
                     <div className="flex items-center gap-4">
 
-                        {/* CONDITION : N'afficher le menu Marketplace que si on n'est pas en mode Academy */}
-                        {!isLearnMode && (
-                            <div className="hidden md:flex bg-slate-100 dark:bg-slate-800 rounded-lg p-1 transition-colors">
-                                <button onClick={() => handleNav('marketplace')} className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${activeView === 'marketplace' ? 'bg-white dark:bg-slate-700 shadow-sm text-blue-700 dark:text-blue-400' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'}`}>Investor</button>
-                                <button onClick={() => handleNav('insurer')} className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${activeView === 'insurer' ? 'bg-white dark:bg-slate-700 shadow-sm text-indigo-700 dark:text-indigo-400' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'}`}>Insurer</button>
-                                <button onClick={() => handleNav('portfolio')} className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${activeView === 'portfolio' ? 'bg-white dark:bg-slate-700 shadow-sm text-green-600 dark:text-green-400' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'}`}>Dashboard</button>
-                            </div>
-                        )}
+                        {/* Les boutons restent toujours affichés ! */}
+                        <div className="hidden md:flex bg-slate-100 dark:bg-slate-800 rounded-lg p-1 transition-colors">
+                            <button onClick={() => handleNav('marketplace')} className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${activeView === 'marketplace' ? 'bg-white dark:bg-slate-700 shadow-sm text-blue-700 dark:text-blue-400' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'}`}>Investor</button>
+                            <button onClick={() => handleNav('insurer')} className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${activeView === 'insurer' ? 'bg-white dark:bg-slate-700 shadow-sm text-indigo-700 dark:text-indigo-400' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'}`}>Insurer</button>
+                            <button onClick={() => handleNav('portfolio')} className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${activeView === 'portfolio' ? 'bg-white dark:bg-slate-700 shadow-sm text-green-600 dark:text-green-400' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'}`}>Dashboard</button>
+                        </div>
 
-                        {/* Séparateur vertical (masqué en mode Academy pour plus de propreté) */}
-                        {!isLearnMode && <div className="h-6 w-px bg-slate-200 dark:bg-slate-700 mx-1"></div>}
+                        <div className="h-6 w-px bg-slate-200 dark:bg-slate-700 mx-1"></div>
 
                         <button onClick={toggleTheme} className="p-2 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-colors rounded-full hover:bg-slate-100 dark:hover:bg-slate-800">
                             {isDarkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
