@@ -36,13 +36,13 @@ const Navbar = ({ activeView, setActiveView, activeTheme, setActiveTheme, isLear
 
                     {/* --- GAUCHE : LOGO, THEMES & TOGGLE ACADEMY/APP --- */}
                     <div className="flex items-center gap-4">
-                        <a href="#" className="flex items-center gap-3" onClick={(e) => { e.preventDefault(); handleNav('marketplace'); setIsLearnMode(false); }}>
+                        <a href="#" className="flex items-center gap-2" onClick={(e) => { e.preventDefault(); handleNav('marketplace'); setIsLearnMode(false); }}>
                             <img
                                 src={moebaLogo}
                                 alt="MOEBA"
                                 className="h-12 w-auto transition-all duration-300 filter drop-shadow-[0_2px_4px_rgba(100,108,255,0.3)] brightness-110 dark:drop-shadow-[0_2px_6px_rgba(100,108,255,0.6)] dark:brightness-110"
                             />
-                            <span className="text-2xl font-bold text-blue-800 dark:text-blue-300 transition-colors duration-300 hidden sm:block">
+                            <span className="text-xl font-extrabold tracking-tight text-blue-800 dark:text-blue-300 transition-colors duration-300 hidden sm:block">
                                 Mœba
                             </span>
                         </a>
