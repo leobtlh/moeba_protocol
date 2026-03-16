@@ -39,10 +39,16 @@ const AcademyModal = ({ isOpen, onClose, activeTheme }) => {
     };
 
     return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-8 bg-black/40 backdrop-blur-md animate-fade-in">
+        <div
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-8 bg-black/40 backdrop-blur-md animate-fade-in"
+            onClick={onClose}
+        >
 
-            {/* FENÊTRE PRINCIPALE : LA MAGIE DU GLASSMORPHISM EST ICI */}
-            <div className="w-full h-full bg-white/40 dark:bg-white/5 border border-white/30 dark:border-white/10 rounded-3xl shadow-2xl flex flex-col overflow-hidden relative animate-zoom-in backdrop-blur-2xl">
+            {/* 2. On ajoute e.stopPropagation() sur la fenêtre blanche pour que les clics à l'intérieur ne ferment pas la modale */}
+            <div
+                className="w-[80%] h-full bg-white/40 dark:bg-white/5 border border-white/30 dark:border-white/10 rounded-3xl shadow-2xl flex flex-col overflow-hidden relative animate-zoom-in backdrop-blur-2xl"
+                onClick={(e) => e.stopPropagation()}
+            >
 
                 {/* Header */}
                 <div className="flex justify-between items-center p-6 border-b border-white/30 dark:border-white/10 bg-white/20 dark:bg-white/5">

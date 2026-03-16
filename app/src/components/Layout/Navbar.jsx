@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
     Sun, Moon, Wallet, LogOut, Zap, Globe
 } from '../ui/Icons';
@@ -25,6 +25,30 @@ const Navbar = ({ activeView, setActiveView, activeTheme, setActiveTheme, isLear
     const [showWalletMenu, setShowWalletMenu] = useState(false);
     const [showThemeMenu, setShowThemeMenu] = useState(false);
 
+    const themeMenuRef = useRef(null);
+    const walletMenuRef = useRef(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            // Si le menu thème est ouvert et qu'on clique en dehors de sa zone
+            if (themeMenuRef.current && !themeMenuRef.current.contains(event.target)) {
+                setShowThemeMenu(false);
+            }
+            // Si le menu wallet est ouvert et qu'on clique en dehors de sa zone
+            if (walletMenuRef.current && !walletMenuRef.current.contains(event.target)) {
+                setShowWalletMenu(false);
+            }
+        };
+
+        // Ajoute l'écouteur d'événement au montage
+        document.addEventListener('mousedown', handleClickOutside);
+
+        // Nettoie l'écouteur au démontage
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
     const handleNav = (view) => {
         setActiveView(view);
     };
@@ -47,7 +71,7 @@ const Navbar = ({ activeView, setActiveView, activeTheme, setActiveTheme, isLear
                             </span>
                         </a>
 
-                        <div className="relative hidden lg:block ml-2">
+                        <div className="relative hidden lg:block ml-2" ref={themeMenuRef}>
                             <button
                                 onClick={() => setShowThemeMenu(!showThemeMenu)}
                                 className="flex items-center gap-2 px-3 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors shadow-sm"
