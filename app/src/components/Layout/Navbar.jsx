@@ -9,11 +9,11 @@ import moebaLogo from '../../assets/img/IconTest04.png';
 
 // --- THEMES ---
 const THEMES = [
-    { id: 'climate', label: 'Climate & Weather', color: 'text-blue-500 dark:text-blue-400' },
-    { id: 'cyber', label: 'Cybersecurity', color: 'text-red-500 dark:text-red-400' },
-    { id: 'business', label: 'Business Interruption', color: 'text-amber-500 dark:text-amber-400' },
-    { id: 'flight', label: 'Flight Cancellation', color: 'text-sky-500 dark:text-sky-400' },
-    { id: 'realestate', label: 'Real Estate Sensors', color: 'text-emerald-500 dark:text-emerald-400' },
+    { id: 'climate', label: 'Climate & Weather', color: 'text-violet-600 dark:text-violet-400' },
+    { id: 'cyber', label: 'Cybersecurity', color: 'text-red-600 dark:text-red-500' },
+    { id: 'business', label: 'Business Interruption', color: 'text-yellow-500 dark:text-yellow-500' },
+    { id: 'flight', label: 'Flight Cancellation', color: 'text-teal-500 dark:text-teal-500' },
+    { id: 'realestate', label: 'Real Estate Sensors', color: 'text-orange-500 dark:text-orange-500' },
     { id: 'maritime', label: 'Maritime Logistics', color: 'text-cyan-500 dark:text-cyan-400' },
 ];
 
@@ -66,12 +66,30 @@ const Navbar = ({ activeView, setActiveView, activeTheme, setActiveTheme, isLear
                                 alt="MOEBA"
                                 className="h-12 w-auto transition-all duration-300 filter drop-shadow-[0_2px_4px_rgba(100,108,255,0.3)] brightness-110 dark:drop-shadow-[0_2px_6px_rgba(100,108,255,0.6)] dark:brightness-110"
                             />
-                            <span className="text-xl font-extrabold tracking-tight text-blue-800 dark:text-blue-300 transition-colors duration-300 hidden sm:block">
-                                Mœba
-                            </span>
                         </a>
 
-                        <div className="relative hidden lg:block ml-2" ref={themeMenuRef}>
+                        {/* TOGGLE : ACADEMY / MARKETPLACE */}
+                        <div className="hidden md:flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-full ml-2 border border-slate-200 dark:border-slate-700 shadow-inner">
+                            <button
+                                onClick={() => { setIsLearnMode(true); handleNav('marketplace'); }}
+                                className={`px-5 py-1.5 text-xs font-bold rounded-full transition-all flex items-center gap-2 ${isLearnMode ? 'bg-green-500 shadow-md text-white' : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'}`}
+                            >
+                                Academy
+                            </button>
+                            <button
+                                onClick={() => { setIsLearnMode(false); handleNav('marketplace'); }}
+                                className={`px-5 py-1.5 text-xs font-bold rounded-full transition-all flex items-center gap-2 ${!isLearnMode ? 'bg-white dark:bg-slate-700 shadow-md text-green-700 dark:text-green-400' : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'}`}
+                            >
+                                Marketplace
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* --- DROITE : NAVIGATION & WALLET --- */}
+                    <div className="flex items-center gap-4">
+
+                        {/* MENUS CATEGORY */}
+                        <div className="relative hidden lg:block mr-2" ref={themeMenuRef}>
                             <button
                                 onClick={() => setShowThemeMenu(!showThemeMenu)}
                                 className="flex items-center gap-2 px-3 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors shadow-sm"
@@ -116,26 +134,6 @@ const Navbar = ({ activeView, setActiveView, activeTheme, setActiveTheme, isLear
                                 </div>
                             )}
                         </div>
-
-                        {/* TOGGLE : ACADEMY / MARKETPLACE */}
-                        <div className="hidden md:flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-full ml-4 border border-slate-200 dark:border-slate-700 shadow-inner">
-                            <button
-                                onClick={() => { setIsLearnMode(true); handleNav('marketplace'); }}
-                                className={`px-5 py-1.5 text-xs font-bold rounded-full transition-all flex items-center gap-2 ${isLearnMode ? 'bg-indigo-500 shadow-md text-white' : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'}`}
-                            >
-                                Academy
-                            </button>
-                            <button
-                                onClick={() => { setIsLearnMode(false); handleNav('marketplace'); }}
-                                className={`px-5 py-1.5 text-xs font-bold rounded-full transition-all flex items-center gap-2 ${!isLearnMode ? 'bg-white dark:bg-slate-700 shadow-md text-blue-700 dark:text-blue-400' : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'}`}
-                            >
-                                Marketplace
-                            </button>
-                        </div>
-                    </div>
-
-                    {/* --- DROITE : NAVIGATION & WALLET --- */}
-                    <div className="flex items-center gap-4">
 
                         {/* Les boutons restent toujours affichés ! */}
                         <div className="hidden md:flex bg-slate-100 dark:bg-slate-800 rounded-lg p-1 transition-colors">
