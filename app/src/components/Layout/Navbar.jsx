@@ -11,11 +11,21 @@ import moebaLogo from '../../assets/img/IconTest04.png';
 const THEMES = [
     { id: 'climate', label: 'Climate & Weather', color: 'text-violet-600 dark:text-violet-400' },
     { id: 'cyber', label: 'Cybersecurity', color: 'text-red-600 dark:text-red-500' },
-    { id: 'business', label: 'Business Interruption', color: 'text-yellow-500 dark:text-yellow-500' },
+    { id: 'business', label: 'Business Interruption', color: 'text-yellow-500 dark:text-amber-500' },
     { id: 'flight', label: 'Flight Cancellation', color: 'text-teal-500 dark:text-teal-500' },
-    { id: 'realestate', label: 'Real Estate Sensors', color: 'text-orange-500 dark:text-orange-500' },
+    { id: 'realestate', label: 'Real Estate Sensors', color: 'text-pink-500 dark:text-pink-400' },
     { id: 'maritime', label: 'Maritime Logistics', color: 'text-cyan-500 dark:text-cyan-400' },
 ];
+
+// --- NOUVEAU : Dictionnaire des couleurs de la Navbar selon le thème ---
+const navBackgrounds = {
+    climate: "bg-sky-50/90 dark:bg-sky-950/90 border-sky-200/50 dark:border-sky-800/50",
+    cyber: "bg-rose-50/90 dark:bg-rose-900/90 border-rose-200/50 dark:border-rose-800/50",
+    business: "bg-amber-50/90 dark:bg-amber-600/90 border-amber-200/50 dark:border-amber-800/50",
+    flight: "bg-cyan-50/90 dark:bg-blue-400/90 border-cyan-200/50 dark:border-cyan-800/50",
+    realestate: "bg-pink-50/90 dark:bg-pink-500/90 border-pink-200/50 dark:border-pink-800/50",
+    maritime: "bg-blue-50/90 dark:bg-cyan-500/90 border-blue-200/50 dark:border-blue-800/50",
+};
 
 const Navbar = ({ activeView, setActiveView, activeTheme, setActiveTheme, isLearnMode, setIsLearnMode }) => {
     const { isDarkMode, toggleTheme } = useTheme();
@@ -30,20 +40,15 @@ const Navbar = ({ activeView, setActiveView, activeTheme, setActiveTheme, isLear
 
     useEffect(() => {
         const handleClickOutside = (event) => {
-            // Si le menu thème est ouvert et qu'on clique en dehors de sa zone
             if (themeMenuRef.current && !themeMenuRef.current.contains(event.target)) {
                 setShowThemeMenu(false);
             }
-            // Si le menu wallet est ouvert et qu'on clique en dehors de sa zone
             if (walletMenuRef.current && !walletMenuRef.current.contains(event.target)) {
                 setShowWalletMenu(false);
             }
         };
 
-        // Ajoute l'écouteur d'événement au montage
         document.addEventListener('mousedown', handleClickOutside);
-
-        // Nettoie l'écouteur au démontage
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
@@ -53,8 +58,11 @@ const Navbar = ({ activeView, setActiveView, activeTheme, setActiveTheme, isLear
         setActiveView(view);
     };
 
+    // --- NOUVEAU : Sélection dynamique de la couleur ---
+    const navBgClass = navBackgrounds[activeTheme] || "bg-white/90 dark:bg-slate-900/90 border-slate-200 dark:border-slate-800";
+
     return (
-        <nav className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-50 shadow-sm transition-colors duration-300">
+        <nav className={`${navBgClass} backdrop-blur-md border-b sticky top-0 z-50 shadow-sm transition-colors duration-500`}>
             <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between h-16 items-center">
 
@@ -69,7 +77,7 @@ const Navbar = ({ activeView, setActiveView, activeTheme, setActiveTheme, isLear
                         </a>
 
                         {/* TOGGLE : ACADEMY / MARKETPLACE */}
-                        <div className="hidden md:flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-full ml-2 border border-slate-200 dark:border-slate-700 shadow-inner">
+                        <div className="hidden md:flex items-center gap-1 bg-white/50 dark:bg-black/30 p-1 rounded-full ml-2 border border-slate-200/50 dark:border-slate-700/50 shadow-inner">
                             <button
                                 onClick={() => { setIsLearnMode(true); handleNav('marketplace'); }}
                                 className={`px-5 py-1.5 text-xs font-bold rounded-full transition-all flex items-center gap-2 ${isLearnMode ? 'bg-green-500 shadow-md text-white' : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'}`}
@@ -92,7 +100,7 @@ const Navbar = ({ activeView, setActiveView, activeTheme, setActiveTheme, isLear
                         <div className="relative hidden lg:block mr-2" ref={themeMenuRef}>
                             <button
                                 onClick={() => setShowThemeMenu(!showThemeMenu)}
-                                className="flex items-center gap-2 px-3 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors shadow-sm"
+                                className="flex items-center gap-2 px-3 py-1.5 bg-white/60 dark:bg-slate-800/60 border border-slate-200/50 dark:border-slate-700/50 rounded-lg text-sm font-medium hover:bg-white dark:hover:bg-slate-700 transition-colors shadow-sm"
                             >
                                 <span className={THEMES.find(t => t.id === activeTheme)?.color}>
                                     {THEMES.find(t => t.id === activeTheme)?.label}
@@ -135,23 +143,22 @@ const Navbar = ({ activeView, setActiveView, activeTheme, setActiveTheme, isLear
                             )}
                         </div>
 
-                        {/* Les boutons restent toujours affichés ! */}
-                        <div className="hidden md:flex bg-slate-100 dark:bg-slate-800 rounded-lg p-1 transition-colors">
-                            <button onClick={() => handleNav('marketplace')} className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${activeView === 'marketplace' ? 'bg-white dark:bg-slate-700 shadow-sm text-blue-700 dark:text-blue-400' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'}`}>Investor</button>
-                            <button onClick={() => handleNav('insurer')} className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${activeView === 'insurer' ? 'bg-white dark:bg-slate-700 shadow-sm text-indigo-700 dark:text-indigo-400' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'}`}>Insurer</button>
-                            <button onClick={() => handleNav('portfolio')} className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${activeView === 'portfolio' ? 'bg-white dark:bg-slate-700 shadow-sm text-green-600 dark:text-green-400' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'}`}>Dashboard</button>
+                        <div className="hidden md:flex bg-white/40 dark:bg-slate-800/40 rounded-lg p-1 transition-colors border border-slate-200/30 dark:border-slate-700/30">
+                            <button onClick={() => handleNav('marketplace')} className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${activeView === 'marketplace' ? 'bg-white dark:bg-slate-700 shadow-sm text-blue-700 dark:text-blue-400' : 'text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'}`}>Investor</button>
+                            <button onClick={() => handleNav('insurer')} className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${activeView === 'insurer' ? 'bg-white dark:bg-slate-700 shadow-sm text-indigo-700 dark:text-indigo-400' : 'text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'}`}>Insurer</button>
+                            <button onClick={() => handleNav('portfolio')} className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${activeView === 'portfolio' ? 'bg-white dark:bg-slate-700 shadow-sm text-green-600 dark:text-green-400' : 'text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'}`}>Dashboard</button>
                         </div>
 
-                        <div className="h-6 w-px bg-slate-200 dark:bg-slate-700 mx-1"></div>
+                        <div className="h-6 w-px bg-slate-200/60 dark:bg-slate-700/60 mx-1"></div>
 
-                        <button onClick={toggleTheme} className="p-2 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-colors rounded-full hover:bg-slate-100 dark:hover:bg-slate-800">
+                        <button onClick={toggleTheme} className="p-2 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-colors rounded-full hover:bg-white/50 dark:hover:bg-slate-800/50">
                             {isDarkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
                         </button>
 
                         <div className="relative">
                             <button
                                 onClick={() => walletConnected ? setShowWalletMenu(!showWalletMenu) : setIsWalletModalOpen(true)}
-                                className={`flex items-center gap-2 px-4 py-2 rounded-full font-medium transition-colors border ${walletConnected ? 'bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800' : 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-200 border-transparent'}`}
+                                className={`flex items-center gap-2 px-4 py-2 rounded-full font-medium transition-colors border ${walletConnected ? 'bg-green-50/80 dark:bg-green-900/40 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800' : 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-200 border-transparent shadow-sm'}`}
                             >
                                 <Wallet className="h-4 w-4" />
                                 {walletConnected ? (

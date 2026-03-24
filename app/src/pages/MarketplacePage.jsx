@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search, LayoutGrid, List, Globe } from '../components/ui/Icons';
 import VaultCard from '../components/Vaults/VaultCard';
 import { useData } from '../context/DataContext';
 import { AVAILABLE_CHAINS, CHAIN_LOGOS } from '../constants/mocks';
 import { parseAppDate } from '../utils/formatting';
 
-const MarketplacePage = ({ onVaultSelect }) => {
+const MarketplacePage = ({ onVaultSelect, activeTheme }) => {
     const { vaults } = useData();
 
     // --- STATES DE FILTRES ---
@@ -15,7 +15,15 @@ const MarketplacePage = ({ onVaultSelect }) => {
     const [maturitySort, setMaturitySort] = useState('neutral');
     const [riskSort, setRiskSort] = useState('neutral');
     const [viewMode, setViewMode] = useState('list'); // 'list' | 'grid'
+
+    // ÉTAT RÉACTIVÉ
     const [selectedCategory, setSelectedCategory] = useState('All');
+
+    // --- NOUVEAU : Réinitialiser la catégorie et la recherche si on change de Thème global ---
+    useEffect(() => {
+        setSelectedCategory('All');
+        setSearchQuery('');
+    }, [activeTheme]);
 
     // --- LOGIQUE DE TRI ---
     const toggleChainFilter = (chain) => {
@@ -44,11 +52,22 @@ const MarketplacePage = ({ onVaultSelect }) => {
     };
 
     // --- FILTRAGE ET TRI DES VAULTS ---
-    const availableCategories = ['All', ...new Set(vaults.map(v => v.category).filter(Boolean))];
 
-    const filteredVaults = vaults.filter(vault => {
+    // 1. Filtrer D'ABORD les vaults par le Thème actif de la Navbar (ex: 'climate')
+    const vaultsOfActiveTheme = vaults.filter(v => (v.theme || 'climate') === activeTheme);
+
+    // 2. Extraire les sous-catégories UNIQUEMENT pour ce Thème
+    const availableCategories = ['All', ...new Set(vaultsOfActiveTheme.map(v => v.category).filter(Boolean))];
+
+    // 3. Filtrage final pour l'affichage
+    const filteredVaults = vaultsOfActiveTheme.filter(vault => {
+        // Filtre par réseau (chaîne)
         if (selectedChains.length > 0 && !selectedChains.includes(vault.chain)) return false;
+
+        // Filtre par le menu déroulant (Ouragan, Séisme, etc.)
         if (selectedCategory !== 'All' && vault.category !== selectedCategory) return false;
+
+        // Filtre par barre de recherche
         if (searchQuery) {
             const q = searchQuery.toLowerCase();
             return vault.asset.toLowerCase().includes(q) || vault.name.toLowerCase().includes(q);
@@ -84,7 +103,7 @@ const MarketplacePage = ({ onVaultSelect }) => {
                 {/* BARRE DE FILTRES */}
                 <div className="w-full flex flex-wrap items-center gap-2 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-transparent via-pink-50/30 to-pink-200/50 dark:from-transparent dark:via-pink-900/10 dark:to-pink-800/30 p-2 rounded-xl">
                     <span className="text-xs font-bold text-slate-400 px-2 uppercase tracking-wide flex items-center gap-1"><Globe className="h-4 w-4" /> Network</span>
-                    {AVAILABLE_CHAINS.filter(chain => vaults.some(v => v.chain === chain)).map(chain => (
+                    {AVAILABLE_CHAINS.filter(chain => vaultsOfActiveTheme.some(v => v.chain === chain && (selectedCategory === 'All' || v.category === selectedCategory))).map(chain => (
                         <button
                             key={chain}
                             onClick={() => toggleChainFilter(chain)}

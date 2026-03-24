@@ -48,7 +48,10 @@ function App() {
             >
               {/* ROUTING MANUEL */}
               {activeView === 'marketplace' && (
-                <MarketplacePage onVaultSelect={handleNavigateToVault} />
+                <MarketplacePage
+                  activeTheme={activeTheme}
+                  onVaultSelect={handleNavigateToVault}
+                />
               )}
 
               {activeView === 'portfolio' && (
@@ -56,7 +59,7 @@ function App() {
               )}
 
               {activeView === 'insurer' && (
-                <InsurerDashboardPage />
+                <InsurerDashboardPage activeTheme={activeTheme} />
               )}
 
               {activeView === 'details' && selectedVaultId && (

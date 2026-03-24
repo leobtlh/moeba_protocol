@@ -10,7 +10,7 @@ import ConnectWalletModal from '../components/Modals/ConnectWalletModal.jsx';
 import CreateVaultForm from '../components/Vaults/CreateVaultForm.jsx';
 import InsurerVaultCard from '../components/Vaults/InsurerVaultCard.jsx';
 
-const InsurerDashboardPage = () => {
+const InsurerDashboardPage = ({ activeTheme }) => {
     const {
         isInsurerWhitelisted, registrationStatus, createVault, vaults, initializeVault
     } = useData();
@@ -21,11 +21,12 @@ const InsurerDashboardPage = () => {
     const [isRegModalOpen, setIsRegModalOpen] = useState(false);
     const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
     const [isFormExpanded, setIsFormExpanded] = useState(false);
-    const [isRegistering, setIsRegistering] = useState(false); // Utilisé pour le loader du modal uniquement
+    const [isRegistering, setIsRegistering] = useState(false);
 
     // --- ACTIONS ---
     const handleCreateVault = (newVault) => {
-        createVault(newVault);
+        // Optionnel : On peut forcer le thème du nouveau vault ici
+        createVault({ ...newVault, theme: activeTheme });
         setIsFormExpanded(false);
     };
 
@@ -44,7 +45,9 @@ const InsurerDashboardPage = () => {
 
     // Filter Vaults
     const myVaults = vaults.filter(vault =>
-        vault.insurerAddress && vault.insurerAddress.toLowerCase() === userFullAddress?.toLowerCase()
+        vault.insurerAddress &&
+        vault.insurerAddress.toLowerCase() === userFullAddress?.toLowerCase() &&
+        (vault.theme || 'climate') === activeTheme
     );
 
     // --- RENDER STATES ---
