@@ -31,12 +31,12 @@ const AcademyCompanySpec = ({ activeTheme }) => {
             {activeTheme === 'climate' ? (
                 <div className="flex flex-col lg:flex-row gap-8 items-center bg-indigo-500/10 dark:bg-indigo-400/10 p-6 md:p-8 rounded-2xl border border-indigo-500/20 dark:border-indigo-400/20">
                     {/* SVG Radar à Gauche */}
-                    <div className="w-full lg:w-1/3 flex justify-center">
+                    <div className="w-full lg:w-1/4 flex justify-center">
                         <RadarDrawing />
                     </div>
 
                     {/* Chronologie à Droite */}
-                    <div className="w-full lg:w-2/3 space-y-6 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-indigo-500/30 before:to-transparent">
+                    <div className="w-full lg:w-3/4 space-y-6 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-indigo-500/30 before:to-transparent">
                         {/* Étape 1 */}
                         <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
                             <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-indigo-100 dark:bg-indigo-900 text-indigo-500 dark:text-indigo-400 shadow shrink-0 z-10">1</div>
@@ -75,15 +75,12 @@ const AcademyCompanySpec = ({ activeTheme }) => {
             ) : activeTheme === 'cyber' ? (
 
                 <div className="flex flex-col lg:flex-row gap-8 items-center bg-rose-500/5 dark:bg-rose-400/5 p-6 md:p-8 rounded-2xl border border-rose-500/20 dark:border-rose-400/20">
-                    {/* SVG Cyber à Gauche */}
-                    <div className="w-full lg:w-1/3 flex justify-center">
-                        <CyberDrawing />
-                    </div>
+
 
                     {/* Chronologie à Droite */}
-                    <div className="w-full lg:w-2/3 space-y-6 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-rose-500/30 before:to-transparent">
+                    <div className="w-full lg:w-4/5 space-y-6 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-rose-500/30 before:to-transparent">
                         {/* Étape 1 */}
-                        <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+                        <div className="relative flex items-center justify-between md:justify-normal md:even:flex-row-reverse group is-active">
                             <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-rose-100 dark:bg-rose-900 text-rose-500 dark:text-rose-400 shadow shrink-0 z-10">1</div>
                             <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-xl border border-rose-200 dark:border-rose-800 bg-white/50 dark:bg-slate-800/50 shadow-sm ml-4 md:ml-0">
                                 <h4 className="font-bold text-slate-900 dark:text-white mb-1">Paramètres d'Audit</h4>
@@ -91,7 +88,7 @@ const AcademyCompanySpec = ({ activeTheme }) => {
                             </div>
                         </div>
                         {/* Étape 2 */}
-                        <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+                        <div className="relative flex items-center justify-between md:justify-normal md:even:flex-row-reverse group is-active">
                             <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-rose-100 dark:bg-rose-900 text-rose-500 dark:text-rose-400 shadow shrink-0 z-10">2</div>
                             <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-xl border border-rose-200 dark:border-rose-800 bg-white/50 dark:bg-slate-800/50 shadow-sm ml-4 md:ml-0">
                                 <h4 className="font-bold text-slate-900 dark:text-white mb-1">L'Incident & La Preuve</h4>
@@ -99,7 +96,7 @@ const AcademyCompanySpec = ({ activeTheme }) => {
                             </div>
                         </div>
                         {/* Étape 3 */}
-                        <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+                        <div className="relative flex items-center justify-between md:justify-normal md:even:flex-row-reverse group is-active">
                             <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-rose-100 dark:bg-rose-900 text-rose-500 dark:text-rose-400 shadow shrink-0 z-10">3</div>
                             <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-xl border border-rose-200 dark:border-rose-800 bg-white/50 dark:bg-slate-800/50 shadow-sm ml-4 md:ml-0">
                                 <h4 className="font-bold text-slate-900 dark:text-white mb-1">Tribunal Décentralisé</h4>
@@ -107,7 +104,7 @@ const AcademyCompanySpec = ({ activeTheme }) => {
                             </div>
                         </div>
                         {/* Étape 4 */}
-                        <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+                        <div className="relative flex items-center justify-between md:justify-normal md:even:flex-row-reverse group is-active">
                             <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-rose-100 dark:bg-rose-900 text-rose-500 dark:text-rose-400 shadow shrink-0 z-10">4</div>
                             <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-xl border border-rose-200 dark:border-rose-800 bg-white/50 dark:bg-slate-800/50 shadow-sm ml-4 md:ml-0">
                                 <h4 className="font-bold text-slate-900 dark:text-white mb-1">Indemnisation Waterfall</h4>
@@ -115,17 +112,21 @@ const AcademyCompanySpec = ({ activeTheme }) => {
                             </div>
                         </div>
                     </div>
+                    {/* SVG Cyber à Gauche */}
+                    <div className="w-full lg:w-1/5 flex justify-center">
+                        <CyberDrawing />
+                    </div>
                 </div>
 
             ) : activeTheme === 'business' ? (
 
                 <div className="flex flex-col lg:flex-row gap-8 items-center bg-amber-500/5 dark:bg-amber-400/5 p-6 md:p-8 rounded-2xl border border-amber-500/20 dark:border-amber-400/20">
                     {/* SVG Business à Gauche */}
-                    <div className="w-full lg:w-1/3 flex justify-center">
+                    <div className="w-full lg:w-1/4 flex justify-center">
                         <BusinessDrawing />
                     </div>
                     {/* Chronologie à Droite */}
-                    <div className="w-full lg:w-2/3 space-y-6 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-amber-500/30 before:to-transparent">
+                    <div className="w-full lg:w-3/4 space-y-6 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-amber-500/30 before:to-transparent">
                         {/* Étape 1 */}
                         <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
                             <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-amber-100 dark:bg-amber-900 text-amber-600 dark:text-amber-400 shadow shrink-0 z-10">1</div>
@@ -163,15 +164,11 @@ const AcademyCompanySpec = ({ activeTheme }) => {
             ) : activeTheme === 'flight' ? (
 
                 <div className="flex flex-col lg:flex-row gap-8 items-center bg-cyan-500/5 dark:bg-cyan-400/5 p-6 md:p-8 rounded-2xl border border-cyan-500/20 dark:border-cyan-400/20">
-                    {/* SVG Flight à Gauche */}
-                    <div className="w-full lg:w-1/3 flex justify-center">
-                        <FlightDrawing />
-                    </div>
 
                     {/* Chronologie à Droite */}
-                    <div className="w-full lg:w-2/3 space-y-6 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-cyan-500/30 before:to-transparent">
+                    <div className="w-full lg:w-4/5 space-y-6 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-cyan-500/30 before:to-transparent">
                         {/* Étape 1 */}
-                        <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+                        <div className="relative flex items-center justify-between md:justify-normal md:even:flex-row-reverse group is-active">
                             <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-cyan-100 dark:bg-cyan-900 text-cyan-600 dark:text-cyan-400 shadow shrink-0 z-10">1</div>
                             <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-xl border border-cyan-200 dark:border-cyan-800 bg-white/50 dark:bg-slate-800/50 shadow-sm ml-4 md:ml-0">
                                 <h4 className="font-bold text-slate-900 dark:text-white mb-1">Ciblage & Liquidité</h4>
@@ -179,7 +176,7 @@ const AcademyCompanySpec = ({ activeTheme }) => {
                             </div>
                         </div>
                         {/* Étape 2 */}
-                        <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+                        <div className="relative flex items-center justify-between md:justify-normal md:even:flex-row-reverse group is-active">
                             <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-cyan-100 dark:bg-cyan-900 text-cyan-600 dark:text-cyan-400 shadow shrink-0 z-10">2</div>
                             <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-xl border border-cyan-200 dark:border-cyan-800 bg-white/50 dark:bg-slate-800/50 shadow-sm ml-4 md:ml-0">
                                 <h4 className="font-bold text-slate-900 dark:text-white mb-1">L'Annulation (L'Événement)</h4>
@@ -187,7 +184,7 @@ const AcademyCompanySpec = ({ activeTheme }) => {
                             </div>
                         </div>
                         {/* Étape 3 */}
-                        <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+                        <div className="relative flex items-center justify-between md:justify-normal md:even:flex-row-reverse group is-active">
                             <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-cyan-100 dark:bg-cyan-900 text-cyan-600 dark:text-cyan-400 shadow shrink-0 z-10">3</div>
                             <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-xl border border-cyan-200 dark:border-cyan-800 bg-white/50 dark:bg-slate-800/50 shadow-sm ml-4 md:ml-0">
                                 <h4 className="font-bold text-slate-900 dark:text-white mb-1">L'Oracle API</h4>
@@ -195,7 +192,7 @@ const AcademyCompanySpec = ({ activeTheme }) => {
                             </div>
                         </div>
                         {/* Étape 4 */}
-                        <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+                        <div className="relative flex items-center justify-between md:justify-normal md:even:flex-row-reverse group is-active">
                             <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-cyan-100 dark:bg-cyan-900 text-cyan-600 dark:text-cyan-400 shadow shrink-0 z-10">4</div>
                             <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-xl border border-cyan-200 dark:border-cyan-800 bg-white/50 dark:bg-slate-800/50 shadow-sm ml-4 md:ml-0">
                                 <h4 className="font-bold text-slate-900 dark:text-white mb-1">Indemnisation Automatique</h4>
@@ -203,18 +200,22 @@ const AcademyCompanySpec = ({ activeTheme }) => {
                             </div>
                         </div>
                     </div>
+                    {/* SVG Flight à Gauche */}
+                    <div className="w-full lg:w-1/5 flex justify-center">
+                        <FlightDrawing />
+                    </div>
                 </div>
 
             ) : activeTheme === 'realestate' ? (
 
                 <div className="flex flex-col lg:flex-row gap-8 items-center bg-rose-500/5 dark:bg-rose-400/5 p-6 md:p-8 rounded-2xl border border-rose-500/20 dark:border-rose-400/20">
                     {/* SVG Real Estate à Gauche */}
-                    <div className="w-full lg:w-1/3 flex justify-center">
+                    <div className="w-full lg:w-1/4 flex justify-center">
                         <RealEstateDrawing />
                     </div>
 
                     {/* Chronologie à Droite */}
-                    <div className="w-full lg:w-2/3 space-y-6 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-rose-500/30 before:to-transparent">
+                    <div className="w-full lg:w-3/4 space-y-6 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-rose-500/30 before:to-transparent">
                         {/* Étape 1 */}
                         <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
                             <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-rose-100 dark:bg-rose-900 text-rose-600 dark:text-rose-400 shadow shrink-0 z-10">1</div>
@@ -254,12 +255,12 @@ const AcademyCompanySpec = ({ activeTheme }) => {
 
                 <div className="flex flex-col lg:flex-row gap-8 items-center bg-blue-500/5 dark:bg-blue-400/5 p-6 md:p-8 rounded-2xl border border-blue-500/20 dark:border-blue-400/20">
                     {/* SVG Maritime à Gauche */}
-                    <div className="w-full lg:w-1/3 flex justify-center">
+                    <div className="w-full lg:w-1/4 flex justify-center">
                         <MaritimeDrawing />
                     </div>
 
                     {/* Chronologie à Droite */}
-                    <div className="w-full lg:w-2/3 space-y-6 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-blue-500/30 before:to-transparent">
+                    <div className="w-full lg:w-3/4 space-y-6 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-blue-500/30 before:to-transparent">
                         {/* Étape 1 */}
                         <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
                             <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 shadow shrink-0 z-10">1</div>
