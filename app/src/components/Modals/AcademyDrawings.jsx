@@ -1,20 +1,11 @@
 import React from 'react';
 
 // --- COMPOSANTS DE DESSIN ---
-export const SketchFilter = () => (
-    <defs>
-        <filter id="sketch" x="-10%" y="-10%" width="120%" height="120%">
-            <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" result="noise" />
-            <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.5" xChannelSelector="R" yChannelSelector="G" />
-        </filter>
-    </defs>
-);
 
 // 0A. Scénario : Phase de Financement (Pending)
 export const PendingCylinderDrawing = () => (
     <svg viewBox="0 0 410 420" className="w-full h-auto max-w-sm mx-auto font-sans drop-shadow-sm">
-        <SketchFilter />
-        <g filter="url(#sketch)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <g strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
 
             {/* Liquides dans le cylindre (Empilés de haut en bas pour un chevauchement parfait) */}
 
@@ -97,8 +88,7 @@ export const PendingCylinderDrawing = () => (
 // 0B. Scénario : Phase Active (Started - Couvercle fermé)
 export const ActiveCylinderDrawing = () => (
     <svg viewBox="0 0 410 420" className="w-full h-auto max-w-sm mx-auto font-sans drop-shadow-sm">
-        <SketchFilter />
-        <g filter="url(#sketch)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <g strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             {/* 4. Senior */}
             <path d="M 140 70 Q 170 75 200 70 T 260 70 L 260 330 a 10 10 0 0 1 -10 10 h -100 a 10 10 0 0 1 -10 -10 Z" className="fill-green-500/30 dark:fill-green-900/40" stroke="none" />
             <path d="M 140 70 Q 170 75 200 70 T 260 70" className="stroke-green-500" fill="none" />
@@ -145,10 +135,9 @@ export const ActiveCylinderDrawing = () => (
 // 1. Scénario : Cylindre Scellé (Pas de sinistre)
 export const SuccessCylinderDrawing = () => (
     <svg viewBox="0 0 410 420" className="w-full h-auto max-w-sm mx-auto font-sans drop-shadow-sm">
-        <SketchFilter />
 
         {/* Formes dessinées */}
-        <g filter="url(#sketch)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <g strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             {/* Liquides dans le cylindre (Empilés de haut en bas pour un chevauchement parfait) */}
 
             {/* 4. Senior (Dessiné en premier, rempli jusqu'au fond) */}
@@ -218,10 +207,9 @@ export const SuccessCylinderDrawing = () => (
 // 2. Scénario : Cylindre Ouvert (Catastrophe) + Facture
 export const CatastropheCylinderDrawing = () => (
     <svg viewBox="0 0 410 420" className="w-full h-auto max-w-sm mx-auto font-sans drop-shadow-sm">
-        <SketchFilter />
 
         {/* Formes dessinées avec effet croquis */}
-        <g filter="url(#sketch)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <g strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             {/* Liquides restants (Ordre de calque : Senior, Junior, Premium) */}
 
             {/* 4. Senior */}
@@ -308,8 +296,7 @@ export const CatastropheCylinderDrawing = () => (
 // 3. Dessin du Levier de Rendement (Yield Splitting) - LECTURE DROITE À GAUCHE
 export const LeverageDrawing = () => (
     <svg viewBox="0 0 400 300" className="w-full h-auto max-w-sm mx-auto font-sans drop-shadow-sm">
-        <SketchFilter />
-        <g filter="url(#sketch)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <g strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
 
             {/* Lignes de flux (Flèches dessinées en premier pour passer sous les boîtes) */}
 
@@ -367,4 +354,3 @@ export const LeverageDrawing = () => (
         </g>
     </svg>
 );
-

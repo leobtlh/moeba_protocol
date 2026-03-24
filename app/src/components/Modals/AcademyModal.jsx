@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { X, BookOpen, Sun, Zap } from '../ui/Icons';
+import AcademyCompanySpec from './AcademyCompanySpec';
 import {
     PendingCylinderDrawing,
     ActiveCylinderDrawing,
@@ -8,10 +9,10 @@ import {
     LeverageDrawing
 } from './AcademyDrawings';
 
+
 const AcademyModal = ({ isOpen, onClose, activeTheme }) => {
     const [shouldRender, setShouldRender] = useState(isOpen);
     const [scenario, setScenario] = useState('success');
-    // Nouvel état pour gérer le Point 0
     const [vaultState, setVaultState] = useState('pending');
 
     useEffect(() => {
@@ -35,18 +36,6 @@ const AcademyModal = ({ isOpen, onClose, activeTheme }) => {
     }, [isOpen]);
 
     if (!shouldRender) return null;
-
-    const getThemeSpecificContent = () => {
-        switch(activeTheme) {
-            case 'climate': return "Climate & Weather : L'oracle repose sur des sources publiques (ex: NOAA, USGS). L'assureur doit fournir les coordonnées géographiques précises (Lat/Long) du risque couvert lors du déploiement du Vault.";
-            case 'cyber': return "Cybersecurity : L'oracle repose sur un audit forensique post-mortem. L'assureur doit lier le Vault à un certificat de sécurité ou une preuve on-chain d'interruption de réseau.";
-            case 'business': return "Business Interruption : Le déclencheur est lié à des flux de trésorerie tokenisés ou des données de chaîne d'approvisionnement vérifiables par des oracles IoT.";
-            case 'flight': return "Flight Cancellation : Le Vault interroge l'API de l'aviation civile internationale. L'assureur déploie des liquidités ciblées sur des aéroports spécifiques.";
-            case 'realestate': return "Real Estate Sensors : Utilisation d'Oracles Optimistes couplés à des capteurs IoT physiques (feu, inondation, structure) dans les bâtiments certifiés.";
-            case 'maritime': return "Maritime Logistics: We use 'Smart Twistlocks' or Computer Vision to detect cargo loss. If stability sensors confirm a sinking event (Hull Loss), the Vault triggers an instant payout.";
-            default: return "Sélectionnez un thème pour voir les spécificités de l'assurance.";
-        }
-    };
 
     return (
         <div
@@ -134,16 +123,9 @@ const AcademyModal = ({ isOpen, onClose, activeTheme }) => {
                                                 <p className="text-sm text-slate-800 dark:text-slate-300"><strong>Fermeture Hermétique :</strong> Le cylindre est refermé avec un couvercle. Il est désormais impossible de rajouter ou de retirer du capital (ni Senior, ni Junior, ni Sponsor).</p>
                                             </li>
                                             <li className="flex gap-3 items-center">
-                                                {/* Éclair Violet */}
-                                                <svg
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    viewBox="0 0 24 24"
-                                                    fill="currentColor"
-                                                    className="w-5 h-5 text-violet-500 flex-shrink-0"
-                                                >
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-violet-500 flex-shrink-0">
                                                     <path fillRule="evenodd" d="M14.615 1.595a.75.75 0 0 1 .359.852L12.982 9.75h7.268a.75.75 0 0 1 .548 1.262l-10.5 11.25a.75.75 0 0 1-1.272-.71l1.992-7.302H3.75a.75.75 0 0 1-.548-1.262l10.5-11.25a.75.75 0 0 1 .913-.143Z" clipRule="evenodd" />
                                                 </svg>
-
                                                 <p className="text-sm text-slate-800 dark:text-slate-300">
                                                     <strong>L'Oracle surveille :</strong> Le risque est officiellement transféré. Tout le monde attend la fin de la période de couverture.
                                                 </p>
@@ -297,17 +279,8 @@ const AcademyModal = ({ isOpen, onClose, activeTheme }) => {
                         </div>
                     </section>
 
-                    {/* SECTION 3 : SPÉCIFICITÉS ASSUREUR */}
-                    <section>
-                        <h3 className="text-xl font-bold mb-4 text-slate-800 dark:text-slate-100 font-sans">
-                            3. Spécificités Assureur ({activeTheme})
-                        </h3>
-                        <div className="bg-indigo-500/10 dark:bg-indigo-400/10 p-6 rounded-2xl border border-indigo-500/20 dark:border-indigo-400/20">
-                            <p className="text-indigo-900 dark:text-indigo-100 leading-relaxed font-medium">
-                                {getThemeSpecificContent()}
-                            </p>
-                        </div>
-                    </section>
+                    {/* SECTION 3 : SPÉCIFICITÉS ASSUREUR (Dynamique) */}
+                    <AcademyCompanySpec activeTheme={activeTheme} />
 
                 </div>
             </div>
