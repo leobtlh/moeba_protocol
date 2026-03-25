@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { X, BookOpen, Sun, Zap } from '../ui/Icons';
-import AcademyCompanySpec from './AcademyCompanySpec';
+import AcademySponsorSpec from './AcademySponsorSpec';
 import {
     PendingCylinderDrawing,
     ActiveCylinderDrawing,
@@ -280,7 +280,7 @@ const AcademyModal = ({ isOpen, onClose, activeTheme }) => {
                     </section>
 
                     {/* SECTION 3 : SPÉCIFICITÉS ASSUREUR (Dynamique) */}
-                    <AcademyCompanySpec activeTheme={activeTheme} />
+                    <AcademySponsorSpec activeTheme={activeTheme} />
 
                 </div>
             </div>

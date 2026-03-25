@@ -174,7 +174,7 @@ const VaultDetailsPage = ({ vaultId, onBack }) => {
                                     {selectedVault.status === 'TRIGGERED' && <span className="px-3 py-1 rounded-full text-xs font-bold bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-400 flex items-center gap-1">DISASTER</span>}
                                 </div>
                                 <p className="text-sm text-slate-500 dark:text-slate-400 flex items-center gap-2 mt-1">
-                                    <Building2 className="h-4 w-4" /> Insurer: <span className="font-semibold">{selectedVault.insurer}</span>
+                                    <Building2 className="h-4 w-4" /> Sponsor: <span className="font-semibold">{selectedVault.sponsor}</span>
                                     <span className="mx-2">•</span>
                                     ID : <span className="font-mono bg-slate-100 dark:bg-slate-700 px-2 py-0.5 rounded text-xs">{selectedVault.id}</span>
                                 </p>
@@ -209,7 +209,7 @@ const VaultDetailsPage = ({ vaultId, onBack }) => {
                             <FileText className="h-5 w-5 text-blue-600 dark:text-blue-400"/> Trigger Conditions
                         </h4>
                         <div className="bg-slate-50 dark:bg-slate-900/50 p-6 rounded-xl border border-slate-100 dark:border-slate-700 text-sm text-slate-700 dark:text-slate-300 whitespace-pre-line leading-relaxed">
-                            {selectedVault.description || "No detailed description provided by the insurer."}
+                            {selectedVault.description || "No detailed description provided by the sponsor."}
                         </div>
                     </section>
 
@@ -397,7 +397,7 @@ const VaultDetailsPage = ({ vaultId, onBack }) => {
                                                 Pending activation
                                             </p>
                                             <p className="text-xs text-amber-700 dark:text-amber-300 mt-1">
-                                                This vault is currently being set up by the insurer. Deposits are not yet open.
+                                                This vault is currently being set up by the sponsor. Deposits are not yet open.
                                             </p>
                                         </div>
                                     </div>

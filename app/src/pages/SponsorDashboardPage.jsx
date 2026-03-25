@@ -5,14 +5,14 @@ import {
 import { useData } from '../context/DataContext.jsx';
 import { useWeb3 } from '../context/Web3Context.jsx';
 import { useToast } from '../context/ToastContext.jsx';
-import InsurerRegistrationModal from '../components/Modals/InsurerRegistrationModal.jsx';
+import SponsorRegistrationModal from '../components/Modals/SponsorRegistrationModal.jsx';
 import ConnectWalletModal from '../components/Modals/ConnectWalletModal.jsx';
 import CreateVaultForm from '../components/Vaults/CreateVaultForm.jsx';
-import InsurerVaultCard from '../components/Vaults/InsurerVaultCard.jsx';
+import SponsorVaultCard from '../components/Vaults/SponsorVaultCard.jsx';
 
-const InsurerDashboardPage = ({ activeTheme }) => {
+const SponsorDashboardPage = ({ activeTheme }) => {
     const {
-        isInsurerWhitelisted, registrationStatus, createVault, vaults, initializeVault
+        isSponsorWhitelisted, registrationStatus, createVault, vaults, initializeVault
     } = useData();
     const { walletConnected, userFullAddress, userAddress, disconnectWallet } = useWeb3();
     const { showToast } = useToast();
@@ -30,7 +30,7 @@ const InsurerDashboardPage = ({ activeTheme }) => {
         setIsFormExpanded(false);
     };
 
-    const handleInsurerRegistration = async () => {
+    const handleSponsorRegistration = async () => {
         // La logique réelle est dans le composant Modal ou DataContext,
         // ici on simule juste le feedback UI local si besoin,
         // mais idéalement tout est géré dans le Context.
@@ -45,8 +45,8 @@ const InsurerDashboardPage = ({ activeTheme }) => {
 
     // Filter Vaults
     const myVaults = vaults.filter(vault =>
-        vault.insurerAddress &&
-        vault.insurerAddress.toLowerCase() === userFullAddress?.toLowerCase() &&
+        vault.sponsorAddress &&
+        vault.sponsorAddress.toLowerCase() === userFullAddress?.toLowerCase() &&
         (vault.theme || 'climate') === activeTheme
     );
 
@@ -60,9 +60,9 @@ const InsurerDashboardPage = ({ activeTheme }) => {
                     <div className="p-6 bg-slate-100 dark:bg-slate-800 rounded-full mb-2">
                         <Shield className="h-20 w-20 text-slate-400 dark:text-slate-500" />
                     </div>
-                    <h2 className="text-3xl font-bold text-slate-900 dark:text-white">Insurer Access Only</h2>
+                    <h2 className="text-3xl font-bold text-slate-900 dark:text-white">Sponsor Access Only</h2>
                     <p className="text-lg text-slate-500 dark:text-slate-400">
-                        The insurer space is restricted to VUSA accredited entities. Please connect your wallet to verify your access rights.
+                        The sponsor space is restricted to VUSA accredited entities. Please connect your wallet to verify your access rights.
                     </p>
                     <button onClick={() => setIsWalletModalOpen(true)} className="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold transition-all shadow-lg hover:shadow-blue-200 dark:hover:shadow-none flex items-center gap-2">
                         <Wallet className="h-5 w-5" /> Connect Wallet
@@ -74,7 +74,7 @@ const InsurerDashboardPage = ({ activeTheme }) => {
     }
 
     // 2. CONNECTED BUT NOT WHITELISTED
-    if (!isInsurerWhitelisted) {
+    if (!isSponsorWhitelisted) {
         return (
             <>
                 <div className="flex flex-col items-center justify-center min-h-[60vh] text-center space-y-6 animate-in fade-in max-w-2xl mx-auto">
@@ -98,14 +98,14 @@ const InsurerDashboardPage = ({ activeTheme }) => {
                     <div className="flex gap-4 mt-6">
                         <button onClick={disconnectWallet} className="px-6 py-3 border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 rounded-xl font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">Switch Wallet</button>
                         {registrationStatus !== 'pending' && (
-                            <button onClick={() => setIsRegModalOpen(true)} className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold transition-all shadow-lg hover:shadow-indigo-200 dark:shadow-none">Register as Insurer</button>
+                            <button onClick={() => setIsRegModalOpen(true)} className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold transition-all shadow-lg hover:shadow-indigo-200 dark:shadow-none">Register as Sponsor</button>
                         )}
                     </div>
                 </div>
-                <InsurerRegistrationModal
+                <SponsorRegistrationModal
                     isOpen={isRegModalOpen}
                     onClose={() => setIsRegModalOpen(false)}
-                    onSubmit={handleInsurerRegistration} // Note: This uses local simulation handler
+                    onSubmit={handleSponsorRegistration} // Note: This uses local simulation handler
                     isSubmitting={isRegistering}
                 />
             </>
@@ -127,7 +127,7 @@ const InsurerDashboardPage = ({ activeTheme }) => {
 
                 <div className="bg-indigo-600 dark:bg-indigo-700 rounded-2xl p-6 text-white shadow-lg shadow-indigo-200 dark:shadow-none">
                     <div className="flex items-center gap-3 mb-4"><Shield className="h-6 w-6 opacity-80" /><h3 className="font-bold">VUSA Space</h3></div>
-                    <p className="text-indigo-100 text-sm mb-4 leading-relaxed">Your insurer status is verified.</p>
+                    <p className="text-indigo-100 text-sm mb-4 leading-relaxed">Your sponsor status is verified.</p>
                     <div className="bg-white/10 p-3 rounded-lg backdrop-blur-sm border border-white/10">
                         <div className="flex justify-between text-xs font-mono mb-1"><span className="opacity-70">STATUS</span><span className="text-green-300">VERIFIED</span></div>
                         <div className="flex justify-between text-xs font-mono"><span className="opacity-70">ENTITY</span><span>State Farm Re</span></div>
@@ -157,7 +157,7 @@ const InsurerDashboardPage = ({ activeTheme }) => {
                         </div>
                     ) : (
                         myVaults.map((vault) => (
-                            <InsurerVaultCard
+                            <SponsorVaultCard
                                 key={vault.id}
                                 vault={vault}
                                 isCompact={isFormExpanded}
@@ -171,4 +171,4 @@ const InsurerDashboardPage = ({ activeTheme }) => {
     );
 };
 
-export default InsurerDashboardPage;
+export default SponsorDashboardPage;

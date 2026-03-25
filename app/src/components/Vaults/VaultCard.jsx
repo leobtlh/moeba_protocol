@@ -60,7 +60,7 @@ const VaultCard = ({ vault, viewMode = 'grid', onClick }) => {
                         </div>
                         <h3 className="text-xl font-bold text-slate-900 dark:text-white truncate group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{vault.name}</h3>
                         <p className="text-sm text-slate-500 dark:text-slate-400 truncate flex items-center gap-1 mt-1">
-                            <Building2 className="h-3 w-3" /> {vault.insurer}
+                            <Building2 className="h-3 w-3" /> {vault.sponsor}
                         </p>
                     </div>
 
@@ -185,7 +185,7 @@ const VaultCard = ({ vault, viewMode = 'grid', onClick }) => {
 
                     <h3 className="text-xl font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{vault.name}</h3>
                     <p className="text-sm text-slate-500 dark:text-slate-400 mt-1 flex items-center gap-2">
-                        <Building2 className="h-3 w-3" /> Insurer: {vault.insurer}
+                        <Building2 className="h-3 w-3" /> Sponsor: {vault.sponsor}
                     </p>
                 </div>
 

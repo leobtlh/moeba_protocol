@@ -176,7 +176,7 @@ const CreateVaultForm = ({ isExpanded, onToggle, onCreate, userAddress }) => {
         const newVault = {
             name: newVaultData.name || "New Cat Bond",
             category: newVaultData.category,
-            insurer: newVaultData.companyName || `Insurer (${userAddress})`,
+            sponsor: newVaultData.companyName || `Sponsor (${userAddress})`,
             description: finalDescription,
             totalCapacity: capVal + premiumVal,
             claimAmount: claimVal,

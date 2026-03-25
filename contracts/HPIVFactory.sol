@@ -17,31 +17,31 @@ contract HPIVFactory is Ownable {
     // --- WHITELIST ASSUREURS & KYB ---
     enum RequestStatus { None, Pending, Approved, Rejected }
 
-    struct InsurerRequest {
+    struct SponsorRequest {
         string companyName;  // Nom de l'entité légale
         string kybHash;      // Hash IPFS
         RequestStatus status;
         uint256 requestDate;
     }
 
-    mapping(address => bool) public isWhitelistedInsurer;
-    mapping(address => InsurerRequest) public insurerRequests;
+    mapping(address => bool) public isWhitelistedSponsor;
+    mapping(address => SponsorRequest) public sponsorRequests;
     address[] public pendingRequestAddresses;
 
     // --- EVENTS ---
     event VaultCreated(
         address indexed vaultAddress,
-        address indexed insurer,
+        address indexed sponsor,
         string riskName,
         uint256 capTotal,
         uint256 startDate,
         uint256 maturityDate
     );
 
-    event InsurerStatusChanged(address indexed insurer, bool status);
+    event SponsorStatusChanged(address indexed sponsor, bool status);
 
     event RegistrationRequested(
-        address indexed insurer,
+        address indexed sponsor,
         string companyName,
         string kybHash,
         uint256 timestamp
@@ -49,18 +49,18 @@ contract HPIVFactory is Ownable {
 
     constructor() Ownable(msg.sender) {
         // Démo : Whitelist de l'adresse de déploiement pour tests
-        isWhitelistedInsurer[msg.sender] = true;
+        isWhitelistedSponsor[msg.sender] = true;
     }
 
     /**
      * @dev Soumettre une demande d'enregistrement (KYB).
      */
-    function registerInsurer(string memory _companyName, string memory _kybHash) external {
-        require(!isWhitelistedInsurer[msg.sender], "Already whitelisted");
+    function registerSponsor(string memory _companyName, string memory _kybHash) external {
+        require(!isWhitelistedSponsor[msg.sender], "Already whitelisted");
         // Accepte si status est None ou Rejected (permet de resoumettre)
-        require(insurerRequests[msg.sender].status != RequestStatus.Pending, "Request pending");
+        require(sponsorRequests[msg.sender].status != RequestStatus.Pending, "Request pending");
 
-        insurerRequests[msg.sender] = InsurerRequest({
+        sponsorRequests[msg.sender] = SponsorRequest({
             companyName: _companyName,
             kybHash: _kybHash,
             status: RequestStatus.Pending,
@@ -74,10 +74,10 @@ contract HPIVFactory is Ownable {
     /**
      * @dev Admin : Valider ou rejeter un assureur.
      */
-    function setInsurerStatus(address _insurer, bool _status) external onlyOwner {
-        isWhitelistedInsurer[_insurer] = _status;
-        insurerRequests[_insurer].status = _status ? RequestStatus.Approved : RequestStatus.Rejected;
-        emit InsurerStatusChanged(_insurer, _status);
+    function setSponsorStatus(address _sponsor, bool _status) external onlyOwner {
+        isWhitelistedSponsor[_sponsor] = _status;
+        sponsorRequests[_sponsor].status = _status ? RequestStatus.Approved : RequestStatus.Rejected;
+        emit SponsorStatusChanged(_sponsor, _status);
     }
 
     /**
@@ -93,7 +93,7 @@ contract HPIVFactory is Ownable {
         string memory _riskName,
         string memory _description
     ) external returns (address) {
-        require(isWhitelistedInsurer[msg.sender], "Not authorized");
+        require(isWhitelistedSponsor[msg.sender], "Not authorized");
         require(_maturityDate > _startDate, "Invalid dates");
 
         // Génération automatique des symboles pour Junior/Senior
@@ -133,8 +133,8 @@ contract HPIVFactory is Ownable {
         return pendingRequestAddresses;
     }
 
-    function getRequestDetails(address _insurer) external view returns (InsurerRequest memory) {
-        return insurerRequests[_insurer];
+    function getRequestDetails(address _sponsor) external view returns (SponsorRequest memory) {
+        return sponsorRequests[_sponsor];
     }
 
     function getAllVaults() external view returns (address[] memory) {

@@ -3,7 +3,7 @@ import { ethers } from 'ethers';
 import { useToast } from './ToastContext';
 import { useWeb3 } from './Web3Context';
 import { INITIAL_VAULTS } from '../constants/mocks';
-import { FACTORY_ADDRESS_LIVE, FACTORY_ABI_EXTENDED, INSURER_WHITELIST_LOCAL } from '../constants/abis';
+import { FACTORY_ADDRESS_LIVE, FACTORY_ABI_EXTENDED, SPONSOR_WHITELIST_LOCAL } from '../constants/abis';
 import { generateMockHistory } from '../utils/generators';
 // import { formatCurrency } from '../utils/formatting';
 
@@ -28,7 +28,7 @@ export const DataProvider = ({ children }) => {
     }, [vaults]);
 
     // Etats de permissions
-    const [isInsurerWhitelisted, setIsInsurerWhitelisted] = useState(false);
+    const [isSponsorWhitelisted, setIsSponsorWhitelisted] = useState(false);
     const [isInvestorWhitelisted, setIsInvestorWhitelisted] = useState(false);
     const [registrationStatus, setRegistrationStatus] = useState('none'); // 'none', 'pending', 'approved', 'rejected'
 
@@ -36,7 +36,7 @@ export const DataProvider = ({ children }) => {
     useEffect(() => {
         const checkWhitelistStatus = async () => {
             if (!walletConnected || !userFullAddress) {
-                setIsInsurerWhitelisted(false);
+                setIsSponsorWhitelisted(false);
                 setIsInvestorWhitelisted(false);
                 setRegistrationStatus('none');
                 return;
@@ -62,16 +62,16 @@ export const DataProvider = ({ children }) => {
                     const provider = new ethers.BrowserProvider(window.ethereum);
                     // Si adresse nulle, on considère pas whitelisté
                     if (FACTORY_ADDRESS_LIVE === "0x0000000000000000000000000000000000000000") {
-                        setIsInsurerWhitelisted(false);
+                        setIsSponsorWhitelisted(false);
                         return;
                     }
                     const factoryContract = new ethers.Contract(FACTORY_ADDRESS_LIVE, FACTORY_ABI_EXTENDED, provider);
-                    const isWhitelisted = await factoryContract.isWhitelistedInsurer(userFullAddress);
-                    setIsInsurerWhitelisted(isWhitelisted);
+                    const isWhitelisted = await factoryContract.isWhitelistedSponsor(userFullAddress);
+                    setIsSponsorWhitelisted(isWhitelisted);
 
                     if (!isWhitelisted) {
                         try {
-                            const request = await factoryContract.insurerRequests(userFullAddress);
+                            const request = await factoryContract.sponsorRequests(userFullAddress);
                             if (request.status === 1) setRegistrationStatus('pending');
                             else if (request.status === 3) setRegistrationStatus('rejected');
                             else setRegistrationStatus('none');
@@ -79,39 +79,39 @@ export const DataProvider = ({ children }) => {
                     }
                 } catch (error) {
                     console.error("Erreur Whitelist On-Chain:", error);
-                    setIsInsurerWhitelisted(false);
+                    setIsSponsorWhitelisted(false);
                 }
             } else {
                 // Mode LOCAL / SIMULATION
-                const isLocalListed = INSURER_WHITELIST_LOCAL.includes(userFullAddress.toLowerCase());
+                const isLocalListed = SPONSOR_WHITELIST_LOCAL.includes(userFullAddress.toLowerCase());
 
                 if (isLocalListed) {
-                    setIsInsurerWhitelisted(true);
+                    setIsSponsorWhitelisted(true);
                     setRegistrationStatus('approved');
                 } else {
-                    const storedRequests = localStorage.getItem('moeba_insurer_requests');
+                    const storedRequests = localStorage.getItem('moeba_sponsor_requests');
                     if (storedRequests) {
                         try {
                             const requests = JSON.parse(storedRequests);
                             const myRequest = requests.find(r => r.address.toLowerCase() === userFullAddress.toLowerCase());
                             if (myRequest) {
                                 if (myRequest.status === 2) {
-                                     setIsInsurerWhitelisted(true);
+                                     setIsSponsorWhitelisted(true);
                                      setRegistrationStatus('approved');
                                 } else if (myRequest.status === 1) {
-                                     setIsInsurerWhitelisted(false);
+                                     setIsSponsorWhitelisted(false);
                                      setRegistrationStatus('pending');
                                 } else if (myRequest.status === 3) {
-                                     setIsInsurerWhitelisted(false);
+                                     setIsSponsorWhitelisted(false);
                                      setRegistrationStatus('rejected');
                                 }
                             } else {
-                                setIsInsurerWhitelisted(false);
+                                setIsSponsorWhitelisted(false);
                                 setRegistrationStatus('none');
                             }
                         } catch(e) {}
                     } else {
-                        setIsInsurerWhitelisted(false);
+                        setIsSponsorWhitelisted(false);
                         setRegistrationStatus('none');
                     }
                 }
@@ -122,14 +122,14 @@ export const DataProvider = ({ children }) => {
 
     // --- ACTIONS METIER (Vaults) ---
 
-    // 1. Création de Vault (Insurer)
+    // 1. Création de Vault (Sponsor)
     const createVault = (formData) => {
         const newVault = {
             id: `0x${Math.floor(Math.random() * 1000000).toString(16)}...new`,
             name: formData.name || "New Cat Bond",
             category: formData.category || 'Other',
-            insurerAddress: userFullAddress,
-            insurer: formData.companyName || `Insurer (${userAddress})`,
+            sponsorAddress: userFullAddress,
+            sponsor: formData.companyName || `Sponsor (${userAddress})`,
             description: formData.description,
             totalCapacity: formData.totalCapacity, // Capacité calculée
             claimAmount: formData.claimAmount,
@@ -298,14 +298,14 @@ export const DataProvider = ({ children }) => {
     // --- GESTION REGISTRES (Requests) ---
 
     // Envoi demande Assureur (KYB)
-    const registerInsurer = async (data) => {
+    const registerSponsor = async (data) => {
         if (isLiveMode) {
             // CORRECTION Ethers v6 : BrowserProvider et getSigner() async
             try {
                 const provider = new ethers.BrowserProvider(window.ethereum);
                 const signer = await provider.getSigner();
                 const factoryContract = new ethers.Contract(FACTORY_ADDRESS_LIVE, FACTORY_ABI_EXTENDED, signer);
-                const tx = await factoryContract.registerInsurer(data.companyName, data.kybLink);
+                const tx = await factoryContract.registerSponsor(data.companyName, data.kybLink);
                 await tx.wait();
                 setRegistrationStatus('pending');
                 showToast("Registration request successfully submitted!", 'success');
@@ -315,7 +315,7 @@ export const DataProvider = ({ children }) => {
         } else {
             // Simulation locale
             await new Promise(resolve => setTimeout(resolve, 1000));
-            const existing = localStorage.getItem('moeba_insurer_requests');
+            const existing = localStorage.getItem('moeba_sponsor_requests');
             let requests = [];
             if (existing) { try { requests = JSON.parse(existing); } catch(e) {} }
 
@@ -331,7 +331,7 @@ export const DataProvider = ({ children }) => {
             if (existingIndex >= 0) requests[existingIndex] = newRequest;
             else requests.push(newRequest);
 
-            localStorage.setItem('moeba_insurer_requests', JSON.stringify(requests));
+            localStorage.setItem('moeba_sponsor_requests', JSON.stringify(requests));
             setRegistrationStatus('pending');
             showToast("Simulated request sent successfully (Stored Locally)", 'success');
         }
@@ -373,7 +373,7 @@ export const DataProvider = ({ children }) => {
     return (
         <DataContext.Provider value={{
             vaults,
-            isInsurerWhitelisted,
+            isSponsorWhitelisted,
             isInvestorWhitelisted,
             registrationStatus,
             createVault,
@@ -382,7 +382,7 @@ export const DataProvider = ({ children }) => {
             withdrawFromVault,
             claimFromVault,
             triggerOracle,
-            registerInsurer,
+            registerSponsor,
             registerInvestor,
             getInvestorRequestStatus
         }}>

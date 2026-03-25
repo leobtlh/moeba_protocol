@@ -47,8 +47,8 @@ export const INITIAL_VAULTS = [
         theme: 'climate',
         category: 'Hurricane',
         description: 'Parametric coverage against category 4+ hurricanes in Florida. Triggered if wind speed exceeds 210 km/h at NOAA certified stations.',
-        insurer: 'Axa Climate',
-        insurerAddress: '0x123...', // Placeholder
+        sponsor: 'Axa Climate',
+        sponsorAddress: '0x123...', // Placeholder
         totalCapacity: 10000000,
         claimAmount: 10000000,
         currentAssets: 10000000,
@@ -83,8 +83,8 @@ export const INITIAL_VAULTS = [
         theme: 'climate',
         category: 'Quake',
         description: 'Protection against earthquakes > 7.0 Richter in Southern California. USGS Oracle with Chainlink redundancy. Subscription period open.',
-        insurer: 'Munich Re',
-        insurerAddress: '0x456...', // Placeholder
+        sponsor: 'Munich Re',
+        sponsorAddress: '0x456...', // Placeholder
         totalCapacity: 5000000,
         claimAmount: 5000000,
         currentAssets: 1500000,

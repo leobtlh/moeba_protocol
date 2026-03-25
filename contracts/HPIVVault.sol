@@ -78,7 +78,7 @@ contract HPIVVault is ERC4626, AccessControl, ReentrancyGuard {
 
     // --- RÔLES ---
     bytes32 public constant ORACLE_ROLE = keccak256("ORACLE_ROLE");
-    bytes32 public constant INSURER_ROLE = keccak256("INSURER_ROLE");
+    bytes32 public constant SPONSOR_ROLE = keccak256("SPONSOR_ROLE");
     bytes32 public constant DAO_ROLE = keccak256("DAO_ROLE");
 
     // --- STATE MACHINE ---
@@ -99,7 +99,7 @@ contract HPIVVault is ERC4626, AccessControl, ReentrancyGuard {
     // On sépare le capital investi (Principal) du rendement (Premium) pour gérer la cascade de pertes.
     uint256 public seniorPrincipal;
     uint256 public juniorPrincipal;
-    uint256 public insurerFirstLossCapital;
+    uint256 public sponsorFirstLossCapital;
     uint256 public premiumReserve; // Prime payée par l'assureur, distribuée à la fin
 
     // Gestion des pertes
@@ -111,7 +111,7 @@ contract HPIVVault is ERC4626, AccessControl, ReentrancyGuard {
     address public complianceModule; // Gardé pour compatibilité constructeur
 
     // --- EVENTS ---
-    event VaultInitialized(uint256 insurerCapital, uint256 premium);
+    event VaultInitialized(uint256 sponsorCapital, uint256 premium);
     event JuniorDeposit(address indexed user, uint256 assets, uint256 shares);
     event JuniorWithdraw(address indexed user, uint256 assets, uint256 shares);
     event CatastropheTriggered(uint256 claimAmount, uint256 juniorLoss, uint256 seniorLoss);
@@ -120,7 +120,7 @@ contract HPIVVault is ERC4626, AccessControl, ReentrancyGuard {
     constructor(
         IERC20 _asset,
         address _compliance,
-        address _insurer,
+        address _sponsor,
         uint256 _maxCapacity,
         uint256 _maxCoverage,
         uint256 _startDate,
@@ -133,10 +133,10 @@ contract HPIVVault is ERC4626, AccessControl, ReentrancyGuard {
         require(_maturityDate > _startDate, "Dates invalid");
 
         // Configuration Roles
-        _grantRole(DEFAULT_ADMIN_ROLE, _insurer);
-        _grantRole(INSURER_ROLE, _insurer);
-        _grantRole(DAO_ROLE, _insurer);
-        _grantRole(ORACLE_ROLE, _insurer); // Pour la démo, l'assureur peut aussi déclencher l'oracle
+        _grantRole(DEFAULT_ADMIN_ROLE, _sponsor);
+        _grantRole(SPONSOR_ROLE, _sponsor);
+        _grantRole(DAO_ROLE, _sponsor);
+        _grantRole(ORACLE_ROLE, _sponsor); // Pour la démo, l'assureur peut aussi déclencher l'oracle
 
         complianceModule = _compliance;
         MAX_CAPACITY = _maxCapacity;
@@ -164,16 +164,16 @@ contract HPIVVault is ERC4626, AccessControl, ReentrancyGuard {
      * @dev L'assureur initialise le vault.
      * PROTECTION: On mint des "Dead Shares" pour verrouiller le taux de change initial.
      */
-    function initializeVault(uint256 _insurerCapital, uint256 _premium) external nonReentrant onlyRole(INSURER_ROLE) {
+    function initializeVault(uint256 _sponsorCapital, uint256 _premium) external nonReentrant onlyRole(SPONSOR_ROLE) {
         require(status == VaultStatus.PENDING, "Already initialized");
-        require(_insurerCapital > 1000, "Capital too low for security check");
+        require(_sponsorCapital > 1000, "Capital too low for security check");
 
         // Transfert des fonds Assureur
-        uint256 totalNeeded = _insurerCapital + _premium;
+        uint256 totalNeeded = _sponsorCapital + _premium;
         IERC20(asset()).transferFrom(msg.sender, address(this), totalNeeded);
 
         // Comptabilité
-        insurerFirstLossCapital = _insurerCapital;
+        sponsorFirstLossCapital = _sponsorCapital;
         premiumReserve = _premium;
 
         // PROTECTION ANTI-INFLATION (DONATION ATTACK)
@@ -190,10 +190,10 @@ contract HPIVVault is ERC4626, AccessControl, ReentrancyGuard {
         juniorPrincipal += 1000;
 
         // On ajuste le capital assureur effectif (il "paie" pour la sécurité)
-        insurerFirstLossCapital -= 2000;
+        sponsorFirstLossCapital -= 2000;
 
         status = VaultStatus.OPEN;
-        emit VaultInitialized(_insurerCapital, _premium);
+        emit VaultInitialized(_sponsorCapital, _premium);
         emit StatusChanged(VaultStatus.OPEN);
     }
 
@@ -319,12 +319,12 @@ contract HPIVVault is ERC4626, AccessControl, ReentrancyGuard {
         uint256 remainingClaim = claimAmount;
 
         // ETAPE 1: Capital Assureur (First Loss)
-        if (insurerFirstLossCapital >= remainingClaim) {
-            insurerFirstLossCapital -= remainingClaim;
+        if (sponsorFirstLossCapital >= remainingClaim) {
+            sponsorFirstLossCapital -= remainingClaim;
             remainingClaim = 0;
         } else {
-            remainingClaim -= insurerFirstLossCapital;
-            insurerFirstLossCapital = 0;
+            remainingClaim -= sponsorFirstLossCapital;
+            sponsorFirstLossCapital = 0;
         }
 
         // ETAPE 2: Premium Reserve (Le yield sert de tampon avant le principal)

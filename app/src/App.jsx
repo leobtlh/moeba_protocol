@@ -13,7 +13,7 @@ import AcademyModal from './components/Modals/AcademyModal';
 // --- 3. PAGES ---
 import MarketplacePage from './pages/MarketplacePage';
 import PortfolioPage from './pages/PortfolioPage';
-import InsurerDashboardPage from './pages/InsurerDashboardPage';
+import SponsorDashboardPage from './pages/SponsorDashboardPage';
 import VaultDetailsPage from './pages/VaultDetailsPage';
 
 function App() {
@@ -58,8 +58,8 @@ function App() {
                 <PortfolioPage onVaultSelect={handleNavigateToVault} />
               )}
 
-              {activeView === 'insurer' && (
-                <InsurerDashboardPage activeTheme={activeTheme} />
+              {activeView === 'sponsor' && (
+                <SponsorDashboardPage activeTheme={activeTheme} />
               )}
 
               {activeView === 'details' && selectedVaultId && (

@@ -11,9 +11,9 @@ const VaultWaterfall = () => {
                 <div className="p-3 bg-white/10 rounded-xl border border-white/10 backdrop-blur-sm">
                     <div className="flex justify-between text-xs mb-1 opacity-70">
                         <span>1. First Loss</span>
-                        <span>Insurer</span>
+                        <span>Sponsor</span>
                     </div>
-                    <div className="font-bold">Insurer Capital (Junior)</div>
+                    <div className="font-bold">Sponsor Capital (Junior)</div>
                 </div>
                 <div className="p-3 bg-amber-500/20 rounded-xl border border-amber-500/30 text-amber-200">
                     <div className="flex justify-between text-xs mb-1 opacity-70">

@@ -145,7 +145,7 @@ const Navbar = ({ activeView, setActiveView, activeTheme, setActiveTheme, isLear
 
                         <div className="hidden md:flex bg-white/40 dark:bg-slate-800/40 rounded-lg p-1 transition-colors border border-slate-200/30 dark:border-slate-700/30">
                             <button onClick={() => handleNav('marketplace')} className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${activeView === 'marketplace' ? 'bg-white dark:bg-slate-700 shadow-sm text-blue-700 dark:text-blue-400' : 'text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'}`}>Investor</button>
-                            <button onClick={() => handleNav('insurer')} className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${activeView === 'insurer' ? 'bg-white dark:bg-slate-700 shadow-sm text-indigo-700 dark:text-indigo-400' : 'text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'}`}>Insurer</button>
+                            <button onClick={() => handleNav('sponsor')} className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${activeView === 'sponsor' ? 'bg-white dark:bg-slate-700 shadow-sm text-indigo-700 dark:text-indigo-400' : 'text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'}`}>Sponsor</button>
                             <button onClick={() => handleNav('portfolio')} className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${activeView === 'portfolio' ? 'bg-white dark:bg-slate-700 shadow-sm text-green-600 dark:text-green-400' : 'text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'}`}>Dashboard</button>
                         </div>
 

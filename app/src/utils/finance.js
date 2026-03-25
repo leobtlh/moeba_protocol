@@ -3,11 +3,11 @@ import { parseAppDate } from './formatting';
 // Calcul Cascade de Perte (Waterfall)
 export const calculateClaimStats = (vault) => {
     const claimNeeded = vault.claimAmount || vault.totalCapacity; // Total Loss
-    const insurerCover = vault.juniorCapital; // First Loss (Assurance)
+    const sponsorCover = vault.juniorCapital; // First Loss (Assurance)
 
-    // 1. Insurer pays first (First Loss)
-    const insurerLoss = Math.min(claimNeeded, insurerCover);
-    let remainingLoss = Math.max(0, claimNeeded - insurerLoss);
+    // 1. Sponsor pays first (First Loss)
+    const sponsorLoss = Math.min(claimNeeded, sponsorCover);
+    let remainingLoss = Math.max(0, claimNeeded - sponsorLoss);
 
     // 2. Junior Investors pay second
     const juniorPool = vault.totalJuniorDeposits || 0;

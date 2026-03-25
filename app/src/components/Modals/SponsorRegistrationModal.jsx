@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { X, Shield } from '../ui/Icons';
 import { useData } from '../../context/DataContext';
 
-const InsurerRegistrationModal = ({ isOpen, onClose }) => {
-    const { registerInsurer } = useData();
+const SponsorRegistrationModal = ({ isOpen, onClose }) => {
+    const { registerSponsor } = useData();
     const [formData, setFormData] = useState({ companyName: '', kybLink: '' });
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -12,7 +12,7 @@ const InsurerRegistrationModal = ({ isOpen, onClose }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSubmitting(true);
-        await registerInsurer(formData);
+        await registerSponsor(formData);
         setIsSubmitting(false);
         onClose();
     };
@@ -22,7 +22,7 @@ const InsurerRegistrationModal = ({ isOpen, onClose }) => {
             <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-lg border border-slate-200 dark:border-slate-700 overflow-hidden animate-zoom-in" onClick={e => e.stopPropagation()}>
                  <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
                     <h3 className="font-bold text-lg text-slate-900 dark:text-white flex items-center gap-2">
-                        <Shield className="h-5 w-5 text-indigo-600" /> Insurer Registration
+                        <Shield className="h-5 w-5 text-indigo-600" /> Sponsor Registration
                     </h3>
                     <button onClick={onClose} className="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
                         <X className="h-5 w-5 text-slate-500" />
@@ -70,4 +70,4 @@ const InsurerRegistrationModal = ({ isOpen, onClose }) => {
     );
 };
 
-export default InsurerRegistrationModal;
+export default SponsorRegistrationModal;

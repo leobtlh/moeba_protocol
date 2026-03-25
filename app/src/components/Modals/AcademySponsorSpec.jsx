@@ -8,7 +8,7 @@ import {
     MaritimeDrawing
 } from './AcademyCategoryIllustration';
 
-const AcademyCompanySpec = ({ activeTheme }) => {
+const AcademySponsorSpec = ({ activeTheme }) => {
 
     // Fallback pour les thèmes non développés
     const getThemeSpecificContent = () => {
@@ -307,4 +307,4 @@ const AcademyCompanySpec = ({ activeTheme }) => {
     );
 };
 
-export default AcademyCompanySpec;
+export default AcademySponsorSpec;
