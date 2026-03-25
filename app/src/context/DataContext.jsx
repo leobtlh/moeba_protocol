@@ -127,6 +127,7 @@ export const DataProvider = ({ children }) => {
         const newVault = {
             id: `0x${Math.floor(Math.random() * 1000000).toString(16)}...new`,
             name: formData.name || "New Cat Bond",
+            theme: formData.theme,
             category: formData.category || 'Other',
             sponsorAddress: userFullAddress,
             sponsor: formData.companyName || `Sponsor (${userAddress})`,
