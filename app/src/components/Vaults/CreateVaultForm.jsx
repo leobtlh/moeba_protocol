@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Minimize2, Calendar } from '../ui/Icons';
+import { Plus, Minimize2, Calendar, ShieldCheck } from '../ui/Icons';
 import { AVAILABLE_CHAINS, AVAILABLE_ASSETS, MONTHS } from '../../constants/mocks';
 import { formatCurrency, getMaxDays } from '../../utils/formatting';
 import { updateJunior } from '../../utils/finance';
@@ -24,12 +24,14 @@ const CreateVaultForm = ({ isExpanded, onToggle, onCreate, userAddress, activeTh
     const [newVaultData, setNewVaultData] = useState({
         name: '',
         category: availableCategories[0],
+
+        // Localisation
         country: '',
         region: '',
         city: '',
         radius: 50,
 
-        // Paramètres dynamiques englobant tous les cas (IoT, Météo, Cyber...)
+        // Paramètres dynamiques
         triggerParams: {
             windSpeed: 180, hurricaneCategory: 3, magnitude: 6.0, acresBurned: 10000, avalancheSize: 4, soilDisplacement: 50000, // Climate
             fundsStolenUSD: 1000000, downtimeHours: 12, // Cyber
@@ -62,45 +64,48 @@ const CreateVaultForm = ({ isExpanded, onToggle, onCreate, userAddress, activeTh
         const { category, country, region, city, radius, triggerParams: p } = data;
         const locParts = [city, region, country].filter(Boolean);
         const locationStr = locParts.length > 0 ? locParts.join(', ') : 'the specified scope';
-        const zoneStr = radius && activeTheme === 'climate' ? `within a ${radius}-km radius of ${locationStr}` : `in ${locationStr}`;
         const assetName = data.name || "the insured asset";
 
+        // La chaîne de localisation s'adapte s'il y a un rayon ou non
+        const zoneStr = (radius && activeTheme === 'climate') ? `within a ${radius}-km radius of ${locationStr}` : `at ${locationStr}`;
+        const companyIdentity = "Simulation SA (UID: CHE-114.123.456)"; // Identité de simulation
+
         if (activeTheme === 'realestate') {
-            if (category === 'Fire') return `Fire event at ${locationStr}. Triggered when on-site IoT thermal sensors detect temperatures exceeding ${p.temperature}°C continuously for ${p.duration} minutes, verified by UMA Oracle.`;
-            if (category === 'Flood') return `Indoor flooding at ${locationStr}. Triggered when IoT wall water-level detectors record > ${p.waterLevelCm} cm of standing water, verified by UMA Oracle.`;
-            if (category === 'Earthquake') return `Seismic damage at ${locationStr}. Triggered when building-mounted IoT accelerometers detect vibrations ≥ ${p.sensorMagnitude} Mw equivalent, verified by UMA Oracle.`;
+            if (category === 'Fire') return `Fire event at property ${locationStr} owned by ${companyIdentity}. Triggered when on-site IoT thermal sensors detect temperatures exceeding ${p.temperature}°C continuously for ${p.duration} minutes, verified by UMA Oracle.`;
+            if (category === 'Flood') return `Indoor flooding at property ${locationStr} owned by ${companyIdentity}. Triggered when IoT wall water-level detectors record > ${p.waterLevelCm} cm of standing water, verified by UMA Oracle.`;
+            if (category === 'Earthquake') return `Seismic damage at property ${locationStr} owned by ${companyIdentity}. Triggered when building-mounted IoT accelerometers detect vibrations ≥ ${p.sensorMagnitude} Mw equivalent, verified by UMA Oracle.`;
         }
 
         if (activeTheme === 'maritime') {
-            if (category === 'Vessel Sinking (IoT Tilt)') return `Critical maritime incident for ${assetName}. Triggered when onboard IoT gyroscopes detect a sustained tilt angle > ${p.tiltAngle}° for ${p.duration} hours.`;
-            if (category === 'Cargo Spoilage (IoT Temp)') return `Cargo temperature failure on ${assetName}. Triggered when IoT container sensors record temperatures > ${p.temperature}°C for ${p.duration} hours.`;
+            if (category === 'Vessel Sinking (IoT Tilt)') return `Critical maritime incident for ${assetName} operated by ${companyIdentity}. Triggered when onboard IoT gyroscopes detect a sustained tilt angle > ${p.tiltAngle}° for ${p.duration} hours.`;
+            if (category === 'Cargo Spoilage (IoT Temp)') return `Cargo temperature failure on ${assetName} operated by ${companyIdentity}. Triggered when IoT container sensors record temperatures > ${p.temperature}°C for ${p.duration} hours.`;
         }
 
         if (activeTheme === 'cyber') {
-            if (category === 'Smart Contract Exploit') return `Smart contract exploit on ${assetName}. Triggered when > $${p.fundsStolenUSD} USD is illicitly drained, verified by UMA Oracle.`;
-            if (category === 'IT System Outage') return `System downtime for ${assetName}. Triggered when API health checks report continuous outage for > ${p.downtimeHours} hours.`;
+            if (category === 'Smart Contract Exploit') return `Smart contract exploit on ${assetName} deployed by ${companyIdentity}. Triggered when > $${p.fundsStolenUSD} USD is illicitly drained, verified by UMA Oracle.`;
+            if (category === 'IT System Outage') return `System downtime for ${assetName} managed by ${companyIdentity}. Triggered when API health checks report continuous outage for > ${p.downtimeHours} hours.`;
         }
 
         if (activeTheme === 'business') {
-            if (category === 'Revenue Drop') return `Business interruption for ${assetName}. Triggered when verified API revenue streams drop by more than ${p.revenueDropPercent}% compared to the 30-day moving average.`;
-            if (category === 'Supply Chain Delay') return `Supply chain disruption. Triggered when verifiable delivery delays exceed ${p.daysDelayed} days for critical materials routing through ${locationStr}.`;
+            if (category === 'Revenue Drop') return `Business interruption for ${companyIdentity}. Triggered when verified API revenue streams drop by more than ${p.revenueDropPercent}% compared to the 30-day moving average.`;
+            if (category === 'Supply Chain Delay') return `Supply chain disruption for ${companyIdentity}. Triggered when verifiable delivery delays exceed ${p.daysDelayed} days for critical materials, as verified by UMA Oracle.`;
         }
 
         if (activeTheme === 'flight') {
-            if (category === 'Mass Cancellation') return `More than ${p.flightsCanceled} flights canceled within a 24h window at the airport located ${zoneStr}.`;
-            if (category === 'Airspace Closure') return `Official airspace closure exceeding ${p.hoursClosed} hours over ${locationStr}.`;
-            if (category === 'Airport Strike') return `Labor strike shutting down primary operations at the airport in ${locationStr} for at least ${p.daysDuration} days.`;
+            if (category === 'Mass Cancellation') return `More than ${p.flightsCanceled} flights canceled within a 24h window at airport ${locationStr}, affecting operations of ${companyIdentity}.`;
+            if (category === 'Airspace Closure') return `Official airspace closure exceeding ${p.hoursClosed} hours over ${locationStr}, affecting ${companyIdentity}.`;
+            if (category === 'Airport Strike') return `Labor strike shutting down primary operations at airport ${locationStr} for at least ${p.daysDuration} days, impacting ${companyIdentity}.`;
         }
 
         // CLIMATE (Défaut)
         switch(category) {
-            case 'Hurricane': return `Sustained wind speeds exceeding ${p.windSpeed} km/h (Category ${p.hurricaneCategory}+) ${zoneStr}, as asserted and verified by the UMA Optimistic Oracle.`;
-            case 'Earthquake': return `Moment magnitude (Mw) of ${p.magnitude} or greater with an epicenter located ${zoneStr}, as asserted by the UMA Optimistic Oracle.`;
-            case 'Wildfire': return `More than ${p.acresBurned} contiguous acres burned ${zoneStr}, as asserted by the UMA Optimistic Oracle.`;
-            case 'Flood': return `Water levels exceeding ${p.waterLevelCm} meters above baseline at the nearest official gauge to ${locationStr} for ${p.duration} hours.`;
-            case 'Avalanche': return `Avalanche event reaching size ${p.avalancheSize} on the destructive scale, impacting ${zoneStr}.`;
-            case 'Landslide': return `Soil displacement exceeding ${p.soilDisplacement} m³ ${zoneStr} over a ${p.duration}-hour period.`;
-            default: return `Custom parametric trigger: ${p.customMetric} exceeding ${p.customThreshold} for ${assetName}, as asserted and verified by the UMA Optimistic Oracle.`;
+            case 'Hurricane': return `Sustained wind speeds exceeding ${p.windSpeed} km/h (Category ${p.hurricaneCategory}+) ${zoneStr}, impacting assets of ${companyIdentity}, as asserted and verified by the UMA Optimistic Oracle.`;
+            case 'Earthquake': return `Moment magnitude (Mw) of ${p.magnitude} or greater with an epicenter located ${zoneStr}, impacting assets of ${companyIdentity}, as asserted by the UMA Optimistic Oracle.`;
+            case 'Wildfire': return `More than ${p.acresBurned} contiguous acres burned ${zoneStr}, impacting assets of ${companyIdentity}, as asserted by the UMA Optimistic Oracle.`;
+            case 'Flood': return `Water levels exceeding ${p.waterLevelCm} meters above baseline at the nearest official gauge to ${locationStr} for ${p.duration} hours, impacting ${companyIdentity}.`;
+            case 'Avalanche': return `Avalanche event reaching size ${p.avalancheSize} on the destructive scale, impacting ${zoneStr} and assets of ${companyIdentity}.`;
+            case 'Landslide': return `Soil displacement exceeding ${p.soilDisplacement} m³ ${zoneStr} over a ${p.duration}-hour period, impacting assets of ${companyIdentity}.`;
+            default: return `Custom parametric trigger: ${p.customMetric} exceeding ${p.customThreshold} for ${assetName} (owned by ${companyIdentity}), as asserted and verified by the UMA Optimistic Oracle.`;
         }
     };
 
@@ -195,7 +200,7 @@ const CreateVaultForm = ({ isExpanded, onToggle, onCreate, userAddress, activeTh
             name: newVaultData.name || "New Cat Bond",
             theme: activeTheme,
             category: newVaultData.category,
-            sponsor: newVaultData.companyName || `Sponsor (${userAddress})`,
+            sponsor: "Simulation SA", // On utilise l'entité vérifiée du KYB de simulation
             description: finalDescription,
             totalCapacity: capVal + premiumVal,
             claimAmount: claimVal,
@@ -220,8 +225,8 @@ const CreateVaultForm = ({ isExpanded, onToggle, onCreate, userAddress, activeTh
         }));
     };
 
-    // --- VISIBILITÉ DE LA LOCALISATION ---
-    const showLocation = !['cyber', 'maritime'].includes(activeTheme);
+    // --- GESTION DE L'AFFICHAGE DES SECTIONS SELON LE THÈME ---
+    const showLocation = ['climate', 'flight', 'realestate'].includes(activeTheme);
 
     return (
         <div
@@ -268,26 +273,56 @@ const CreateVaultForm = ({ isExpanded, onToggle, onCreate, userAddress, activeTh
                         </select>
                     </div>
 
-                    {/* --- LOCALISATION / IMPACT ZONE --- */}
+                    {/* --- IDENTITÉ ONCHAINID (Lecture seule, affichée pour TOUTES les catégories) --- */}
+                    <div className={isExpanded ? "col-span-2 p-4 bg-green-50 dark:bg-green-900/20 rounded-xl border border-green-200 dark:border-green-800" : "hidden"}>
+                        <div className="flex items-start gap-3">
+                            <ShieldCheck className="h-6 w-6 text-green-600 dark:text-green-400 mt-0.5 shrink-0" />
+                            <div className="w-full">
+                                <h3 className="text-sm font-bold text-green-800 dark:text-green-300 mb-1">ERC-3643 Verified Corporate Identity</h3>
+                                <p className="text-xs text-green-700 dark:text-green-400 mb-3 leading-relaxed">
+                                    The smart contract extracts the legal entity details directly from your authenticated ONCHAINID wallet.
+                                </p>
+                                <div className="bg-white/60 dark:bg-black/20 p-3 rounded-lg border border-green-200/50 dark:border-green-800/50 flex flex-col gap-1.5 w-full">
+                                    <div className="flex justify-between text-xs font-mono"><span className="text-slate-500">Legal Entity:</span> <span className="font-bold text-slate-800 dark:text-slate-200">Simulation SA</span></div>
+                                    <div className="flex justify-between text-xs font-mono"><span className="text-slate-500">Headquarters:</span> <span className="font-bold text-slate-800 dark:text-slate-200">Av. Claude-Nobs 5, 1820 Montreux</span></div>
+                                    <div className="flex justify-between text-xs font-mono"><span className="text-slate-500">Connected Wallet:</span> <span className="font-bold text-slate-800 dark:text-slate-200">{userAddress || "0x..."}</span></div>
+                                    <div className="flex justify-between text-xs font-mono"><span className="text-slate-500">KYB Status:</span> <span className="font-bold text-green-600 dark:text-green-400">VALIDATED</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* --- LOCALISATION DYNAMIQUE (Climate, Flight, Real Estate) --- */}
                     <div className={isExpanded && showLocation ? "col-span-2 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700" : "hidden"}>
-                        <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-3">Target Scope & Jurisdiction</h3>
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-3">Target Scope & Location</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                             <div>
-                                <label className="block text-xs font-medium text-slate-700 dark:text-slate-400 mb-1">Country / Jurisdiction</label>
-                                <input type="text" value={newVaultData.country} onChange={e => setNewVaultData({...newVaultData, country: e.target.value})} className="w-full p-2 text-sm border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="Ex: Switzerland, Global..." />
+                                <label className="block text-xs font-medium text-slate-700 dark:text-slate-400 mb-1">Country</label>
+                                <input type="text" value={newVaultData.country} onChange={e => setNewVaultData({...newVaultData, country: e.target.value})} className="w-full p-2 text-sm border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="Ex: Switzerland" />
                             </div>
-                            <div>
-                                <label className="block text-xs font-medium text-slate-700 dark:text-slate-400 mb-1">Region / Zone</label>
-                                <input type="text" value={newVaultData.region} onChange={e => setNewVaultData({...newVaultData, region: e.target.value})} className="w-full p-2 text-sm border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="Ex: EU, Vaud" />
-                            </div>
-                            <div>
-                                <label className="block text-xs font-medium text-slate-700 dark:text-slate-400 mb-1">Specific Facility</label>
-                                <input type="text" value={newVaultData.city} onChange={e => setNewVaultData({...newVaultData, city: e.target.value})} className="w-full p-2 text-sm border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="Ex: Zermatt Factory" />
-                            </div>
-                            <div>
-                                <label className="block text-xs font-medium text-slate-700 dark:text-slate-400 mb-1">Radius (km) - optional</label>
-                                <input type="number" min="0" value={newVaultData.radius} onChange={e => setNewVaultData({...newVaultData, radius: e.target.value})} className="w-full p-2 text-sm border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="15" />
-                            </div>
+
+                            {/* Region / City (Labels adaptatifs) */}
+                            {activeTheme === 'climate' && (
+                                <>
+                                    <div><label className="block text-xs font-medium text-slate-700 dark:text-slate-400 mb-1">Region / State</label><input type="text" value={newVaultData.region} onChange={e => setNewVaultData({...newVaultData, region: e.target.value})} className="w-full p-2 text-sm border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="Ex: Vaud" /></div>
+                                    <div><label className="block text-xs font-medium text-slate-700 dark:text-slate-400 mb-1">City / Epicenter</label><input type="text" value={newVaultData.city} onChange={e => setNewVaultData({...newVaultData, city: e.target.value})} className="w-full p-2 text-sm border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="Ex: Lausanne" /></div>
+                                    <div><label className="block text-xs font-medium text-slate-700 dark:text-slate-400 mb-1">Radius (km)</label><input type="number" min="0" value={newVaultData.radius} onChange={e => setNewVaultData({...newVaultData, radius: e.target.value})} className="w-full p-2 text-sm border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="50" /></div>
+                                </>
+                            )}
+
+                            {activeTheme === 'flight' && (
+                                <>
+                                    <div><label className="block text-xs font-medium text-slate-700 dark:text-slate-400 mb-1">Region</label><input type="text" value={newVaultData.region} onChange={e => setNewVaultData({...newVaultData, region: e.target.value})} className="w-full p-2 text-sm border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="Ex: Ile-de-France" /></div>
+                                    <div className="md:col-span-2"><label className="block text-xs font-medium text-slate-700 dark:text-slate-400 mb-1">Airport Code (IATA / ICAO)</label><input type="text" value={newVaultData.city} onChange={e => setNewVaultData({...newVaultData, city: e.target.value})} className="w-full p-2 text-sm border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none font-bold uppercase" placeholder="Ex: CDG or LFPG" /></div>
+                                </>
+                            )}
+
+                            {activeTheme === 'realestate' && (
+                                <>
+                                    <div><label className="block text-xs font-medium text-slate-700 dark:text-slate-400 mb-1">City</label><input type="text" value={newVaultData.region} onChange={e => setNewVaultData({...newVaultData, region: e.target.value})} className="w-full p-2 text-sm border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="Ex: Zurich" /></div>
+                                    <div className="md:col-span-2"><label className="block text-xs font-medium text-slate-700 dark:text-slate-400 mb-1">Exact Property Address</label><input type="text" value={newVaultData.city} onChange={e => setNewVaultData({...newVaultData, city: e.target.value})} className="w-full p-2 text-sm border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="Ex: Bahnhofstrasse 45" /></div>
+                                </>
+                            )}
                         </div>
                     </div>
 
