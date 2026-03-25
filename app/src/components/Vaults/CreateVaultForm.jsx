@@ -59,54 +59,90 @@ const CreateVaultForm = ({ isExpanded, onToggle, onCreate, userAddress, activeTh
         }));
     }, [activeTheme]);
 
-    // --- GENERATEUR DE CONDITION UMA ORACLE ---
+    // --- GENERATEUR DE CONDITION UMA ORACLE (VERSION JSX STYLISEE) ---
     const generateOracleDescription = (data) => {
         const { category, country, region, city, radius, triggerParams: p } = data;
         const locParts = [city, region, country].filter(Boolean);
-        const locationStr = locParts.length > 0 ? locParts.join(', ') : 'the specified scope';
-        const assetName = data.name || "the insured asset";
+        const locationStr = locParts.length > 0 ? locParts.join(', ') : 'Global / Unspecified';
+        const assetName = data.name || "TBD (Asset)";
 
-        // La chaîne de localisation s'adapte s'il y a un rayon ou non
-        const zoneStr = (radius && activeTheme === 'climate') ? `within a ${radius}-km radius of ${locationStr}` : `at ${locationStr}`;
-        const companyIdentity = "Simulation SA (UID: CHE-114.123.456)"; // Identité de simulation
+        const companyIdentity = "Simulation SA";
+        const companyUid = "CHE-114.123.456";
+
+        const coverageStart = `${data.startDay || '?'} ${data.startMonth} ${data.startYear}`;
+        const coverageEnd = `${data.day || '?'} ${data.month} ${data.year}`;
+
+        // Composant interne pour créer une belle ligne de donnée
+        const ConditionRow = ({ label, value, subtext }) => (
+            <div className="flex flex-col sm:flex-row sm:items-baseline sm:gap-2 border-b border-slate-100 dark:border-slate-700/50 pb-1.5 mb-1.5 last:border-0 last:pb-0 last:mb-0">
+                <span className="text-slate-500 dark:text-slate-400 text-sm font-medium sm:min-w-[220px]">{label} :</span>
+                <div>
+                    <span className="font-bold text-slate-900 dark:text-white">{value}</span>
+                    {subtext && <span className="text-xs text-slate-400 dark:text-slate-500 font-normal ml-2">({subtext})</span>}
+                </div>
+            </div>
+        );
+
+        let conditionsJsx = null;
 
         if (activeTheme === 'realestate') {
-            if (category === 'Fire') return `Fire event at property ${locationStr} owned by ${companyIdentity}. Triggered when on-site IoT thermal sensors detect temperatures exceeding ${p.temperature}°C continuously for ${p.duration} minutes, verified by UMA Oracle.`;
-            if (category === 'Flood') return `Indoor flooding at property ${locationStr} owned by ${companyIdentity}. Triggered when IoT wall water-level detectors record > ${p.waterLevelCm} cm of standing water, verified by UMA Oracle.`;
-            if (category === 'Earthquake') return `Seismic damage at property ${locationStr} owned by ${companyIdentity}. Triggered when building-mounted IoT accelerometers detect vibrations ≥ ${p.sensorMagnitude} Mw equivalent, verified by UMA Oracle.`;
+            if (category === 'Fire') conditionsJsx = <><ConditionRow label="Event Type" value="Fire" /><ConditionRow label="Continuous Temperature" value={`> ${p.temperature}°C`} /><ConditionRow label="Duration" value={p.duration} subtext="mins" /></>;
+            else if (category === 'Flood') conditionsJsx = <><ConditionRow label="Event Type" value="Indoor Flooding" /><ConditionRow label="Water Level" value={`> ${p.waterLevelCm}`} subtext="cm on wall sensor" /></>;
+            else if (category === 'Earthquake') conditionsJsx = <><ConditionRow label="Event Type" value="Seismic Damage" /><ConditionRow label="Vibration Magnitude" value={`≥ ${p.sensorMagnitude}`} subtext="Mw eq." /></>;
+        } else if (activeTheme === 'maritime') {
+            if (category === 'Vessel Sinking (IoT Tilt)') conditionsJsx = <><ConditionRow label="Event Type" value="Critical Maritime Incident" /><ConditionRow label="Sustained Tilt Angle" value={`> ${p.tiltAngle}°`} /><ConditionRow label="Continuous Duration" value={p.duration} subtext="hours" /></>;
+            else if (category === 'Cargo Spoilage (IoT Temp)') conditionsJsx = <><ConditionRow label="Event Type" value="Cargo Spoilage" /><ConditionRow label="Temperature Exceeded" value={`> ${p.temperature}°C`} /><ConditionRow label="Duration" value={p.duration} subtext="hours" /></>;
+        } else if (activeTheme === 'cyber') {
+            if (category === 'Smart Contract Exploit') conditionsJsx = <><ConditionRow label="Event Type" value="Smart Contract Exploit" /><ConditionRow label="Illicitly Drained Funds" value={`> $${p.fundsStolenUSD}`} /></>;
+            else if (category === 'IT System Outage') conditionsJsx = <><ConditionRow label="Event Type" value="IT System Outage" /><ConditionRow label="Continuous API Downtime" value={`> ${p.downtimeHours}`} subtext="hours" /></>;
+        } else if (activeTheme === 'business') {
+            if (category === 'Revenue Drop') conditionsJsx = <><ConditionRow label="Event Type" value="Business Interruption" /><ConditionRow label="Revenue Drop" value={`> ${p.revenueDropPercent}%`} subtext="vs 30d avg" /></>;
+            else if (category === 'Supply Chain Delay') conditionsJsx = <><ConditionRow label="Event Type" value="Supply Chain Disruption" /><ConditionRow label="Delivery Delay" value={`> ${p.daysDelayed}`} subtext="days, critical materials" /></>;
+        } else if (activeTheme === 'flight') {
+            if (category === 'Mass Cancellation') conditionsJsx = <><ConditionRow label="Event Type" value="Mass Cancellation" /><ConditionRow label="Canceled Flights" value={`> ${p.flightsCanceled}`} subtext="within 24h window" /></>;
+            else if (category === 'Airspace Closure') conditionsJsx = <><ConditionRow label="Event Type" value="Airspace Closure" /><ConditionRow label="Official Closure Duration" value={`> ${p.hoursClosed}`} subtext="hours" /></>;
+            else if (category === 'Airport Strike') conditionsJsx = <><ConditionRow label="Event Type" value="Airport Strike" /><ConditionRow label="Strike Duration" value={`≥ ${p.daysDuration}`} subtext="days" /></>;
+        } else {
+            // CLIMATE & Default
+            if (category === 'Hurricane') conditionsJsx = <><ConditionRow label="Event Type" value="Hurricane" /><ConditionRow label="Min. Wind Speed" value={p.windSpeed} subtext="km/h" /><ConditionRow label="Category" value={`${p.hurricaneCategory}+`} subtext="Saffir-Simpson" /></>;
+            else if (category === 'Earthquake') conditionsJsx = <><ConditionRow label="Event Type" value="Earthquake" /><ConditionRow label="Moment Magnitude" value={`≥ ${p.magnitude}`} subtext="Mw" /></>;
+            else if (category === 'Wildfire') conditionsJsx = <><ConditionRow label="Event Type" value="Wildfire" /><ConditionRow label="Contiguous Area Burned" value={`> ${p.acresBurned}`} subtext="acres" /></>;
+            else if (category === 'Flood') conditionsJsx = <><ConditionRow label="Event Type" value="Flood" /><ConditionRow label="Water Level Above Baseline" value={`> ${p.waterLevelCm}`} subtext="meters" /><ConditionRow label="Measurement Duration" value={p.duration} subtext="hours" /></>;
+            else if (category === 'Avalanche') conditionsJsx = <><ConditionRow label="Event Type" value="Avalanche" /><ConditionRow label="Destructive Scale Size" value={`≥ ${p.avalancheSize}`} /></>;
+            else if (category === 'Landslide') conditionsJsx = <><ConditionRow label="Event Type" value="Landslide" /><ConditionRow label="Soil Displacement" value={`> ${p.soilDisplacement}`} subtext="m³" /><ConditionRow label="Timeframe" value={p.duration} subtext="hours" /></>;
+            else conditionsJsx = <><ConditionRow label="Event Type" value="Custom Event" /><ConditionRow label="Metric" value={p.customMetric} /><ConditionRow label="Threshold" value={`> ${p.customThreshold}`} /></>;
         }
 
-        if (activeTheme === 'maritime') {
-            if (category === 'Vessel Sinking (IoT Tilt)') return `Critical maritime incident for ${assetName} operated by ${companyIdentity}. Triggered when onboard IoT gyroscopes detect a sustained tilt angle > ${p.tiltAngle}° for ${p.duration} hours.`;
-            if (category === 'Cargo Spoilage (IoT Temp)') return `Cargo temperature failure on ${assetName} operated by ${companyIdentity}. Triggered when IoT container sensors record temperatures > ${p.temperature}°C for ${p.duration} hours.`;
-        }
+        return (
+            <div className="flex flex-col gap-5 font-sans">
+                {/* General Info */}
+                <div className="bg-white dark:bg-slate-900/40 p-5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                    <h4 className="font-extrabold text-slate-900 dark:text-white uppercase tracking-wider text-xs mb-4 pb-2 border-b border-slate-100 dark:border-slate-700/50 flex items-center gap-2">
+                        Target & Coverage
+                    </h4>
+                    <ConditionRow label="Insured Entity" value={companyIdentity} subtext={`UID: ${companyUid}`} />
+                    <ConditionRow label="Protected Asset" value={assetName} />
+                    <ConditionRow label="Target Scope" value={locationStr} subtext={radius && activeTheme === 'climate' ? `Radius: ${radius} km` : null} />
+                    <ConditionRow label="Coverage Period" value={`${coverageStart} to ${coverageEnd}`} />
+                </div>
 
-        if (activeTheme === 'cyber') {
-            if (category === 'Smart Contract Exploit') return `Smart contract exploit on ${assetName} deployed by ${companyIdentity}. Triggered when > $${p.fundsStolenUSD} USD is illicitly drained, verified by UMA Oracle.`;
-            if (category === 'IT System Outage') return `System downtime for ${assetName} managed by ${companyIdentity}. Triggered when API health checks report continuous outage for > ${p.downtimeHours} hours.`;
-        }
+                {/* Trigger Thresholds */}
+                <div className="bg-indigo-50/40 dark:bg-indigo-900/10 p-5 rounded-xl border border-indigo-100 dark:border-indigo-800/30 shadow-sm">
+                    <h4 className="font-extrabold text-indigo-800 dark:text-indigo-300 uppercase tracking-wider text-xs mb-4 pb-2 border-b border-indigo-100 dark:border-indigo-800/30 flex items-center gap-2">
+                        Trigger Thresholds
+                    </h4>
+                    <div>
+                        {conditionsJsx}
+                    </div>
+                </div>
 
-        if (activeTheme === 'business') {
-            if (category === 'Revenue Drop') return `Business interruption for ${companyIdentity}. Triggered when verified API revenue streams drop by more than ${p.revenueDropPercent}% compared to the 30-day moving average.`;
-            if (category === 'Supply Chain Delay') return `Supply chain disruption for ${companyIdentity}. Triggered when verifiable delivery delays exceed ${p.daysDelayed} days for critical materials, as verified by UMA Oracle.`;
-        }
-
-        if (activeTheme === 'flight') {
-            if (category === 'Mass Cancellation') return `More than ${p.flightsCanceled} flights canceled within a 24h window at airport ${locationStr}, affecting operations of ${companyIdentity}.`;
-            if (category === 'Airspace Closure') return `Official airspace closure exceeding ${p.hoursClosed} hours over ${locationStr}, affecting ${companyIdentity}.`;
-            if (category === 'Airport Strike') return `Labor strike shutting down primary operations at airport ${locationStr} for at least ${p.daysDuration} days, impacting ${companyIdentity}.`;
-        }
-
-        // CLIMATE (Défaut)
-        switch(category) {
-            case 'Hurricane': return `Sustained wind speeds exceeding ${p.windSpeed} km/h (Category ${p.hurricaneCategory}+) ${zoneStr}, impacting assets of ${companyIdentity}, as asserted and verified by the UMA Optimistic Oracle.`;
-            case 'Earthquake': return `Moment magnitude (Mw) of ${p.magnitude} or greater with an epicenter located ${zoneStr}, impacting assets of ${companyIdentity}, as asserted by the UMA Optimistic Oracle.`;
-            case 'Wildfire': return `More than ${p.acresBurned} contiguous acres burned ${zoneStr}, impacting assets of ${companyIdentity}, as asserted by the UMA Optimistic Oracle.`;
-            case 'Flood': return `Water levels exceeding ${p.waterLevelCm} meters above baseline at the nearest official gauge to ${locationStr} for ${p.duration} hours, impacting ${companyIdentity}.`;
-            case 'Avalanche': return `Avalanche event reaching size ${p.avalancheSize} on the destructive scale, impacting ${zoneStr} and assets of ${companyIdentity}.`;
-            case 'Landslide': return `Soil displacement exceeding ${p.soilDisplacement} m³ ${zoneStr} over a ${p.duration}-hour period, impacting assets of ${companyIdentity}.`;
-            default: return `Custom parametric trigger: ${p.customMetric} exceeding ${p.customThreshold} for ${assetName} (owned by ${companyIdentity}), as asserted and verified by the UMA Optimistic Oracle.`;
-        }
+                {/* Footer Oracle */}
+                <div className="text-xs text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800/50 p-3 rounded-lg border border-slate-200 dark:border-slate-700 flex items-start gap-2">
+                    <span className="font-bold mt-0.5">INFO</span>
+                    <p className="leading-relaxed">This vault requires an event satisfying the above conditions, as asserted and verified by the <span className="font-bold text-slate-700 dark:text-slate-300">UMA Optimistic Oracle</span> on-chain.</p>
+                </div>
+            </div>
+        );
     };
 
     const handleTriggerParamChange = (key, value) => {
@@ -386,10 +422,12 @@ const CreateVaultForm = ({ isExpanded, onToggle, onCreate, userAddress, activeTh
 
                         </div>
 
-                        {/* Aperçu UMA en temps réel */}
+                        {/* Aperçu UMA en temps réel (Modification vers <div>) */}
                         <div className="p-3 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700">
-                            <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1 block">UMA Oracle Final Condition (Preview)</span>
-                            <p className="text-sm text-slate-800 dark:text-slate-200 italic">"{generateOracleDescription(newVaultData)}"</p>
+                            <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3 block">UMA Oracle Final Condition (Preview)</span>
+                            <div className="text-sm text-slate-800 dark:text-slate-200 bg-slate-50 dark:bg-slate-800 p-4 rounded-md border border-slate-100 dark:border-slate-600">
+                                {generateOracleDescription(newVaultData)}
+                            </div>
                         </div>
                     </div>
 
