@@ -12,7 +12,7 @@ const THEME_CATEGORIES = {
     business: ['Revenue Drop', 'Supply Chain Delay'],
     flight: ['Mass Cancellation', 'Airspace Closure', 'Airport Strike'],
     realestate: ['Flood', 'Earthquake', 'Fire'],
-    maritime: ['Vessel Sinking (IoT Tilt)', 'Cargo Spoilage (IoT Temp)'],
+    maritime: ['Container Loss (IoT Twistlock)', 'Vessel Sinking (IoT Tilt)', 'Cargo Spoilage (IoT Temp)'],
     default: ['Custom Protocol']
 };
 
@@ -39,6 +39,8 @@ const CreateVaultForm = ({ isExpanded, onToggle, onCreate, userAddress, activeTh
             flightsCanceled: 50, hoursClosed: 24, daysDuration: 2, // Flight
             waterLevelCm: 15, sensorMagnitude: 5.5, temperature: 60, duration: 30, // Real Estate (Sensors IoT)
             tiltAngle: 30, // Maritime (Sensors IoT)
+            containerCount: 10, // Nombre de containers
+            payoutPerContainer: 10000, // Valeur par container
             customMetric: 'Specific condition', customThreshold: 'Threshold value' // Generic
         },
 
@@ -89,10 +91,49 @@ const CreateVaultForm = ({ isExpanded, onToggle, onCreate, userAddress, activeTh
             if (category === 'Fire') conditionsJsx = <><ConditionRow label="Event Type" value="Fire" /><ConditionRow label="Continuous Temperature" value={`> ${p.temperature}°C`} /><ConditionRow label="Duration" value={p.duration} subtext="mins" /></>;
             else if (category === 'Flood') conditionsJsx = <><ConditionRow label="Event Type" value="Indoor Flooding" /><ConditionRow label="Water Level" value={`> ${p.waterLevelCm}`} subtext="cm on wall sensor" /></>;
             else if (category === 'Earthquake') conditionsJsx = <><ConditionRow label="Event Type" value="Seismic Damage" /><ConditionRow label="Vibration Magnitude" value={`≥ ${p.sensorMagnitude}`} subtext="Mw eq." /></>;
-        } else if (activeTheme === 'maritime') {
-            if (category === 'Vessel Sinking (IoT Tilt)') conditionsJsx = <><ConditionRow label="Event Type" value="Critical Maritime Incident" /><ConditionRow label="Sustained Tilt Angle" value={`> ${p.tiltAngle}°`} /><ConditionRow label="Continuous Duration" value={p.duration} subtext="hours" /></>;
-            else if (category === 'Cargo Spoilage (IoT Temp)') conditionsJsx = <><ConditionRow label="Event Type" value="Cargo Spoilage" /><ConditionRow label="Temperature Exceeded" value={`> ${p.temperature}°C`} /><ConditionRow label="Duration" value={p.duration} subtext="hours" /></>;
-        } else if (activeTheme === 'cyber') {
+            } else if (activeTheme === 'maritime') {
+                if (category === 'Vessel Sinking (IoT Tilt)') {
+                    conditionsJsx = (
+                        <>
+                            <ConditionRow label="Event Type" value="Critical Maritime Incident" />
+                            <ConditionRow label="Sustained Tilt Angle" value={`> ${p.tiltAngle}°`} />
+                            <ConditionRow label="Continuous Duration" value={p.duration} subtext="hours" />
+                        </>
+                    );
+                } else if (category === 'Cargo Spoilage (IoT Temp)') {
+                    conditionsJsx = (
+                        <>
+                            <ConditionRow label="Event Type" value="Cargo Spoilage" />
+                            <ConditionRow label="Temperature Exceeded" value={`> ${p.temperature}°C`} />
+                            <ConditionRow label="Duration" value={p.duration} subtext="hours" />
+                        </>
+                    );
+                } else if (category === 'Container Loss (IoT Twistlock)') {
+                    // Calcul du montant total assuré
+                    const totalCoverage = parseFloat(p.containerCount || 0) * parseFloat(p.payoutPerContainer || 0);
+
+                    conditionsJsx = (
+                        <>
+                            <ConditionRow label="Event Type" value="Physical Cargo Loss" />
+                            <ConditionRow
+                                label="Loss Threshold"
+                                value={`${p.containerCount} units`}
+                                subtext="Verified by Smart Twistlock signal loss"
+                            />
+                            <ConditionRow
+                                label="Agreed Payout"
+                                value={`$${parseFloat(p.payoutPerContainer).toLocaleString()}`}
+                                subtext="per container lost"
+                            />
+                            <ConditionRow
+                                label="Max Coverage"
+                                value={`$${totalCoverage.toLocaleString()}`}
+                                subtext="Total potential claim"
+                            />
+                        </>
+                    );
+                }
+            } else if (activeTheme === 'cyber') {
             if (category === 'Smart Contract Exploit') conditionsJsx = <><ConditionRow label="Event Type" value="Smart Contract Exploit" /><ConditionRow label="Illicitly Drained Funds" value={`> $${p.fundsStolenUSD}`} /></>;
             else if (category === 'IT System Outage') conditionsJsx = <><ConditionRow label="Event Type" value="IT System Outage" /><ConditionRow label="Continuous API Downtime" value={`> ${p.downtimeHours}`} subtext="hours" /></>;
         } else if (activeTheme === 'business') {
@@ -391,6 +432,28 @@ const CreateVaultForm = ({ isExpanded, onToggle, onCreate, userAddress, activeTh
                             )}
 
                             {/* MARITIME (IoT Embarqué) */}
+                            {newVaultData.category === 'Container Loss (IoT Twistlock)' && (
+                                <>
+                                    <div>
+                                        <label className="block text-xs font-medium text-slate-700 dark:text-slate-400 mb-1">Number of Containers</label>
+                                        <input
+                                            type="number"
+                                            value={newVaultData.triggerParams.containerCount}
+                                            onChange={e => handleTriggerParamChange('containerCount', e.target.value)}
+                                            className="w-full p-2 text-sm border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 rounded-lg"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-xs font-medium text-slate-700 dark:text-slate-400 mb-1">Payout per Unit (USD)</label>
+                                        <input
+                                            type="number"
+                                            value={newVaultData.triggerParams.payoutPerContainer}
+                                            onChange={e => handleTriggerParamChange('payoutPerContainer', e.target.value)}
+                                            className="w-full p-2 text-sm border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 rounded-lg"
+                                        />
+                                    </div>
+                                </>
+                            )}
                             {newVaultData.category === 'Vessel Sinking (IoT Tilt)' && (
                                 <>
                                     <div><label className="block text-xs font-medium text-slate-700 dark:text-slate-400 mb-1">Min. Tilt Angle (°)</label><input type="number" value={newVaultData.triggerParams.tiltAngle} onChange={e => handleTriggerParamChange('tiltAngle', e.target.value)} className="w-full p-2 text-sm border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 rounded-lg" /></div>
