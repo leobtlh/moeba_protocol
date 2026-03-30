@@ -961,3 +961,61 @@ a { text-decoration: none; color: inherit; }
         transform: translateY(-15px) rotate(1.5deg); /* Monte et penche légèrement */
     }
 }
+
+/* ==========================================================================
+   📱 MODE SMARTPHONE (RESPONSIVE DESIGN)
+   ========================================================================== */
+@media (max-width: 768px) {
+
+    /* 1. LA BARRE DE NAVIGATION (Navbar) */
+    .nav {
+        flex-direction: column; /* Empile le logo et les boutons verticalement */
+        gap: 15px;
+        padding: 15px 10px;
+        height: auto; /* Annule la hauteur fixe si elle existe */
+        text-align: center;
+    }
+
+    .nav-brand {
+        flex-direction: column;
+        width: 100%;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    /* Le conteneur du bouton Launch dApp */
+    .nav-actions {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap; /* Permet aux boutons de passer à la ligne s'ils manquent de place */
+        gap: 10px;
+    }
+
+    /* Optionnel : Cacher le menu central texte sur mobile pour gagner de la place */
+    .hide-menu {
+        display: none;
+    }
+
+    /* 2. LE TEXTE D'ACCUEIL (Hero Section) */
+    .main-title {
+        font-size: 2.2rem !important; /* Réduit drastiquement l'énorme titre de 3.5rem */
+        line-height: 1.2;
+    }
+
+    .subtitle {
+        font-size: 1rem;
+    }
+
+    /* 3. LES STATISTIQUES (3 colonnes -> 1 colonne) */
+    .stats-row {
+        flex-direction: column; /* Empile les stats verticalement au lieu de les aligner */
+        gap: 20px;
+        align-items: center;
+    }
+
+    /* 4. LES CARTES "BENTO" (Use cases, Architecture) */
+    .bento-grid {
+        grid-template-columns: 1fr; /* Force 1 seule colonne de cartes sur mobile */
+        gap: 15px;
+    }
+}
