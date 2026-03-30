@@ -71,16 +71,18 @@ export const PendingCylinderDrawing = () => (
         {/* Textes (Nets, hors filtre) */}
         <g textAnchor="middle" className="font-bold">
             {/* Labels décalés proprement sous chaque verre */}
-            <text x="85" y="135" fontSize="12" className="fill-green-600 dark:fill-green-400">+ Dépôt Senior</text>
-            <text x="315" y="135" fontSize="12" className="fill-yellow-600 dark:fill-yellow-400">+ Dépôt Junior</text>
+            <text x="85" y="135" fontSize="12" className="fill-green-600 dark:fill-green-400">+ Senior Deposit</text>
+            <text x="315" y="135" fontSize="12" className="fill-yellow-600 dark:fill-yellow-400">+ Junior Deposit</text>
 
             {/* Labels des couches au sein du cylindre */}
             <text x="200" y="198" fontSize="11" className="fill-green-800 dark:fill-green-200">Senior</text>
-            <text x="200" y="225" fontSize="11" className="fill-yellow-800 dark:fill-yellow-200">Junior</text>
-            <text x="200" y="260" fontSize="12" className="fill-orange-800 dark:fill-orange-200">Premium (Déjà là)</text>
-            <text x="200" y="310" fontSize="12" className="fill-red-800 dark:fill-red-200">First Loss (Déjà là)</text>
+            <text x="200" y="224" fontSize="11" className="fill-yellow-800 dark:fill-yellow-200">Junior</text>
+            <text x="200" y="253" fontSize="12" className="fill-orange-800 dark:fill-orange-200">Premium</text>
+            <text x="200" y="267" fontSize="12" className="fill-orange-800 dark:fill-orange-200">(Pre-funded)</text>
+            <text x="200" y="303" fontSize="12" className="fill-red-800 dark:fill-red-200">First Loss</text>
+            <text x="200" y="317" fontSize="12" className="fill-red-800 dark:fill-red-200">(Pre-funded)</text>
 
-            <text x="200" y="380" fontSize="14" className="fill-slate-600 dark:fill-slate-300">Phase de Financement (Ouvert)</text>
+            <text x="200" y="380" fontSize="14" className="fill-slate-600 dark:fill-slate-300">Funding Phase (Open)</text>
         </g>
     </svg>
 );
@@ -127,7 +129,7 @@ export const ActiveCylinderDrawing = () => (
             <text x="200" y="205" fontSize="13" className="fill-yellow-800 dark:fill-yellow-200">3. Junior</text>
             <text x="200" y="260" fontSize="12" className="fill-orange-800 dark:fill-orange-200">2. Premium</text>
             <text x="200" y="310" fontSize="12" className="fill-red-800 dark:fill-red-200">1. First Loss</text>
-            <text x="200" y="380" fontSize="14" className="fill-slate-600 dark:fill-slate-300">Vault Actif (Fermé & Verrouillé)</text>
+            <text x="200" y="380" fontSize="14" className="fill-slate-600 dark:fill-slate-300">Active Vault (Closed & Locked)</text>
         </g>
     </svg>
 );
@@ -188,7 +190,7 @@ export const SuccessCylinderDrawing = () => (
         {/* Tampon SCELLÉ par dessus le robinet */}
         <g transform="translate(290, 270) rotate(-15)">
             <rect x="-40" y="-15" width="80" height="30" rx="4" className="stroke-emerald-600 fill-emerald-50 dark:fill-emerald-900/50" strokeWidth="2" />
-            <text x="0" y="5" textAnchor="middle" fontSize="14" className="fill-emerald-700 dark:fill-emerald-400 font-bold uppercase tracking-wider">Scellé</text>
+            <text x="0" y="5" textAnchor="middle" fontSize="14" className="fill-emerald-700 dark:fill-emerald-400 font-bold uppercase tracking-wider">Sealed</text>
         </g>
 
         <g textAnchor="middle" className="font-bold">
@@ -197,9 +199,9 @@ export const SuccessCylinderDrawing = () => (
             <text x="200" y="260" fontSize="12" className="fill-orange-800 dark:fill-orange-200">2. Premium</text>
             <text x="200" y="310" fontSize="12" className="fill-red-800 dark:fill-red-200">1. First Loss</text>
 
-            <text x="75" y="200" fontSize="12" className="fill-slate-500 dark:fill-slate-400" transform="rotate(-90 75,200)">Masse Volumique +</text>
+            <text x="75" y="200" fontSize="12" className="fill-slate-500 dark:fill-slate-400" transform="rotate(-90 75,200)">Density +</text>
 
-            <text x="200" y="380" fontSize="14" className="fill-slate-600 dark:fill-slate-300">Aucun Sinistre (Yield Généré)</text>
+            <text x="200" y="380" fontSize="14" className="fill-slate-600 dark:fill-slate-300">No Claim (Yield Generated)</text>
         </g>
     </svg>
 );
@@ -278,17 +280,17 @@ export const CatastropheCylinderDrawing = () => (
             <text x="200" y="190" fontSize="14" className="fill-green-800 dark:fill-green-200">4. Senior</text>
             <text x="200" y="270" fontSize="13" className="fill-yellow-800 dark:fill-yellow-200">3. Junior</text>
 
-            <text x="200" y="315" fontSize="11" className="fill-orange-800 dark:fill-orange-300">Premium s'écoule...</text>
-            <text x="75" y="200" fontSize="12" className="fill-slate-500 dark:fill-slate-400" transform="rotate(-90 75,200)">Masse Volumique +</text>
+            <text x="200" y="315" fontSize="11" className="fill-orange-800 dark:fill-orange-300">Premium draining...</text>
+            <text x="75" y="200" fontSize="12" className="fill-slate-500 dark:fill-slate-400" transform="rotate(-90 75,200)">Density +</text>
 
-            <text x="345" y="264" fontSize="11" className="fill-slate-600 dark:fill-slate-400">Retrait sur</text>
-            <text x="345" y="278" fontSize="11" className="fill-slate-600 dark:fill-slate-400">factures vérifiées</text>
+            <text x="345" y="264" fontSize="11" className="fill-slate-600 dark:fill-slate-400">Withdrawals on</text>
+            <text x="345" y="278" fontSize="11" className="fill-slate-600 dark:fill-slate-400">verified invoices</text>
 
             {/* Texte First Loss décalé sur la droite pour ne pas toucher le liquide qui tombe */}
             <text x="375" y="375" fontSize="12" className="fill-red-600 dark:fill-red-400">1. First Loss</text>
-            <text x="375" y="390" fontSize="11" className="fill-slate-600 dark:fill-slate-400">(Écoulée)</text>
+            <text x="375" y="390" fontSize="11" className="fill-slate-600 dark:fill-slate-400">(Drained)</text>
 
-            <text x="200" y="405" fontSize="14" className="fill-indigo-600 dark:fill-indigo-400">Sinistre : Robinet Ouvert</text>
+            <text x="200" y="405" fontSize="14" className="fill-indigo-600 dark:fill-indigo-400">Claim: Valve Open</text>
         </g>
     </svg>
 );
@@ -333,24 +335,24 @@ export const LeverageDrawing = () => (
 
             {/* Textes Capital (Bas) */}
             {/* Senior (Droite) */}
-            <text x="280" y="220" fontSize="14" className="fill-green-700 dark:fill-green-400">Capital Senior (80%)</text>
-            <text x="280" y="240" fontSize="11" className="fill-slate-600 dark:fill-slate-400 font-normal">Faible risque, yield plafonné</text>
+            <text x="280" y="220" fontSize="14" className="fill-green-700 dark:fill-green-400">Senior Capital (80%)</text>
+            <text x="280" y="240" fontSize="11" className="fill-slate-600 dark:fill-slate-400 font-normal">Low risk, capped yield</text>
 
             {/* Junior (Gauche) */}
-            <text x="90" y="220" fontSize="14" className="fill-orange-700 dark:fill-orange-500">Capital Junior (20%)</text>
-            <text x="90" y="240" fontSize="11" className="fill-slate-600 dark:fill-slate-400 font-normal">Risque élevé, yield boosté</text>
+            <text x="90" y="220" fontSize="14" className="fill-orange-700 dark:fill-orange-500">Junior Capital (20%)</text>
+            <text x="90" y="240" fontSize="11" className="fill-slate-600 dark:fill-slate-400 font-normal">High risk, boosted yield</text>
 
             {/* Textes Yield (Haut) */}
             {/* Senior Yield (Droite) */}
-            <text x="280" y="65" fontSize="14" className="fill-emerald-700 dark:fill-emerald-400">Yield de base (Max 70%)</text>
+            <text x="280" y="65" fontSize="14" className="fill-emerald-700 dark:fill-emerald-400">Base Yield (Max 70%)</text>
 
             {/* Junior Yield (Gauche) */}
-            <text x="90" y="52" fontSize="12" className="fill-yellow-700 dark:fill-yellow-500">Yield de base</text>
-            <text x="90" y="72" fontSize="13" className="fill-emerald-600 dark:fill-emerald-400">+ 30% du Senior</text>
+            <text x="90" y="52" fontSize="12" className="fill-yellow-700 dark:fill-yellow-500">Base Yield</text>
+            <text x="90" y="72" fontSize="13" className="fill-emerald-600 dark:fill-emerald-400">+ 30% from Senior</text>
 
             {/* Badge de la flèche de transfert (Centré sur la courbe) */}
             <rect x="150" y="129" width="100" height="22" rx="4" className="fill-white dark:fill-slate-800 stroke-slate-200 dark:stroke-slate-700" strokeWidth="1" />
-            <text x="200" y="145" fontSize="11" className="fill-emerald-600 dark:fill-emerald-400">Transfert de 30%</text>
+            <text x="200" y="145" fontSize="11" className="fill-emerald-600 dark:fill-emerald-400">30% Transfer</text>
         </g>
     </svg>
 );

@@ -50,7 +50,7 @@ const AcademyModal = ({ isOpen, onClose, activeTheme }) => {
                 <div className="flex justify-between items-center p-6 border-b border-white/30 dark:border-white/10 bg-white/20 dark:bg-white/5 shrink-0">
                     <h2 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
                         <BookOpen className="h-6 w-6 text-indigo-500" />
-                        Mœba Academy : <span className="text-indigo-600 dark:text-indigo-400 capitalize">{activeTheme}</span>
+                        Mœba Academy: <span className="text-indigo-600 dark:text-indigo-400 capitalize">{activeTheme}</span>
                     </h2>
                     <button onClick={onClose} className="p-2 bg-black/5 dark:bg-white/10 rounded-full hover:bg-black/10 dark:hover:bg-white/20 transition">
                         <X className="h-5 w-5 text-slate-600 dark:text-slate-300" />
@@ -64,7 +64,7 @@ const AcademyModal = ({ isOpen, onClose, activeTheme }) => {
                     <section>
                         <div className="flex justify-between items-end mb-6">
                             <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100 font-sans">
-                                0. Cycle de vie du Vault
+                                0. Vault Lifecycle
                             </h3>
 
                             <div className="flex items-center gap-1 bg-white/50 dark:bg-black/30 p-1 rounded-xl border border-white/40 dark:border-white/10 shadow-inner">
@@ -72,13 +72,13 @@ const AcademyModal = ({ isOpen, onClose, activeTheme }) => {
                                     onClick={() => setVaultState('pending')}
                                     className={`px-4 py-2 text-sm font-bold rounded-lg transition-all flex items-center gap-2 ${vaultState === 'pending' ? 'bg-white dark:bg-slate-700 shadow-md text-blue-600 dark:text-blue-400' : 'text-slate-500 hover:text-slate-700 dark:text-slate-400'}`}
                                 >
-                                    Phase de Financement
+                                    Funding Phase
                                 </button>
                                 <button
                                     onClick={() => setVaultState('active')}
                                     className={`px-4 py-2 text-sm font-bold rounded-lg transition-all flex items-center gap-2 ${vaultState === 'active' ? 'bg-slate-800 shadow-md text-white' : 'text-slate-500 hover:text-slate-700 dark:text-slate-400'}`}
                                 >
-                                    Vault Actif (Fermé)
+                                    Active Vault (Locked)
                                 </button>
                             </div>
                         </div>
@@ -93,41 +93,41 @@ const AcademyModal = ({ isOpen, onClose, activeTheme }) => {
                                 {vaultState === 'pending' ? (
                                     <>
                                         <h4 className="text-lg font-bold text-blue-600 dark:text-blue-400 mb-4 flex items-center gap-2">
-                                            Dépôts Ouverts (Avant la date de début)
+                                            Open Deposits (Before start date)
                                         </h4>
                                         <p className="mb-6 text-slate-700 dark:text-slate-200">
-                                            Tant que la date de début n'est pas atteinte, le Vault est ouvert. La sécurité est déjà garantie car :
+                                            As long as the start date has not been reached, the Vault is open. Security is already guaranteed because:
                                         </p>
                                         <ul className="space-y-4">
                                             <li className="flex gap-3">
                                                 <span className="text-blue-500">✓</span>
-                                                <p className="text-sm text-slate-800 dark:text-slate-300"><strong>Assureur pré-engagé :</strong> Les capitaux First Loss et Premium sont déjà déposés au fond du cylindre.</p>
+                                                <p className="text-sm text-slate-800 dark:text-slate-300"><strong>Pre-committed Insurer:</strong> The First Loss and Premium capital are already deposited at the bottom of the cylinder.</p>
                                             </li>
                                             <li className="flex gap-3">
                                                 <span className="text-blue-500">✓</span>
-                                                <p className="text-sm text-slate-800 dark:text-slate-300"><strong>Dépôts Investisseurs :</strong> Vous pouvez rajouter librement du capital dans la tranche Senior ou Junior.</p>
+                                                <p className="text-sm text-slate-800 dark:text-slate-300"><strong>Investor Deposits:</strong> You can freely add capital to the Senior or Junior tranche.</p>
                                             </li>
                                         </ul>
                                     </>
                                 ) : (
                                     <>
                                         <h4 className="text-lg font-bold text-slate-800 dark:text-slate-200 mb-4 flex items-center gap-2">
-                                            Risque en Cours (Cylindre Verrouillé)
+                                            Active Risk (Locked Cylinder)
                                         </h4>
                                         <p className="mb-6 text-slate-700 dark:text-slate-200">
-                                            Une fois la date de début atteinte, les règles changent pour protéger tout le monde :
+                                            Once the start date is reached, the rules change to protect everyone:
                                         </p>
                                         <ul className="space-y-4">
                                             <li className="flex gap-3">
                                                 <span className="text-slate-500">🔒</span>
-                                                <p className="text-sm text-slate-800 dark:text-slate-300"><strong>Fermeture Hermétique :</strong> Le cylindre est refermé avec un couvercle. Il est désormais impossible de rajouter ou de retirer du capital (ni Senior, ni Junior, ni Sponsor).</p>
+                                                <p className="text-sm text-slate-800 dark:text-slate-300"><strong>Hermetic Seal:</strong> The cylinder is closed with a lid. It is now impossible to add or withdraw capital (neither Senior, Junior, nor Sponsor).</p>
                                             </li>
                                             <li className="flex gap-3 items-center">
                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-violet-500 flex-shrink-0">
                                                     <path fillRule="evenodd" d="M14.615 1.595a.75.75 0 0 1 .359.852L12.982 9.75h7.268a.75.75 0 0 1 .548 1.262l-10.5 11.25a.75.75 0 0 1-1.272-.71l1.992-7.302H3.75a.75.75 0 0 1-.548-1.262l10.5-11.25a.75.75 0 0 1 .913-.143Z" clipRule="evenodd" />
                                                 </svg>
                                                 <p className="text-sm text-slate-800 dark:text-slate-300">
-                                                    <strong>L'Oracle surveille :</strong> Le risque est officiellement transféré. Tout le monde attend la fin de la période de couverture.
+                                                    <strong>The Oracle is watching:</strong> The risk is officially transferred. Everyone waits for the end of the coverage period.
                                                 </p>
                                             </li>
                                         </ul>
@@ -141,7 +141,7 @@ const AcademyModal = ({ isOpen, onClose, activeTheme }) => {
                     <section>
                         <div className="flex justify-between items-end mb-6">
                             <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100 font-sans">
-                                1. La Capital Stack Mœba (Cylindre de Densité)
+                                1. The Mœba Capital Stack (Density Cylinder)
                             </h3>
 
                             <div className="flex items-center gap-1 bg-white/50 dark:bg-black/30 p-1 rounded-xl border border-white/40 dark:border-white/10 shadow-inner">
@@ -149,7 +149,7 @@ const AcademyModal = ({ isOpen, onClose, activeTheme }) => {
                                     onClick={() => setScenario('success')}
                                     className={`px-4 py-2 text-sm font-bold rounded-lg transition-all flex items-center gap-2 ${scenario === 'success' ? 'bg-white dark:bg-slate-700 shadow-md text-emerald-600 dark:text-emerald-400' : 'text-slate-500 hover:text-slate-700 dark:text-slate-400'}`}
                                 >
-                                    <Sun className="h-4 w-4" /> Sans Sinistre
+                                    <Sun className="h-4 w-4" /> No Claim
                                 </button>
                                 <button
                                     onClick={() => setScenario('catastrophe')}
@@ -170,50 +170,50 @@ const AcademyModal = ({ isOpen, onClose, activeTheme }) => {
                                 {scenario === 'success' ? (
                                     <>
                                         <h4 className="text-lg font-bold text-emerald-700 dark:text-emerald-400 mb-4 flex items-center gap-2">
-                                            Robinet Scellé & Yield Splitting
+                                            Sealed Valve & Yield Splitting
                                         </h4>
                                         <p className="mb-6 text-slate-700 dark:text-slate-200">
-                                            Imaginez le capital comme des liquides de masses volumiques différentes dans un cylindre. Le capital de l'assureur est le plus lourd au fond, et le capital Senior (le plus sûr) flotte au-dessus. Si aucun sinistre n'ouvre le robinet, <strong>la couche de Premium est redistribuée sous forme de rendement (Yield)</strong> :
+                                            Imagine capital as liquids of different densities in a cylinder. The insurer's capital is the heaviest at the bottom, and the Senior capital (the safest) floats on top. If no claim opens the valve, <strong>the Premium layer is redistributed as Yield</strong>:
                                         </p>
                                         <ul className="space-y-4">
                                             <li className="flex gap-3">
                                                 <span className="text-emerald-500">✓</span>
-                                                <p className="text-sm text-slate-800 dark:text-slate-300"><strong>Sponsor :</strong> Récupère son capital de First Loss.</p>
+                                                <p className="text-sm text-slate-800 dark:text-slate-300"><strong>Sponsor:</strong> Recovers its First Loss capital.</p>
                                             </li>
                                             <li className="flex gap-3">
                                                 <span className="text-emerald-500">✓</span>
-                                                <p className="text-sm text-slate-800 dark:text-slate-300"><strong>Senior (Sécurité) :</strong> Récupère son capital et perçoit un rendement de base issu du Premium (ex: 70% de l'APR global).</p>
+                                                <p className="text-sm text-slate-800 dark:text-slate-300"><strong>Senior (Security):</strong> Recovers its capital and earns a base yield from the Premium (e.g., 70% of the overall APR).</p>
                                             </li>
                                             <li className="flex gap-3">
                                                 <span className="text-emerald-500">✓</span>
-                                                <p className="text-sm text-slate-800 dark:text-slate-300"><strong>Junior (Yield Seekers) :</strong> Grâce à l'effet de levier, absorbe le reliquat du Premium (Yield) laissé par la tranche Senior, résultant en un APR sur-performant.</p>
+                                                <p className="text-sm text-slate-800 dark:text-slate-300"><strong>Junior (Yield Seekers):</strong> Through leverage, absorbs the remainder of the Premium (Yield) left by the Senior tranche, resulting in an outperforming APR.</p>
                                             </li>
                                         </ul>
                                     </>
                                 ) : (
                                     <>
                                         <h4 className="text-lg font-bold text-red-600 dark:text-red-400 mb-4 flex items-center gap-2">
-                                            The Waterfall Engine (Robinet Ouvert)
+                                            The Waterfall Engine (Open Valve)
                                         </h4>
                                         <p className="mb-6 text-slate-700 dark:text-slate-200">
-                                            En cas de sinistre validé, le robinet s'ouvre et les fonds sont retirés uniquement sur factures vérifiées. Par gravité, les tranches les plus "lourdes" situées au fond s'écoulent en premier:
+                                            In the event of a validated claim, the valve opens and funds are withdrawn only against verified invoices. By gravity, the "heaviest" tranches at the bottom flow out first:
                                         </p>
                                         <div className="grid gap-3">
                                             <div className="flex items-center gap-4 p-3 bg-red-500/10 rounded-xl border border-red-500/20">
                                                 <span className="flex-shrink-0 w-6 h-6 flex items-center justify-center bg-red-500 text-white rounded-md font-bold text-xs">1</span>
-                                                <p className="text-sm text-slate-800 dark:text-slate-200"><strong>First Loss :</strong> Le capital du Sponsor est détruit en premier.</p>
+                                                <p className="text-sm text-slate-800 dark:text-slate-200"><strong>First Loss:</strong> The Sponsor's capital is destroyed first.</p>
                                             </div>
                                             <div className="flex items-center gap-4 p-3 bg-orange-500/10 rounded-xl border border-orange-500/20">
                                                 <span className="flex-shrink-0 w-6 h-6 flex items-center justify-center bg-orange-500 text-white rounded-md font-bold text-xs">2</span>
-                                                <p className="text-sm text-slate-800 dark:text-slate-200"><strong>Premium Buffer :</strong> Les primes non distribuées épongent la perte.</p>
+                                                <p className="text-sm text-slate-800 dark:text-slate-200"><strong>Premium Buffer:</strong> Undistributed premiums absorb the loss.</p>
                                             </div>
                                             <div className="flex items-center gap-4 p-3 bg-yellow-500/10 rounded-xl border border-yellow-500/20">
                                                 <span className="flex-shrink-0 w-6 h-6 flex items-center justify-center bg-yellow-500 text-white rounded-md font-bold text-xs">3</span>
-                                                <p className="text-sm text-slate-800 dark:text-slate-200"><strong>Junior Tranche :</strong> Absorption de la perte jusqu'à épuisement.</p>
+                                                <p className="text-sm text-slate-800 dark:text-slate-200"><strong>Junior Tranche:</strong> Absorbs the loss until depleted.</p>
                                             </div>
                                             <div className="flex items-center gap-4 p-3 bg-green-500/10 rounded-xl border border-green-500/20">
                                                 <span className="flex-shrink-0 w-6 h-6 flex items-center justify-center bg-green-500 text-white rounded-md font-bold text-xs">4</span>
-                                                <p className="text-sm text-slate-800 dark:text-slate-200"><strong>Senior Tranche :</strong> N'est touchée qu'en tout dernier recours.</p>
+                                                <p className="text-sm text-slate-800 dark:text-slate-200"><strong>Senior Tranche:</strong> Only affected as a last resort.</p>
                                             </div>
                                         </div>
                                     </>
@@ -225,7 +225,7 @@ const AcademyModal = ({ isOpen, onClose, activeTheme }) => {
                     {/* SECTION 2 : YIELD SPLITTING & LEVIER */}
                     <section>
                         <h3 className="text-xl font-bold mb-6 text-slate-800 dark:text-slate-100 font-sans">
-                            2. Levier de Rendement (Yield Splitting)
+                            2. Yield Leverage (Yield Splitting)
                         </h3>
 
                         <div className="flex flex-col xl:flex-row gap-8 items-center bg-white/30 dark:bg-white/5 p-6 md:p-8 rounded-2xl border border-white/40 dark:border-white/10">
@@ -238,39 +238,39 @@ const AcademyModal = ({ isOpen, onClose, activeTheme }) => {
                             {/* Explication & Formules Mathématiques */}
                             <div className="w-full xl:w-1/2 space-y-5">
                                 <p className="text-slate-700 dark:text-slate-200 leading-relaxed">
-                                    La tranche Junior capte le reliquat des primes. Puisque la tranche Senior ne prend que 70% du rendement généré par son propre capital, les 30% restants sont redirigés vers la tranche Junior. Cela crée un effet de levier mécanique.
+                                    The Junior tranche captures the remainder of the premiums. Since the Senior tranche only takes 70% of the yield generated by its own capital, the remaining 30% is redirected to the Junior tranche. This creates a mechanical leverage effect.
                                 </p>
 
                                 {/* Bloc Formules (Style Code Terminal) */}
                                 <div className="bg-slate-900 rounded-xl p-5 shadow-inner border border-slate-700 font-mono text-sm overflow-x-auto text-emerald-400">
-                                    <div className="mb-2 text-slate-400">// 1. La tranche Senior prend 70% de l'APR de base</div>
+                                    <div className="mb-2 text-slate-400">// 1. The Senior tranche takes 70% of the base APR</div>
                                     <div className="mb-4 text-white">APR_Senior = APR_Base * 0.7</div>
 
-                                    <div className="mb-2 text-slate-400">// 2. Le reste du rendement généré va au Junior</div>
+                                    <div className="mb-2 text-slate-400">// 2. The rest of the generated yield goes to the Junior</div>
                                     <div className="mb-1 text-white">Yield_Total = (Capital_Senior + Capital_Junior) * APR_Base</div>
                                     <div className="mb-4 text-white">Yield_Junior = Yield_Total - (Capital_Senior * APR_Senior)</div>
 
-                                    <div className="mb-2 text-slate-400">// 3. L'APR final Junior est proportionnel à son petit capital</div>
+                                    <div className="mb-2 text-slate-400">// 3. The final Junior APR is proportional to its smaller capital base</div>
                                     <div className="text-white font-bold text-yellow-400">APR_Junior = Yield_Junior / Capital_Junior</div>
                                 </div>
 
                                 {/* Exemple Chiffré */}
                                 <div className="bg-indigo-50 dark:bg-indigo-900/30 p-5 rounded-xl border border-indigo-100 dark:border-indigo-800/50">
-                                    <h4 className="font-bold text-indigo-900 dark:text-indigo-200 mb-2">📊 Exemple Concret :</h4>
+                                    <h4 className="font-bold text-indigo-900 dark:text-indigo-200 mb-2">📊 Concrete Example:</h4>
                                     <ul className="text-sm space-y-2 text-indigo-800 dark:text-indigo-300">
-                                        <li>• <strong>Capital Total :</strong> 10M$ (8M$ Senior + 2M$ Junior)</li>
-                                        <li>• <strong>APR de Base :</strong> 10% (Génère 1M$ de Yield au total)</li>
-                                        <li>• <strong>APR Senior :</strong> 7% (Les Seniors reçoivent 560,000$)</li>
+                                        <li>• <strong>Total Capital:</strong> $10M ($8M Senior + $2M Junior)</li>
+                                        <li>• <strong>Base APR:</strong> 10% (Generates $1M in total Yield)</li>
+                                        <li>• <strong>Senior APR:</strong> 7% (Seniors receive $560,000)</li>
                                         <li className="pt-2 border-t border-indigo-200 dark:border-indigo-700/50">
                                             <span className="font-bold text-yellow-600 dark:text-yellow-400">
-                                                ➔ Reste pour Junior : 440,000$
+                                                ➔ Remaining for Junior: $440,000
                                             </span>
                                         </li>
                                         <li>
                                             <span className="font-bold text-emerald-600 dark:text-emerald-400 text-base">
-                                                ➔ APR Junior Final = 22%
+                                                ➔ Final Junior APR = 22%
                                             </span> <br/>
-                                            <span className="text-xs italic">(440k$ divisé par leur capital de 2M$)</span>
+                                            <span className="text-xs italic">($440k divided by their $2M capital)</span>
                                         </li>
                                     </ul>
                                 </div>

@@ -13,19 +13,19 @@ const AcademySponsorSpec = ({ activeTheme }) => {
     // Fallback pour les thèmes non développés
     const getThemeSpecificContent = () => {
         switch(activeTheme) {
-            case 'cyber': return "Cybersecurity : L'oracle repose sur un audit forensique post-mortem. L'assureur doit lier le Vault à un certificat de sécurité ou une preuve on-chain d'interruption de réseau.";
-            case 'business': return "Business Interruption : Le déclencheur est lié à des flux de trésorerie tokenisés ou des données de chaîne d'approvisionnement vérifiables par des oracles IoT.";
-            case 'flight': return "Flight Cancellation : Le Vault interroge l'API de l'aviation civile internationale. L'assureur déploie des liquidités ciblées sur des aéroports spécifiques.";
-            case 'realestate': return "Real Estate Sensors : Utilisation d'Oracles Optimistes couplés à des capteurs IoT physiques (feu, inondation, structure) dans les bâtiments certifiés.";
+            case 'cyber': return "Cybersecurity: The oracle relies on a post-mortem forensic audit. The insurer must link the Vault to a security certificate or on-chain proof of network interruption.";
+            case 'business': return "Business Interruption: The trigger is linked to tokenized cash flows or supply chain data verifiable by IoT oracles.";
+            case 'flight': return "Flight Cancellation: The Vault queries the international civil aviation API. The insurer deploys targeted liquidity to specific airports.";
+            case 'realestate': return "Real Estate Sensors: Use of Optimistic Oracles coupled with physical IoT sensors (fire, flood, structure) in certified buildings.";
             case 'maritime': return "Maritime Logistics: We use 'Smart Twistlocks' or Computer Vision to detect cargo loss. If stability sensors confirm a sinking event (Hull Loss), the Vault triggers an instant payout.";
-            default: return "Sélectionnez un thème pour voir les spécificités de l'assurance.";
+            default: return "Select a theme to see the specific insurance details.";
         }
     };
 
     return (
         <section>
             <h3 className="text-xl font-bold mb-4 text-slate-800 dark:text-slate-100 font-sans">
-                3. Spécificités Assureur ({activeTheme})
+                3. Sponsor Specifics ({activeTheme})
             </h3>
 
             {activeTheme === 'climate' ? (
@@ -41,32 +41,32 @@ const AcademySponsorSpec = ({ activeTheme }) => {
                         <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
                             <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-indigo-100 dark:bg-indigo-900 text-indigo-500 dark:text-indigo-400 shadow shrink-0 z-10">1</div>
                             <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-xl border border-indigo-200 dark:border-indigo-800 bg-white/50 dark:bg-slate-800/50 shadow-sm ml-4 md:ml-0">
-                                <h4 className="font-bold text-slate-900 dark:text-white mb-1">Les Paramètres (GPS)</h4>
-                                <p className="text-sm text-slate-700 dark:text-slate-300">L'assureur définit des paramètres basés sur des données publiques incontestables (ex: vent {'>'} 250km/h selon la NOAA). Les coordonnées géographiques sont gravées dans le Smart Contract.</p>
+                                <h4 className="font-bold text-slate-900 dark:text-white mb-1">Parameters (GPS)</h4>
+                                <p className="text-sm text-slate-700 dark:text-slate-300">The insurer defines parameters based on indisputable public data (e.g., wind {'>'} 250km/h according to NOAA). Geographical coordinates are engraved in the Smart Contract.</p>
                             </div>
                         </div>
                         {/* Étape 2 */}
                         <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
                             <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-indigo-100 dark:bg-indigo-900 text-indigo-500 dark:text-indigo-400 shadow shrink-0 z-10">2</div>
                             <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-xl border border-indigo-200 dark:border-indigo-800 bg-white/50 dark:bg-slate-800/50 shadow-sm ml-4 md:ml-0">
-                                <h4 className="font-bold text-slate-900 dark:text-white mb-1">L'Oracle UMA</h4>
-                                <p className="text-sm text-slate-700 dark:text-slate-300">Nous utilisons l'Oracle Optimiste UMA. Si une tempête frappe, une affirmation est soumise. Une période de contestation s'ouvre pour vérifier l'authenticité des données publiques.</p>
+                                <h4 className="font-bold text-slate-900 dark:text-white mb-1">The UMA Oracle</h4>
+                                <p className="text-sm text-slate-700 dark:text-slate-300">We use the UMA Optimistic Oracle. If a storm hits, an assertion is submitted. A dispute period opens to verify the authenticity of the public data.</p>
                             </div>
                         </div>
                         {/* Étape 3 */}
                         <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
                             <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-indigo-100 dark:bg-indigo-900 text-indigo-500 dark:text-indigo-400 shadow shrink-0 z-10">3</div>
                             <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-xl border border-indigo-200 dark:border-indigo-800 bg-white/50 dark:bg-slate-800/50 shadow-sm ml-4 md:ml-0">
-                                <h4 className="font-bold text-slate-900 dark:text-white mb-1">Trigger & Verrouillage</h4>
-                                <p className="text-sm text-slate-700 dark:text-slate-300">Dès validation de l'Oracle, l'état passe à `TRIGGERED`. Le Vault se verrouille totalement, interdisant tout retrait par les investisseurs.</p>
+                                <h4 className="font-bold text-slate-900 dark:text-white mb-1">Trigger & Lockdown</h4>
+                                <p className="text-sm text-slate-700 dark:text-slate-300">Upon Oracle validation, the state changes to `TRIGGERED`. The Vault locks down completely, preventing any withdrawals by investors.</p>
                             </div>
                         </div>
                         {/* Étape 4 */}
                         <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
                             <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-indigo-100 dark:bg-indigo-900 text-indigo-500 dark:text-indigo-400 shadow shrink-0 z-10">4</div>
                             <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-xl border border-indigo-200 dark:border-indigo-800 bg-white/50 dark:bg-slate-800/50 shadow-sm ml-4 md:ml-0">
-                                <h4 className="font-bold text-slate-900 dark:text-white mb-1">Résolution (Soft Default)</h4>
-                                <p className="text-sm text-slate-700 dark:text-slate-300">Exécution du Waterfall : Le capital de l'assureur est détruit en premier, suivi des primes, puis de la tranche Junior, protégeant le Senior.</p>
+                                <h4 className="font-bold text-slate-900 dark:text-white mb-1">Resolution (Soft Default)</h4>
+                                <p className="text-sm text-slate-700 dark:text-slate-300">Waterfall Execution: The insurer's capital is destroyed first, followed by premiums, then the Junior tranche, protecting the Senior.</p>
                             </div>
                         </div>
                     </div>
@@ -83,32 +83,32 @@ const AcademySponsorSpec = ({ activeTheme }) => {
                         <div className="relative flex items-center justify-between md:justify-normal md:even:flex-row-reverse group is-active">
                             <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-rose-100 dark:bg-rose-900 text-rose-500 dark:text-rose-400 shadow shrink-0 z-10">1</div>
                             <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-xl border border-rose-200 dark:border-rose-800 bg-white/50 dark:bg-slate-800/50 shadow-sm ml-4 md:ml-0">
-                                <h4 className="font-bold text-slate-900 dark:text-white mb-1">Paramètres d'Audit</h4>
-                                <p className="text-sm text-slate-700 dark:text-slate-300">Le Vault définit ce qui constitue un hack (ex: ransomware, smart contract exploit) et exige une preuve spécifique, comme un audit forensique post-mortem par une firme reconnue (ex: CrowdStrike).</p>
+                                <h4 className="font-bold text-slate-900 dark:text-white mb-1">Audit Parameters</h4>
+                                <p className="text-sm text-slate-700 dark:text-slate-300">The Vault defines what constitutes a hack (e.g., ransomware, smart contract exploit) and requires specific proof, such as a post-mortem forensic audit by a recognized firm (e.g., CrowdStrike).</p>
                             </div>
                         </div>
                         {/* Étape 2 */}
                         <div className="relative flex items-center justify-between md:justify-normal md:even:flex-row-reverse group is-active">
                             <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-rose-100 dark:bg-rose-900 text-rose-500 dark:text-rose-400 shadow shrink-0 z-10">2</div>
                             <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-xl border border-rose-200 dark:border-rose-800 bg-white/50 dark:bg-slate-800/50 shadow-sm ml-4 md:ml-0">
-                                <h4 className="font-bold text-slate-900 dark:text-white mb-1">L'Incident & La Preuve</h4>
-                                <p className="text-sm text-slate-700 dark:text-slate-300">L'entreprise subit une attaque et mandate un audit. Une fois le rapport publié (ou la preuve On-Chain du vol validée), un acteur soumet ce document au réseau UMA en tant que réclamation légitime.</p>
+                                <h4 className="font-bold text-slate-900 dark:text-white mb-1">The Incident & The Proof</h4>
+                                <p className="text-sm text-slate-700 dark:text-slate-300">The company suffers an attack and mandates an audit. Once the report is published (or the On-Chain proof of theft validated), an actor submits this document to the UMA network as a legitimate claim.</p>
                             </div>
                         </div>
                         {/* Étape 3 */}
                         <div className="relative flex items-center justify-between md:justify-normal md:even:flex-row-reverse group is-active">
                             <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-rose-100 dark:bg-rose-900 text-rose-500 dark:text-rose-400 shadow shrink-0 z-10">3</div>
                             <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-xl border border-rose-200 dark:border-rose-800 bg-white/50 dark:bg-slate-800/50 shadow-sm ml-4 md:ml-0">
-                                <h4 className="font-bold text-slate-900 dark:text-white mb-1">Tribunal Décentralisé</h4>
-                                <p className="text-sm text-slate-700 dark:text-slate-300">Contrairement à une API binaire, l'Oracle Optimiste UMA lit le rapport. Si le rapport est authentique et incontesté durant la fenêtre de litige, le piratage est validé formellement et le Vault se verrouille (`TRIGGERED`).</p>
+                                <h4 className="font-bold text-slate-900 dark:text-white mb-1">Decentralized Tribunal</h4>
+                                <p className="text-sm text-slate-700 dark:text-slate-300">Unlike a binary API, the UMA Optimistic Oracle reads the report. If the report is authentic and undisputed during the dispute window, the hack is formally validated and the Vault locks down (`TRIGGERED`).</p>
                             </div>
                         </div>
                         {/* Étape 4 */}
                         <div className="relative flex items-center justify-between md:justify-normal md:even:flex-row-reverse group is-active">
                             <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-rose-100 dark:bg-rose-900 text-rose-500 dark:text-rose-400 shadow shrink-0 z-10">4</div>
                             <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-xl border border-rose-200 dark:border-rose-800 bg-white/50 dark:bg-slate-800/50 shadow-sm ml-4 md:ml-0">
-                                <h4 className="font-bold text-slate-900 dark:text-white mb-1">Indemnisation Waterfall</h4>
-                                <p className="text-sm text-slate-700 dark:text-slate-300">Les fonds de sauvetage sont libérés. La perte financière absorbe d'abord le capital Assureur (First Loss), préservant ainsi le reste de la "Capital Stack" (Junior et Senior).</p>
+                                <h4 className="font-bold text-slate-900 dark:text-white mb-1">Waterfall Compensation</h4>
+                                <p className="text-sm text-slate-700 dark:text-slate-300">Rescue funds are released. The financial loss first absorbs the Insurer's capital (First Loss), thereby preserving the rest of the "Capital Stack" (Junior and Senior).</p>
                             </div>
                         </div>
                     </div>
@@ -131,32 +131,32 @@ const AcademySponsorSpec = ({ activeTheme }) => {
                         <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
                             <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-amber-100 dark:bg-amber-900 text-amber-600 dark:text-amber-400 shadow shrink-0 z-10">1</div>
                             <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-xl border border-amber-200 dark:border-amber-800 bg-white/50 dark:bg-slate-800/50 shadow-sm ml-4 md:ml-0">
-                                <h4 className="font-bold text-slate-900 dark:text-white mb-1">Les Paramètres (KPIs)</h4>
-                                <p className="text-sm text-slate-700 dark:text-slate-300">Le Vault est lié à des flux de trésorerie tokenisés ou des capteurs de chaîne d'approvisionnement (IoT). Le seuil critique est défini (ex: baisse de volume de 40%).</p>
+                                <h4 className="font-bold text-slate-900 dark:text-white mb-1">The Parameters (KPIs)</h4>
+                                <p className="text-sm text-slate-700 dark:text-slate-300">The Vault is linked to tokenized cash flows or supply chain sensors (IoT). The critical threshold is defined (e.g., 40% volume drop).</p>
                             </div>
                         </div>
                         {/* Étape 2 */}
                         <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
                             <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-amber-100 dark:bg-amber-900 text-amber-600 dark:text-amber-400 shadow shrink-0 z-10">2</div>
                             <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-xl border border-amber-200 dark:border-amber-800 bg-white/50 dark:bg-slate-800/50 shadow-sm ml-4 md:ml-0">
-                                <h4 className="font-bold text-slate-900 dark:text-white mb-1">L'Interruption d'Activité</h4>
-                                <p className="text-sm text-slate-700 dark:text-slate-300">Un événement bloque l'activité (rupture fournisseur, grève portuaire). Le flux de revenus on-chain chute brutalement sous le seuil critique défini au départ.</p>
+                                <h4 className="font-bold text-slate-900 dark:text-white mb-1">Business Interruption</h4>
+                                <p className="text-sm text-slate-700 dark:text-slate-300">An event blocks operations (supplier rupture, port strike). The on-chain revenue stream drops sharply below the initially defined critical threshold.</p>
                             </div>
                         </div>
                         {/* Étape 3 */}
                         <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
                             <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-amber-100 dark:bg-amber-900 text-amber-600 dark:text-amber-400 shadow shrink-0 z-10">3</div>
                             <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-xl border border-amber-200 dark:border-amber-800 bg-white/50 dark:bg-slate-800/50 shadow-sm ml-4 md:ml-0">
-                                <h4 className="font-bold text-slate-900 dark:text-white mb-1">Vérification UMA</h4>
-                                <p className="text-sm text-slate-700 dark:text-slate-300">L'Oracle analyse les données des capteurs ou la baisse des revenus. Si la chute est mathématiquement prouvée sur la blockchain, l'interruption est validée sans expert humain.</p>
+                                <h4 className="font-bold text-slate-900 dark:text-white mb-1">UMA Verification</h4>
+                                <p className="text-sm text-slate-700 dark:text-slate-300">The Oracle analyzes sensor data or the revenue drop. If the fall is mathematically proven on the blockchain, the interruption is validated without a human expert.</p>
                             </div>
                         </div>
                         {/* Étape 4 */}
                         <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
                             <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-amber-100 dark:bg-amber-900 text-amber-600 dark:text-amber-400 shadow shrink-0 z-10">4</div>
                             <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-xl border border-amber-200 dark:border-amber-800 bg-white/50 dark:bg-slate-800/50 shadow-sm ml-4 md:ml-0">
-                                <h4 className="font-bold text-slate-900 dark:text-white mb-1">Injection de Sauvetage</h4>
-                                <p className="text-sm text-slate-700 dark:text-slate-300">Le Vault se déclenche (`TRIGGERED`). Le Waterfall s'active : le capital de l'assureur est libéré pour compenser la perte d'exploitation et sauver la trésorerie de l'entreprise.</p>
+                                <h4 className="font-bold text-slate-900 dark:text-white mb-1">Rescue Injection</h4>
+                                <p className="text-sm text-slate-700 dark:text-slate-300">The Vault triggers (`TRIGGERED`). The Waterfall activates: the insurer's capital is released to compensate for the operating loss and save the company's cash flow.</p>
                             </div>
                         </div>
                     </div>
@@ -171,32 +171,32 @@ const AcademySponsorSpec = ({ activeTheme }) => {
                         <div className="relative flex items-center justify-between md:justify-normal md:even:flex-row-reverse group is-active">
                             <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-cyan-100 dark:bg-cyan-900 text-cyan-600 dark:text-cyan-400 shadow shrink-0 z-10">1</div>
                             <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-xl border border-cyan-200 dark:border-cyan-800 bg-white/50 dark:bg-slate-800/50 shadow-sm ml-4 md:ml-0">
-                                <h4 className="font-bold text-slate-900 dark:text-white mb-1">Ciblage & Liquidité</h4>
-                                <p className="text-sm text-slate-700 dark:text-slate-300">L'assureur déploie des liquidités ciblées sur des aéroports ou des numéros de vols spécifiques. Le seuil de déclenchement (annulation ou retard de X heures) est défini.</p>
+                                <h4 className="font-bold text-slate-900 dark:text-white mb-1">Targeting & Liquidity</h4>
+                                <p className="text-sm text-slate-700 dark:text-slate-300">The insurer deploys targeted liquidity to specific airports or flight numbers. The trigger threshold (cancellation or delay of X hours) is defined.</p>
                             </div>
                         </div>
                         {/* Étape 2 */}
                         <div className="relative flex items-center justify-between md:justify-normal md:even:flex-row-reverse group is-active">
                             <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-cyan-100 dark:bg-cyan-900 text-cyan-600 dark:text-cyan-400 shadow shrink-0 z-10">2</div>
                             <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-xl border border-cyan-200 dark:border-cyan-800 bg-white/50 dark:bg-slate-800/50 shadow-sm ml-4 md:ml-0">
-                                <h4 className="font-bold text-slate-900 dark:text-white mb-1">L'Annulation (L'Événement)</h4>
-                                <p className="text-sm text-slate-700 dark:text-slate-300">Le vol est annulé à cause de la météo ou d'un problème technique. Les passagers subissent un préjudice financier et logistique immédiat.</p>
+                                <h4 className="font-bold text-slate-900 dark:text-white mb-1">The Cancellation (The Event)</h4>
+                                <p className="text-sm text-slate-700 dark:text-slate-300">The flight is canceled due to weather or a technical issue. Passengers suffer immediate financial and logistical harm.</p>
                             </div>
                         </div>
                         {/* Étape 3 */}
                         <div className="relative flex items-center justify-between md:justify-normal md:even:flex-row-reverse group is-active">
                             <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-cyan-100 dark:bg-cyan-900 text-cyan-600 dark:text-cyan-400 shadow shrink-0 z-10">3</div>
                             <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-xl border border-cyan-200 dark:border-cyan-800 bg-white/50 dark:bg-slate-800/50 shadow-sm ml-4 md:ml-0">
-                                <h4 className="font-bold text-slate-900 dark:text-white mb-1">L'Oracle API</h4>
-                                <p className="text-sm text-slate-700 dark:text-slate-300">Le Vault interroge instantanément l'API de l'aviation civile internationale (ex: FlightAware, Eurocontrol). L'annulation est confirmée de manière déterministe.</p>
+                                <h4 className="font-bold text-slate-900 dark:text-white mb-1">The API Oracle</h4>
+                                <p className="text-sm text-slate-700 dark:text-slate-300">The Vault instantly queries the international civil aviation API (e.g., FlightAware, Eurocontrol). The cancellation is confirmed deterministically.</p>
                             </div>
                         </div>
                         {/* Étape 4 */}
                         <div className="relative flex items-center justify-between md:justify-normal md:even:flex-row-reverse group is-active">
                             <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-cyan-100 dark:bg-cyan-900 text-cyan-600 dark:text-cyan-400 shadow shrink-0 z-10">4</div>
                             <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-xl border border-cyan-200 dark:border-cyan-800 bg-white/50 dark:bg-slate-800/50 shadow-sm ml-4 md:ml-0">
-                                <h4 className="font-bold text-slate-900 dark:text-white mb-1">Indemnisation Automatique</h4>
-                                <p className="text-sm text-slate-700 dark:text-slate-300">Le Vault se déclenche. Sans aucune paperasse ni intervention humaine, le capital First Loss est liquidé pour indemniser instantanément les assurés.</p>
+                                <h4 className="font-bold text-slate-900 dark:text-white mb-1">Automatic Compensation</h4>
+                                <p className="text-sm text-slate-700 dark:text-slate-300">The Vault triggers. Without any paperwork or human intervention, the First Loss capital is liquidated to instantly compensate the insured.</p>
                             </div>
                         </div>
                     </div>
@@ -220,32 +220,32 @@ const AcademySponsorSpec = ({ activeTheme }) => {
                         <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
                             <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-rose-100 dark:bg-rose-900 text-rose-600 dark:text-rose-400 shadow shrink-0 z-10">1</div>
                             <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-xl border border-rose-200 dark:border-rose-800 bg-white/50 dark:bg-slate-800/50 shadow-sm ml-4 md:ml-0">
-                                <h4 className="font-bold text-slate-900 dark:text-white mb-1">Capteurs Certifiés (IoT)</h4>
-                                <p className="text-sm text-slate-700 dark:text-slate-300">L'immeuble est équipé de capteurs IoT physiques certifiés (feu, inondation, structure) liés au Smart Contract. Les seuils de déclenchement sont gravés on-chain.</p>
+                                <h4 className="font-bold text-slate-900 dark:text-white mb-1">Certified Sensors (IoT)</h4>
+                                <p className="text-sm text-slate-700 dark:text-slate-300">The building is equipped with certified physical IoT sensors (fire, flood, structure) linked to the Smart Contract. Trigger thresholds are engraved on-chain.</p>
                             </div>
                         </div>
                         {/* Étape 2 */}
                         <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
                             <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-rose-100 dark:bg-rose-900 text-rose-600 dark:text-rose-400 shadow shrink-0 z-10">2</div>
                             <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-xl border border-rose-200 dark:border-rose-800 bg-white/50 dark:bg-slate-800/50 shadow-sm ml-4 md:ml-0">
-                                <h4 className="font-bold text-slate-900 dark:text-white mb-1">Sinistre Physique</h4>
-                                <p className="text-sm text-slate-700 dark:text-slate-300">Un incident survient (fuite d'eau massive, départ de feu). Les capteurs enregistrent instantanément le dépassement de seuil (ex: humidité {'>'} 90%).</p>
+                                <h4 className="font-bold text-slate-900 dark:text-white mb-1">Physical Claim</h4>
+                                <p className="text-sm text-slate-700 dark:text-slate-300">An incident occurs (massive water leak, fire outbreak). The sensors instantly record the threshold being exceeded (e.g., humidity {'>'} 90%).</p>
                             </div>
                         </div>
                         {/* Étape 3 */}
                         <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
                             <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-rose-100 dark:bg-rose-900 text-rose-600 dark:text-rose-400 shadow shrink-0 z-10">3</div>
                             <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-xl border border-rose-200 dark:border-rose-800 bg-white/50 dark:bg-slate-800/50 shadow-sm ml-4 md:ml-0">
-                                <h4 className="font-bold text-slate-900 dark:text-white mb-1">Validation Optimiste</h4>
-                                <p className="text-sm text-slate-700 dark:text-slate-300">Les données sont poussées vers l'Oracle Optimiste UMA. Une fenêtre de litige s'ouvre. Si aucune triche n'est prouvée (ex: faux positif du capteur), le sinistre est validé mathématiquement.</p>
+                                <h4 className="font-bold text-slate-900 dark:text-white mb-1">Optimistic Validation</h4>
+                                <p className="text-sm text-slate-700 dark:text-slate-300">Data is pushed to the UMA Optimistic Oracle. A dispute window opens. If no cheating is proven (e.g., sensor false positive), the claim is validated mathematically.</p>
                             </div>
                         </div>
                         {/* Étape 4 */}
                         <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
                             <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-rose-100 dark:bg-rose-900 text-rose-600 dark:text-rose-400 shadow shrink-0 z-10">4</div>
                             <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-xl border border-rose-200 dark:border-rose-800 bg-white/50 dark:bg-slate-800/50 shadow-sm ml-4 md:ml-0">
-                                <h4 className="font-bold text-slate-900 dark:text-white mb-1">Liquidation Immédiate</h4>
-                                <p className="text-sm text-slate-700 dark:text-slate-300">Le Vault se déclenche (`TRIGGERED`). Le capital First Loss indemnise instantanément le propriétaire pour lancer les réparations urgentes sans attendre l'expert d'assurance.</p>
+                                <h4 className="font-bold text-slate-900 dark:text-white mb-1">Immediate Liquidation</h4>
+                                <p className="text-sm text-slate-700 dark:text-slate-300">The Vault triggers (`TRIGGERED`). The First Loss capital instantly compensates the owner to launch urgent repairs without waiting for the insurance expert.</p>
                             </div>
                         </div>
                     </div>
@@ -265,16 +265,16 @@ const AcademySponsorSpec = ({ activeTheme }) => {
                         <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
                             <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 shadow shrink-0 z-10">1</div>
                             <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-xl border border-blue-200 dark:border-blue-800 bg-white/50 dark:bg-slate-800/50 shadow-sm ml-4 md:ml-0">
-                                <h4 className="font-bold text-slate-900 dark:text-white mb-1">Paramètres de Cargaison</h4>
-                                <p className="text-sm text-slate-700 dark:text-slate-300">Le contrat est lié à un porte-conteneurs. Il définit précisément le prix d'indemnisation indexé au poids exact ou au nombre d'EVP (Équivalent Vingt Pieds) perdus en mer.</p>
+                                <h4 className="font-bold text-slate-900 dark:text-white mb-1">Cargo Parameters</h4>
+                                <p className="text-sm text-slate-700 dark:text-slate-300">The contract is linked to a container ship. It precisely defines the compensation price indexed to the exact weight or the number of TEUs (Twenty-foot Equivalent Units) lost at sea.</p>
                             </div>
                         </div>
                         {/* Étape 2 */}
                         <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
                             <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 shadow shrink-0 z-10">2</div>
                             <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-xl border border-blue-200 dark:border-blue-800 bg-white/50 dark:bg-slate-800/50 shadow-sm ml-4 md:ml-0">
-                                <h4 className="font-bold text-slate-900 dark:text-white mb-1">L'Avarie (Perte en mer)</h4>
-                                <p className="text-sm text-slate-700 dark:text-slate-300">Le navire affronte une violente tempête ou un fort roulis. Plusieurs conteneurs se détachent de leurs ancrages et tombent par-dessus bord.</p>
+                                <h4 className="font-bold text-slate-900 dark:text-white mb-1">The Damage (Loss at Sea)</h4>
+                                <p className="text-sm text-slate-700 dark:text-slate-300">The ship faces a violent storm or heavy rolling. Several containers detach from their moorings and fall overboard.</p>
                             </div>
                         </div>
                         {/* Étape 3 */}
@@ -282,15 +282,15 @@ const AcademySponsorSpec = ({ activeTheme }) => {
                             <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 shadow shrink-0 z-10">3</div>
                             <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-xl border border-blue-200 dark:border-blue-800 bg-white/50 dark:bg-slate-800/50 shadow-sm ml-4 md:ml-0">
                                 <h4 className="font-bold text-slate-900 dark:text-white mb-1">Computer Vision & Twistlocks</h4>
-                                <p className="text-sm text-slate-700 dark:text-slate-300">Les capteurs de verrouillage (Smart Twistlocks) et les caméras détectent la rupture. L'Oracle UMA valide la quantité exacte et le poids des boîtes manquantes à l'appel.</p>
+                                <p className="text-sm text-slate-700 dark:text-slate-300">Locking sensors (Smart Twistlocks) and cameras detect the rupture. The UMA Oracle validates the exact quantity and weight of the missing boxes.</p>
                             </div>
                         </div>
                         {/* Étape 4 */}
                         <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
                             <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 shadow shrink-0 z-10">4</div>
                             <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-xl border border-blue-200 dark:border-blue-800 bg-white/50 dark:bg-slate-800/50 shadow-sm ml-4 md:ml-0">
-                                <h4 className="font-bold text-slate-900 dark:text-white mb-1">Indemnisation au Prorata</h4>
-                                <p className="text-sm text-slate-700 dark:text-slate-300">Le Vault libère les fonds. Le capital First Loss indemnise le propriétaire au centime près, proportionnellement à la perte vérifiée (poids/unités), évitant les longs litiges d'assurance traditionnels.</p>
+                                <h4 className="font-bold text-slate-900 dark:text-white mb-1">Pro Rata Compensation</h4>
+                                <p className="text-sm text-slate-700 dark:text-slate-300">The Vault releases the funds. The First Loss capital compensates the owner to the cent, proportional to the verified loss (weight/units), avoiding long traditional insurance disputes.</p>
                             </div>
                         </div>
                     </div>
