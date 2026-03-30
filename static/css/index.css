@@ -1,13 +1,13 @@
 :root {
-  /* Palette de base (Mode Sombre par défaut pour l'impact) */
-  --bg-main: #0f172a;       /* Dark Blue/Slate */
-  --bg-nav: #0F1B2A;       /* Dark Blue/Slate */
-  --bg-secondary: #1e293b;  /* Lighter Slate */
-  --accent: #B5E833;        /* MOEBA Green */
+  /* Palette de base Sanzo Wada "Iron Blue" (Mode Sombre par défaut) */
+  --bg-main: #24333C;       /* Iron Blue profond (Fond principal) */
+  --bg-nav: #2F414D;        /* Navigation légèrement contrastée */
+  --bg-secondary: #2A3B45;  /* Nuance intermédiaire pour les survols */
+  --accent: #B5E833;        /* MOEBA Green (inchangé) */
   --accent-hover: #C2FC2D;
   --text-main: #f8fafc;
   --text-muted: #94a3b8;
-  --card-bg: rgba(30, 41, 59, 0.7);
+  --card-bg: rgba(42, 59, 69, 0.7); /* Transparence basée sur le Iron Blue */
   --card-border: rgba(255, 255, 255, 0.1);
 
   /* Layout */
@@ -15,14 +15,14 @@
   --header-height: 65px;
 }
 
-/* Light Mode Override (activé par JS) */
+/* Light Mode Override (activé par JS) - Blanc clinique pur & pro */
 body:not(.dark-theme) {
-    --bg-main: #f0f9ff;
-    --bg-nav: #F2FCFC;
-    --bg-secondary: #e0f2fe;
+    --bg-main: #F4F7F8;       /* Blanc glacé très subtil (Hint of Iron Blue) */
+    --bg-nav: #EAF0F2;        /* Navigation légèrement teintée pour délimiter */
+    --bg-secondary: #FFFFFF;
     --text-main: #0f172a;
     --text-muted: #475569;
-    --card-bg: #F2FFFC;
+    --card-bg: #FFFFFF;       /* Cartes en blanc pur pour contraster avec le fond */
     --card-border: rgba(0, 0, 0, 0.05);
 }
 
