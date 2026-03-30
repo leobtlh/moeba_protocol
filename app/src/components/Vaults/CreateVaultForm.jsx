@@ -278,7 +278,8 @@ const CreateVaultForm = ({ isExpanded, onToggle, onCreate, userAddress, activeTh
             theme: activeTheme,
             category: newVaultData.category,
             sponsor: "Simulation SA", // On utilise l'entité vérifiée du KYB de simulation
-            description: finalDescription,
+//             description: finalDescription,
+            description: `Parametric insurance for ${newVaultData.name}. Category: ${newVaultData.category}. Triggered by official UMA data.`,
             totalCapacity: capVal + premiumVal,
             claimAmount: claimVal,
             juniorCapital: juniorVal,

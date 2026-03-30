@@ -13,6 +13,17 @@ import { useToast } from '../context/ToastContext.jsx';
 import { getTrancheAprs, calculatePayoutDetails, isVaultStarted } from '../utils/finance.js';
 import { formatCurrency } from '../utils/formatting.js';
 
+
+const ConditionRow = ({ label, value, subtext }) => (
+    <div className="flex flex-col sm:flex-row sm:items-baseline sm:gap-2 border-b border-slate-100 dark:border-slate-700/50 pb-1.5 mb-1.5 last:border-0 last:pb-0 last:mb-0">
+        <span className="text-slate-500 dark:text-slate-400 text-sm font-medium sm:min-w-[220px]">{label} :</span>
+        <div>
+            <span className="font-bold text-slate-900 dark:text-white">{value}</span>
+            {subtext && <span className="text-xs text-slate-400 dark:text-slate-500 font-normal ml-2">({subtext})</span>}
+        </div>
+    </div>
+);
+
 const VaultDetailsPage = ({ vaultId, onBack }) => {
     const { vaults, depositToVault, withdrawFromVault, claimFromVault, initializeVault, triggerOracle } = useData();
     const { walletConnected, userFullAddress, getAssetBalance } = useWeb3();
@@ -208,8 +219,27 @@ const VaultDetailsPage = ({ vaultId, onBack }) => {
                         <h4 className="text-lg font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-4 flex items-center gap-2">
                             <FileText className="h-5 w-5 text-blue-600 dark:text-blue-400"/> Trigger Conditions
                         </h4>
-                        <div className="bg-slate-50 dark:bg-slate-900/50 p-6 rounded-xl border border-slate-100 dark:border-slate-700 text-sm text-slate-700 dark:text-slate-300 whitespace-pre-line leading-relaxed">
-                            {selectedVault.description || "No detailed description provided by the sponsor."}
+                        <div className="bg-slate-50 dark:bg-slate-900/50 p-6 rounded-xl border border-slate-100 dark:border-slate-700">
+                            {/* On vérifie si c'est une description "objet" (JSX) ou si on doit la générer */}
+                            {typeof selectedVault.description === 'object' ? (
+                                selectedVault.description
+                            ) : (
+                                <div className="flex flex-col gap-5 font-sans text-sm">
+                                    <div className="space-y-2">
+                                        <h5 className="font-extrabold text-slate-900 dark:text-white uppercase tracking-wider text-[10px] mb-3 opacity-50">
+                                            Oracle Resolution Specs
+                                        </h5>
+                                        <ConditionRow label="Insured Entity" value={selectedVault.sponsor} />
+                                        <ConditionRow label="Protected Risk" value={selectedVault.name} />
+                                        <ConditionRow label="Coverage Period" value={`${selectedVault.startDate} to ${selectedVault.maturityDate}`} />
+                                        <ConditionRow
+                                            label="Trigger Metric"
+                                            value={selectedVault.category || "Parametric Trigger"}
+                                            subtext="Verified via UMA Optimistic Oracle"
+                                        />
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </section>
 
