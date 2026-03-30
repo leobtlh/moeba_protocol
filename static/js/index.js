@@ -353,6 +353,9 @@ const sections = document.querySelectorAll(".page");
 let currentSection = 0;
 let isScrolling = false;
 
+// NOUVEAU : Fonction pour détecter si on est sur un écran mobile/tablette
+const isMobile = () => window.innerWidth <= 768;
+
 function smoothScrollTo(targetY, duration = 1500) {
   const startY = window.scrollY;
   const diff = targetY - startY;
@@ -375,8 +378,11 @@ function smoothScrollTo(targetY, duration = 1500) {
   requestAnimationFrame(step);
 }
 
-// GESTION WHEEL (MOLETTE)
+// GESTION WHEEL (MOLETTE - ORDINATEUR)
 window.addEventListener("wheel", (e) => {
+  // On désactive l'interception si on est sur mobile
+  if (isMobile()) return;
+
   // Si une carte est ouverte, on désactive le scroll automatique des sections
   if (document.body.classList.contains('modal-open')) return;
 
@@ -400,34 +406,36 @@ window.addEventListener("wheel", (e) => {
 // --- GESTION TOUCH (MOBILE) ---
 let touchStartY = 0;
 
+// On passe passive à true pour améliorer les performances natives,
+// et on bloque l'interception JS si on est sur mobile pour laisser le navigateur faire.
 window.addEventListener('touchstart', (e) => {
+    if (isMobile()) return;
     touchStartY = e.touches[0].clientY;
-}, { passive: false });
+}, { passive: true });
 
 window.addEventListener('touchend', (e) => {
+    if (isMobile()) return; // On laisse le scroll natif hyper fluide du téléphone gérer
     if (document.body.classList.contains('modal-open')) return;
     if (isScrolling) return;
 
     const touchEndY = e.changedTouches[0].clientY;
     const diffY = touchStartY - touchEndY;
-    const threshold = 50; // Sensibilité du swipe
+    const threshold = 50;
 
     if (Math.abs(diffY) > threshold) {
         if (diffY > 0 && currentSection < sections.length - 1) {
-            // Swipe vers le haut -> Section suivante
             currentSection++;
             isScrolling = true;
             smoothScrollTo(sections[currentSection].offsetTop, 1000);
             setTimeout(() => { isScrolling = false; }, 800);
         } else if (diffY < 0 && currentSection > 0) {
-            // Swipe vers le bas -> Section précédente
             currentSection--;
             isScrolling = true;
             smoothScrollTo(sections[currentSection].offsetTop, 1000);
             setTimeout(() => { isScrolling = false; }, 800);
         }
     }
-}, { passive: false });
+}, { passive: true });
 
 
 // --- GESTION DES CLICS MENU (NAVIGATION FLUIDE) ---
