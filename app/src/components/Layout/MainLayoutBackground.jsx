@@ -141,7 +141,6 @@ export const FlightBackground = () => (
 
                 {/* Balises et Avions */}
                 <circle cx="150" cy="650" r="5" className="fill-cyan-400 animate-pulse" />
-                <circle cx="720" cy="400" r="8" className="fill-cyan-500 animate-ping" />
                 <circle cx="1350" cy="350" r="5" className="fill-cyan-400" />
                 <circle cx="300" cy="150" r="5" className="fill-cyan-400" />
                 <circle cx="1200" cy="650" r="5" className="fill-cyan-400 animate-pulse" />

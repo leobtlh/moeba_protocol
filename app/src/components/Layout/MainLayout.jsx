@@ -9,17 +9,22 @@ import {
     MaritimeBackground
 } from './MainLayoutBackground';
 
-// Dictionnaire des fonds dynamiques selon la catégorie (Couleurs)
+
+// Dictionnaire des fonds principaux basés sur le "Dictionary of Color Combinations"
 const themeBackgrounds = {
-    climate: "bg-sky-50 dark:bg-sky-900",
-    cyber: "bg-rose-50 dark:bg-rose-950",
-    business: "bg-amber-50 dark:bg-amber-500",
-    flight: "bg-cyan-50 dark:bg-blue-300",
-    realestate: "bg-pink-50 dark:bg-pink-400",
-    maritime: "bg-blue-50 dark:bg-cyan-400",
+    // Climate (Hint of Iron Blue) : Un blanc glacé très pur
+    climate: "bg-[#F4F7F8] dark:bg-[#24333C]",
+    // Cyber (Hint of Plum) : Un blanc avec un infime soupçon poudré
+    cyber: "bg-[#F8F5F6] dark:bg-[#2C1721]",
+    // Business (Hint of Sepia) : Un blanc ivoire très léger
+    business: "bg-[#F9F7F5] dark:bg-[#33251B]",
+    // Flight (Hint of Prussian Blue) : Un blanc atmosphérique
+    flight: "bg-[#F3F7F9] dark:bg-[#152A3B]",
+    // Real Estate (Hint of Maroon) : Un blanc chaud, presque plâtre
+    realestate: "bg-[#FDF7F8] dark:bg-[#4E2028]",
+    // Maritime (Hint of Midnight Blue) : Un blanc écume d'eau
+    maritime: "bg-[#F2F7F7] dark:bg-[#11232D]",
 };
-
-
 
 
 // ============================================================================

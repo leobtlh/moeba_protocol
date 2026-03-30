@@ -7,24 +7,32 @@ import { useWeb3 } from '../../context/Web3Context';
 import ConnectWalletModal from '../Modals/ConnectWalletModal';
 import moebaLogo from '../../assets/img/IconTest04.png';
 
-// --- THEMES ---
+
+// --- THEMES : Accents couleurs tirés de Wada ---
 const THEMES = [
-    { id: 'climate', label: 'Climate & Weather', color: 'text-violet-600 dark:text-violet-400' },
-    { id: 'cyber', label: 'Cybersecurity', color: 'text-red-600 dark:text-red-500' },
-    { id: 'business', label: 'Business Interruption', color: 'text-yellow-500 dark:text-amber-500' },
-    { id: 'flight', label: 'Flight Cancellation', color: 'text-teal-500 dark:text-teal-500' },
-    { id: 'realestate', label: 'Real Estate Sensors', color: 'text-pink-500 dark:text-pink-400' },
-    { id: 'maritime', label: 'Maritime Logistics', color: 'text-cyan-500 dark:text-cyan-400' },
+    // Wada : Water Blue
+    { id: 'climate', label: 'Climate & Weather', color: 'text-[#5B7B88] dark:text-[#81A3A7]' },
+    // Wada : Old Rose
+    { id: 'cyber', label: 'Cybersecurity', color: 'text-[#98596B] dark:text-[#C77B8D]' },
+    // Wada : Mustard
+    { id: 'business', label: 'Business Interruption', color: 'text-[#A87B3F] dark:text-[#D4A35B]' },
+    // Wada : Cerulean Blue
+    { id: 'flight', label: 'Flight Cancellation', color: 'text-[#2E6C88] dark:text-[#5BA1C0]' },
+    // Wada : Rose Pink (Très distinct du sépia business)
+    { id: 'realestate', label: 'Real Estate Sensors', color: 'text-[#B03F50] dark:text-[#ED969E]' },
+    // Wada : Peacock Green
+    { id: 'maritime', label: 'Maritime Logistics', color: 'text-[#185D64] dark:text-[#3BA6B0]' },
 ];
 
-// --- NOUVEAU : Dictionnaire des couleurs de la Navbar selon le thème ---
+// --- Dictionnaire des combinaisons pour la Navbar ---
+// Les couleurs de fond de la nav sont légèrement décalées par rapport au MainLayout pour créer l'association de Wada
 const navBackgrounds = {
-    climate: "bg-sky-50/90 dark:bg-sky-950/90 border-sky-200/50 dark:border-sky-800/50",
-    cyber: "bg-rose-50/90 dark:bg-rose-900/90 border-rose-200/50 dark:border-rose-800/50",
-    business: "bg-amber-50/90 dark:bg-amber-600/90 border-amber-200/50 dark:border-amber-800/50",
-    flight: "bg-cyan-50/90 dark:bg-blue-400/90 border-cyan-200/50 dark:border-cyan-800/50",
-    realestate: "bg-pink-50/90 dark:bg-pink-500/90 border-pink-200/50 dark:border-pink-800/50",
-    maritime: "bg-blue-50/90 dark:bg-cyan-500/90 border-blue-200/50 dark:border-blue-800/50",
+    climate: "bg-[#EAF0F2]/90 dark:bg-[#2F414D]/90 border-[#5B7B88]/20 dark:border-[#81A3A7]/30",
+    cyber: "bg-[#F3EAED]/90 dark:bg-[#422332]/90 border-[#98596B]/20 dark:border-[#C77B8D]/30",
+    business: "bg-[#F2ECE4]/90 dark:bg-[#4C3729]/90 border-[#A87B3F]/20 dark:border-[#D4A35B]/30",
+    flight: "bg-[#E9F0F4]/90 dark:bg-[#1E3E56]/90 border-[#2E6C88]/20 dark:border-[#5BA1C0]/30",
+    realestate: "bg-[#F7EBEF]/90 dark:bg-[#6A2B37]/90 border-[#B03F50]/20 dark:border-[#ED969E]/30",
+    maritime: "bg-[#E6F0F1]/90 dark:bg-[#183545]/90 border-[#185D64]/20 dark:border-[#3BA6B0]/30",
 };
 
 const Navbar = ({ activeView, setActiveView, activeTheme, setActiveTheme, isLearnMode, setIsLearnMode }) => {
