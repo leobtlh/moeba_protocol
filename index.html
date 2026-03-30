@@ -28,6 +28,7 @@
                         <div class="hide-menu">
                             <a class="stick" href="#">│</a>
                             <a class="nav-link" data-i18n="home" href="#home">Home</a><span class="stick"> · </span>
+                            <a class="nav-link" data-i18n="usecases" href="#usecases">Use Cases</a><span class="stick"> · </span>
                             <a class="nav-link" data-i18n="concepts" href="#concepts">Architecture</a><span class="stick"> · </span>
                             <a class="nav-link" data-i18n="mechanics" href="#mechanics">Mechanics</a><span class="stick"> · </span>
                             <a class="nav-link" data-i18n="regulation" href="#regulation">Compliance</a><span class="stick"> · </span>
@@ -62,7 +63,7 @@
                     <div class="badge" data-i18n="badge_hpiv">Hybrid Parametric Insurance Vault (HPIV)</div>
                     <h1 class="main-title" data-i18n="main_title" style="font-size: 3.5rem;">Decentralized Parametric Insurance Infrastructure.</h1>
                     <p class="subtitle" data-i18n="sub_title">
-                        The solution to the binary risk of traditional Cat Bonds.<br>
+                        The solution to the binary risk of traditional Cat Bonds and Insurance.<br>
                         A multi-tranche architecture on ERC-4626 allowing "Soft Default" and Fully Funded solvency.
                     </p>
 
@@ -80,6 +81,87 @@
                             <span class="stat-label" data-i18n="compliance">Swiss Compliance (LSA)</span>
                         </div>
                     </div>
+                </div>
+            </main>
+        </section>
+
+        <section id="usecases" class="page page-tech">
+            <main class="content-wrapper">
+                <h2 class="section-title" data-i18n="usecases_title">Supported Risk Categories</h2>
+                <p class="section-desc" data-i18n="usecases_desc">An agnostic infrastructure driven by UMA Oracles and IoT sensors for all measurable parametric risks.</p>
+
+                <div class="bento-grid">
+                    <article class="card" data-card="uc1">
+                        <div class="card-header">
+                            <div class="card-icon"><span style="font-size: 24px;">🌍</span></div>
+                            <button class="close-btn" aria-label="Fermer">×</button>
+                        </div>
+                        <h3 data-i18n="uc_climate_title">Climate & Weather</h3>
+                        <p data-i18n="uc_climate_desc">Parametric Cat Bonds for natural disasters.</p>
+                        <div class="card-details">
+                            <p data-i18n="uc_climate_det">Triggered by objective data (NOAA, USGS): Hurricanes (wind speed), Earthquakes (magnitude), Wildfires (acres burned), and Floods.</p>
+                        </div>
+                    </article>
+
+                    <article class="card" data-card="uc2">
+                        <div class="card-header">
+                            <div class="card-icon"><span style="font-size: 24px;">🏢</span></div>
+                            <button class="close-btn" aria-label="Fermer">×</button>
+                        </div>
+                        <h3 data-i18n="uc_realestate_title">Real Estate (IoT)</h3>
+                        <p data-i18n="uc_realestate_desc">Automated coverage using on-site hardware sensors.</p>
+                        <div class="card-details">
+                            <p data-i18n="uc_realestate_det">Triggered directly by smart buildings: Fires (continuous high temperature), Indoor Flooding (wall water-level detectors), and Seismic Damage (accelerometers).</p>
+                        </div>
+                    </article>
+
+                    <article class="card" data-card="uc3">
+                        <div class="card-header">
+                            <div class="card-icon"><span style="font-size: 24px;">⚓</span></div>
+                            <button class="close-btn" aria-label="Fermer">×</button>
+                        </div>
+                        <h3 data-i18n="uc_maritime_title">Maritime (IoT)</h3>
+                        <p data-i18n="uc_maritime_desc">Supply chain and vessel telemetry protection.</p>
+                        <div class="card-details">
+                            <p data-i18n="uc_maritime_det">Triggered by onboard vessel sensors: Critical incidents/sinking (sustained tilt angle via gyroscopes) and Cargo Spoilage (container temperature threshold exceeded).</p>
+                        </div>
+                    </article>
+
+                    <article class="card" data-card="uc4">
+                        <div class="card-header">
+                            <div class="card-icon"><span style="font-size: 24px;">💻</span></div>
+                            <button class="close-btn" aria-label="Fermer">×</button>
+                        </div>
+                        <h3 data-i18n="uc_cyber_title">Cyber Security</h3>
+                        <p data-i18n="uc_cyber_desc">On-chain native digital risk mitigation.</p>
+                        <div class="card-details">
+                            <p data-i18n="uc_cyber_det">Triggered by API & Blockchain data: Smart Contract Exploits (stolen funds tracking) and massive IT System/API outages (continuous downtime hours).</p>
+                        </div>
+                    </article>
+
+                    <article class="card" data-card="uc5">
+                        <div class="card-header">
+                            <div class="card-icon"><span style="font-size: 24px;">📉</span></div>
+                            <button class="close-btn" aria-label="Fermer">×</button>
+                        </div>
+                        <h3 data-i18n="uc_business_title">Business Interruption</h3>
+                        <p data-i18n="uc_business_desc">Corporate financial and operational buffers.</p>
+                        <div class="card-details">
+                            <p data-i18n="uc_business_det">Triggered by verifiable corporate metrics: Severe Revenue Drops (vs 30-day moving average) and Critical Supply Chain Delivery Delays.</p>
+                        </div>
+                    </article>
+
+                    <article class="card" data-card="uc6">
+                        <div class="card-header">
+                            <div class="card-icon"><span style="font-size: 24px;">✈️</span></div>
+                            <button class="close-btn" aria-label="Fermer">×</button>
+                        </div>
+                        <h3 data-i18n="uc_flight_title">Flight & Travel</h3>
+                        <p data-i18n="uc_flight_desc">Aviation industry and tourism coverage.</p>
+                        <div class="card-details">
+                            <p data-i18n="uc_flight_det">Triggered by aviation authorities and flight APIs: Mass Flight Cancellations, Official Airspace Closures, and Airport Strikes.</p>
+                        </div>
+                    </article>
                 </div>
             </main>
         </section>

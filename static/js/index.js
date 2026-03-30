@@ -16,6 +16,7 @@ const translations = {
     fr: {
         // Navigation & General
         home: "Accueil",
+        usecases: "Cas d'usage",
         concepts: "Architecture",
         mechanics: "Mécanique",
         regulation: "Conformité",
@@ -27,10 +28,32 @@ const translations = {
         // Hero Section
         badge_hpiv: "Hybrid Parametric Insurance Vault (HPIV)",
         main_title: "Infrastructure Décentralisée d'Assurance Paramétrique.",
-        sub_title: "La solution au risque binaire des Cat Bonds traditionnels.<br>Une architecture multi-tranches sur ERC-4626 permettant un \"Soft Default\" et une solvabilité Fully Funded.",
+        sub_title: "La solution au risque binaire des Cat Bonds et assurances traditionnelles.<br>Une architecture multi-tranches sur ERC-4626 permettant un \"Soft Default\" et une solvabilité Fully Funded.",
         junior_senior: "Levier Junior / Sécurité Senior",
         liquidity: "Liquidité Standardisée",
         compliance: "Conformité Suisse (LSA)",
+
+        // NOUVEAU : USE CASES (Cas d'usage)
+        usecases_title: "Catégories de Risques Supportées",
+        usecases_desc: "Une infrastructure agnostique pilotée par Oracles UMA et capteurs IoT pour tous les risques paramétriques.",
+        uc_climate_title: "Climat & Météo",
+        uc_climate_desc: "Cat Bonds paramétriques pour les catastrophes naturelles.",
+        uc_climate_det: "Déclenchement via données objectives (NOAA, USGS) : Ouragans (vitesse du vent), Séismes (magnitude), Feux de forêt (surface brûlée) et Inondations.",
+        uc_realestate_title: "Immobilier (IoT)",
+        uc_realestate_desc: "Couverture automatisée via capteurs matériels sur site.",
+        uc_realestate_det: "Déclenchement direct par les bâtiments connectés : Incendies (température élevée continue), Inondations (capteurs muraux) et Dégâts sismiques (accéléromètres).",
+        uc_maritime_title: "Maritime (IoT)",
+        uc_maritime_desc: "Protection de la chaîne d'approvisionnement et télémétrie des navires.",
+        uc_maritime_det: "Déclenchement par capteurs embarqués : Incidents critiques/naufrages (angle d'inclinaison soutenu via gyroscopes) et Perte de cargaison (dépassement de seuil de température).",
+        uc_cyber_title: "Cyber Sécurité",
+        uc_cyber_desc: "Atténuation native on-chain des risques numériques.",
+        uc_cyber_det: "Déclenchement par API & données Blockchain : Failles de Smart Contracts (suivi des fonds volés) et Pannes massives d'infrastructures IT (heures d'arrêt continu).",
+        uc_business_title: "Pertes d'Exploitation",
+        uc_business_desc: "Amortisseurs financiers et opérationnels pour entreprises.",
+        uc_business_det: "Déclenchement sur métriques vérifiables : Chutes de revenus sévères (vs moyenne mobile sur 30 jours) et Retards critiques de la chaîne d'approvisionnement.",
+        uc_flight_title: "Vols & Voyages",
+        uc_flight_desc: "Couverture de l'industrie aéronautique et du tourisme.",
+        uc_flight_det: "Déclenchement via autorités de l'aviation et API de vols : Annulations massives, Fermetures officielles de l'espace aérien et Grèves d'aéroports.",
 
         // Section Architecture (Concepts)
         multi_slice: "Architecture Multi-Tranches",
@@ -138,6 +161,7 @@ const translations = {
     en: {
         // Navigation & General
         home: "Home",
+        usecases: "Use Cases",
         concepts: "Architecture",
         mechanics: "Mechanics",
         regulation: "Compliance",
@@ -149,10 +173,32 @@ const translations = {
         // Hero Section
         badge_hpiv: "Hybrid Parametric Insurance Vault (HPIV)",
         main_title: "Decentralized Parametric Insurance Infrastructure.",
-        sub_title: "The solution to the binary risk of traditional Cat Bonds.<br>A multi-tranche architecture on ERC-4626 allowing \"Soft Default\" and Fully Funded solvency.",
+        sub_title: "The solution to the binary risk of traditional Cat Bonds and Insurance.<br>A multi-tranche architecture on ERC-4626 allowing \"Soft Default\" and Fully Funded solvency.",
         junior_senior: "Junior leverage / Senior security",
         liquidity: "Standardized Liquidity",
         compliance: "Swiss Compliance (LSA)",
+
+        // NEW : USE CASES
+        usecases_title: "Supported Risk Categories",
+        usecases_desc: "An agnostic infrastructure driven by UMA Oracles and IoT sensors for all measurable parametric risks.",
+        uc_climate_title: "Climate & Weather",
+        uc_climate_desc: "Parametric Cat Bonds for natural disasters.",
+        uc_climate_det: "Triggered by objective data (NOAA, USGS): Hurricanes (wind speed), Earthquakes (magnitude), Wildfires (acres burned), and Floods.",
+        uc_realestate_title: "Real Estate (IoT)",
+        uc_realestate_desc: "Automated coverage using on-site hardware sensors.",
+        uc_realestate_det: "Triggered directly by smart buildings: Fires (continuous high temperature), Indoor Flooding (wall water-level detectors), and Seismic Damage (accelerometers).",
+        uc_maritime_title: "Maritime (IoT)",
+        uc_maritime_desc: "Supply chain and vessel telemetry protection.",
+        uc_maritime_det: "Triggered by onboard vessel sensors: Critical incidents/sinking (sustained tilt angle via gyroscopes) and Cargo Spoilage (container temperature threshold exceeded).",
+        uc_cyber_title: "Cyber Security",
+        uc_cyber_desc: "On-chain native digital risk mitigation.",
+        uc_cyber_det: "Triggered by API & Blockchain data: Smart Contract Exploits (stolen funds tracking) and massive IT System/API outages (continuous downtime hours).",
+        uc_business_title: "Business Interruption",
+        uc_business_desc: "Corporate financial and operational buffers.",
+        uc_business_det: "Triggered by verifiable corporate metrics: Severe Revenue Drops (vs 30-day moving average) and Critical Supply Chain Delivery Delays.",
+        uc_flight_title: "Flight & Travel",
+        uc_flight_desc: "Aviation industry and tourism coverage.",
+        uc_flight_det: "Triggered by aviation authorities and flight APIs: Mass Flight Cancellations, Official Airspace Closures, and Airport Strikes.",
 
         // Section Architecture (Concepts)
         multi_slice: "Multi-Slice Architecture",
