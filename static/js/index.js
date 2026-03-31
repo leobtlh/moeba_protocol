@@ -9,6 +9,7 @@ const translations = {
         nav_features: "Fonctionnalités",
         nav_usecases: "Cas d'usage",
         nav_architecture: "Architecture",
+        nav_deepdive: "Deep Dive",
         nav_compliance: "Conformité",
         nav_whitepaper: "Whitepaper",
         launch_dapp: "Lancer dApp",
@@ -88,6 +89,17 @@ const translations = {
         comp3_title: "LBA & LSFin",
         comp3_desc: "DeFi Permissionné avec Whitelisting KYB/KYC. Exemption Investisseurs Qualifiés alignée sur les standards institutionnels.",
         
+        // Deep Dive
+        deepdive_badge: "Documentation Technique",
+        deepdive_title: "Plongée Technique",
+        deepdive_subtitle: "Explorez les fondations techniques de l'infrastructure d'assurance décentralisée de Moeba Protocol.",
+        tech1_title: "Smart Contracts",
+        tech1_desc: "Standard ERC-4626 Tokenized Vault avec architecture multi-tranches. Contrats Solidity audités sur Ethereum/Polygon.",
+        tech2_title: "Intégration Oracle",
+        tech2_desc: "UMA Optimistic Oracle pour la résolution des litiges. Flux de données en temps réel depuis des sources certifiées pour les déclencheurs paramétriques.",
+        tech3_title: "Tokenomics & Rendements",
+        tech3_desc: "Modèle de distribution asymétrique des rendements. Stabilité APR Senior vs rendements à effet de levier Junior via allocation des primes.",
+        
         // CTA
         cta_title: "Prêt à Construire le Futur de l'Assurance ?",
         cta_subtitle: "Rejoignez la révolution de l'assurance décentralisée avec une infrastructure de grade institutionnel.",
@@ -115,6 +127,7 @@ const translations = {
         nav_features: "Features",
         nav_usecases: "Use Cases",
         nav_architecture: "Architecture",
+        nav_deepdive: "Deep Dive",
         nav_compliance: "Compliance",
         nav_whitepaper: "Whitepaper",
         launch_dapp: "Launch dApp",
@@ -193,6 +206,17 @@ const translations = {
         comp2_desc: "HPIV tokens qualified as Ledger-based Securities. Blockchain acts as official registry of ownership.",
         comp3_title: "AMLA & FinSA",
         comp3_desc: "Permissioned DeFi with KYB/KYC Whitelisting. Qualified Investors exemption aligned with institutional standards.",
+        
+        // Deep Dive
+        deepdive_badge: "Technical Documentation",
+        deepdive_title: "Protocol Deep Dive",
+        deepdive_subtitle: "Explore the technical foundations powering Moeba Protocol's decentralized insurance infrastructure.",
+        tech1_title: "Smart Contracts",
+        tech1_desc: "ERC-4626 Tokenized Vault Standard with multi-tranche architecture. Audited Solidity contracts on Ethereum/Polygon.",
+        tech2_title: "Oracle Integration",
+        tech2_desc: "UMA Optimistic Oracle for dispute resolution. Real-time data feeds from certified sources for parametric triggers.",
+        tech3_title: "Tokenomics & Yields",
+        tech3_desc: "Asymmetric yield distribution model. Senior APR stability vs Junior leveraged returns through premium allocation.",
         
         // CTA
         cta_title: "Ready to Build the Future of Insurance?",
@@ -400,10 +424,10 @@ class LogoPixelAnimation {
         this.logoImage.crossOrigin = 'anonymous';
         this.logoImage.src = logoSrc;
         this.animationId = null;
-        this.mouse = { x: null, y: null, radius: 100 };
+        this.mouse = { x: null, y: null, radius: 150 };
         this.isAssembled = false;
         this.assembleProgress = 0;
-        this.pixelSize = 6;
+        this.pixelSize = 5;
         this.gap = 1;
         
         this.logoImage.onload = () => this.init();
@@ -446,7 +470,7 @@ class LogoPixelAnimation {
         const offCanvas = document.createElement('canvas');
         const offCtx = offCanvas.getContext('2d');
         
-        const logoSize = Math.min(this.width, this.height) * 0.6;
+        const logoSize = Math.min(this.width, this.height) * 0.75;
         offCanvas.width = logoSize;
         offCanvas.height = logoSize;
         
@@ -594,6 +618,81 @@ function initLogoAnimation() {
 }
 
 // ============================================
+// PARALLAX EFFECT FOR DEEP DIVE SECTION
+// ============================================
+function initParallax() {
+    const parallaxContainer = document.querySelector('.parallax-container');
+    const backLayer = document.querySelector('.parallax-back');
+    const midLayer = document.querySelector('.parallax-mid');
+    
+    if (!parallaxContainer) return;
+    
+    // Mouse-based parallax
+    document.addEventListener('mousemove', (e) => {
+        const mouseX = e.clientX / window.innerWidth - 0.5;
+        const mouseY = e.clientY / window.innerHeight - 0.5;
+        
+        if (backLayer) {
+            backLayer.style.transform = `translate(${mouseX * 30}px, ${mouseY * 30}px)`;
+        }
+        if (midLayer) {
+            midLayer.style.transform = `translate(${mouseX * 60}px, ${mouseY * 60}px)`;
+        }
+    });
+    
+    // Scroll-based parallax for tech cards
+    const techCards = document.querySelectorAll('.tech-card');
+    
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -100px 0px'
+    };
+    
+    const cardObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry, index) => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+                entry.target.style.transitionDelay = `${index * 100}ms`;
+            }
+        });
+    }, observerOptions);
+    
+    techCards.forEach((card) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(40px)';
+        card.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+        cardObserver.observe(card);
+    });
+}
+
+// ============================================
+// 3D TILT EFFECT ON TECH CARDS
+// ============================================
+function initTiltEffect() {
+    const cards = document.querySelectorAll('.tech-card');
+    
+    cards.forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            const rotateX = (y - centerY) / 20;
+            const rotateY = (centerX - x) / 20;
+            
+            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
+        });
+        
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1)';
+        });
+    });
+}
+
+// ============================================
 // INITIALIZATION
 // ============================================
 document.addEventListener('DOMContentLoaded', () => {
@@ -602,6 +701,12 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Initialize logo pixel animation
     initLogoAnimation();
+    
+    // Initialize parallax effect
+    initParallax();
+    
+    // Initialize 3D tilt on tech cards
+    initTiltEffect();
 });
 
 // Scroll to top on page load

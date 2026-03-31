@@ -402,3 +402,90 @@ body.light-theme #logoAnimationContainer::before {
 body.light-theme #logoAnimationContainer::after {
     background: radial-gradient(circle, rgba(232, 61, 129, 0.12) 0%, transparent 70%);
 }
+
+/* ============================================
+   PARALLAX & DEEP DIVE SECTION
+   ============================================ */
+.parallax-container {
+    perspective: 1000px;
+    transform-style: preserve-3d;
+}
+
+.parallax-layer {
+    transition: transform 0.1s ease-out;
+    will-change: transform;
+}
+
+.parallax-back {
+    z-index: 1;
+}
+
+.parallax-mid {
+    z-index: 2;
+}
+
+/* Tech Cards 3D Effect */
+.tech-card {
+    transition: transform 0.3s ease-out, box-shadow 0.3s ease-out, border-color 0.3s ease-out;
+    transform-style: preserve-3d;
+    will-change: transform;
+}
+
+.tech-card:hover {
+    z-index: 10;
+}
+
+/* Code Preview Styling */
+pre code {
+    font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', Consolas, monospace;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+/* Floating dots animation for deep dive */
+@keyframes floatDot {
+    0%, 100% {
+        transform: translateY(0) scale(1);
+        opacity: 0.4;
+    }
+    50% {
+        transform: translateY(-20px) scale(1.2);
+        opacity: 0.8;
+    }
+}
+
+.parallax-mid > div:nth-child(1) {
+    animation: floatDot 4s ease-in-out infinite;
+}
+
+.parallax-mid > div:nth-child(2) {
+    animation: floatDot 5s ease-in-out infinite 1s;
+}
+
+.parallax-mid > div:nth-child(3) {
+    animation: floatDot 6s ease-in-out infinite 2s;
+}
+
+/* Light theme for deep dive */
+body.light-theme .tech-card {
+    background: rgba(255, 255, 255, 0.9);
+}
+
+body.light-theme pre {
+    background: #1e293b;
+}
+
+body.light-theme pre code {
+    color: #94a3b8;
+}
+
+/* Responsive adjustments for parallax */
+@media (max-width: 1024px) {
+    .parallax-container {
+        display: none;
+    }
+    
+    .tech-card {
+        transform: none !important;
+    }
+}
