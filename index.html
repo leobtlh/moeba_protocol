@@ -106,7 +106,9 @@
             <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-moeba-pink/10 rounded-full blur-3xl"></div>
             
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10">
-                <div class="text-center max-w-4xl mx-auto">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+                <!-- Left: Content -->
+                <div class="text-center lg:text-left max-w-2xl mx-auto lg:mx-0">
                     <!-- Badge -->
                     <div class="inline-flex items-center gap-2 px-4 py-2 bg-moeba-green/10 border border-moeba-green/30 rounded-full mb-8">
                         <span class="w-2 h-2 bg-moeba-green rounded-full animate-pulse"></span>
@@ -125,7 +127,7 @@
                     </p>
                     
                     <!-- CTA Buttons -->
-                    <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
+                    <div class="flex flex-col sm:flex-row items-center lg:items-start justify-center lg:justify-start gap-4 mb-12">
                         <a href="/app/" target="_blank" class="w-full sm:w-auto bg-moeba-green text-moeba-dark px-8 py-4 rounded-xl font-semibold text-base hover:bg-moeba-green-hover transition-all hover:scale-105 flex items-center justify-center gap-2" data-i18n="cta_launch">
                             Launch dApp
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
@@ -137,20 +139,28 @@
                     </div>
                     
                     <!-- Stats -->
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 lg:gap-12 pt-12 border-t border-moeba-border">
-                        <div class="text-center">
-                            <div class="text-3xl lg:text-4xl font-bold text-moeba-green mb-2">ERC-4626</div>
-                            <div class="text-sm text-moeba-muted uppercase tracking-wider" data-i18n="stat_liquidity">Standardized Liquidity</div>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 lg:gap-8 pt-12 border-t border-moeba-border">
+                        <div class="text-center lg:text-left">
+                            <div class="text-2xl lg:text-3xl font-bold text-moeba-green mb-2">ERC-4626</div>
+                            <div class="text-xs text-moeba-muted uppercase tracking-wider" data-i18n="stat_liquidity">Standardized Liquidity</div>
                         </div>
-                        <div class="text-center">
-                            <div class="text-3xl lg:text-4xl font-bold text-moeba-green mb-2" data-i18n="stat_yield">Yield Splitting</div>
-                            <div class="text-sm text-moeba-muted uppercase tracking-wider" data-i18n="stat_yield_desc">Junior Leverage / Senior Security</div>
+                        <div class="text-center lg:text-left">
+                            <div class="text-2xl lg:text-3xl font-bold text-moeba-green mb-2" data-i18n="stat_yield">Yield Splitting</div>
+                            <div class="text-xs text-moeba-muted uppercase tracking-wider" data-i18n="stat_yield_desc">Junior Leverage / Senior Security</div>
                         </div>
-                        <div class="text-center">
-                            <div class="text-3xl lg:text-4xl font-bold text-moeba-green mb-2">VUSA</div>
-                            <div class="text-sm text-moeba-muted uppercase tracking-wider" data-i18n="stat_compliance">Swiss Compliance (LSA)</div>
+                        <div class="text-center lg:text-left">
+                            <div class="text-2xl lg:text-3xl font-bold text-moeba-green mb-2">VUSA</div>
+                            <div class="text-xs text-moeba-muted uppercase tracking-wider" data-i18n="stat_compliance">Swiss Compliance (LSA)</div>
                         </div>
                     </div>
+                </div>
+                
+                <!-- Right: Logo Pixel Animation -->
+                <div class="hidden lg:flex items-center justify-center relative">
+                    <div id="logoAnimationContainer" class="relative w-full h-[500px]">
+                        <canvas id="logoPixelCanvas" class="w-full h-full"></canvas>
+                    </div>
+                </div>
                 </div>
             </div>
             
