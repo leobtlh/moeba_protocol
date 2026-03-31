@@ -22,12 +22,9 @@
                             'card': '#151b24',
                             'border': '#252d38',
                             'green': '#B5E833',
-                            'green-hover': '#C8F54A',
                             'pink': '#E83D81',
-                            'pink-hover': '#F25B96',
                             'sage': '#8BA888',
                             'cream': '#F5F0E6',
-                            'charcoal': '#2D3640',
                             'muted': '#7A8694',
                             'light': '#F5F0E6',
                         }
@@ -63,20 +60,19 @@
         </div>
 
         <div class="flex-1 overflow-y-auto hide-scrollbar p-4 space-y-6">
-
             <div>
-                <h3 class="text-xs font-bold text-moeba-muted uppercase tracking-wider mb-3 px-3">Protocol Architecture</h3>
+                <h3 class="text-xs font-bold text-moeba-muted uppercase tracking-wider mb-3 px-3">Architecture & Mechanics</h3>
                 <ul class="space-y-1">
                     <li><a href="#" class="nav-link active" data-target="intro">Introduction & Soft Default</a></li>
                     <li><a href="#" class="nav-link" data-target="waterfall">The 4-Step Waterfall</a></li>
-                    <li><a href="#" class="nav-link" data-target="sc-vault">ERC-4626 Tokenized Vaults</a></li>
+                    <li><a href="#" class="nav-link" data-target="yield">Yield Splitting Model</a></li>
                 </ul>
             </div>
 
             <div>
-                <h3 class="text-xs font-bold text-moeba-muted uppercase tracking-wider mb-3 px-3">Risk & Oracles</h3>
+                <h3 class="text-xs font-bold text-moeba-muted uppercase tracking-wider mb-3 px-3">Risks, Oracles & IoT</h3>
                 <ul class="space-y-1">
-                    <li><a href="#" class="nav-link" data-target="usecases">Supported Risk Categories</a></li>
+                    <li><a href="#" class="nav-link" data-target="usecases">Categories & Parameters</a></li>
                     <li><a href="#" class="nav-link" data-target="oracles">UMA Optimistic Oracle</a></li>
                     <li><a href="#" class="nav-link" data-target="iot-sensors">IoT & Smart Twistlocks</a></li>
                 </ul>
@@ -89,7 +85,6 @@
                     <li><a href="#" class="nav-link" data-target="gov-model">Multisig & Timelock</a></li>
                 </ul>
             </div>
-
         </div>
 
         <div class="p-4 border-t border-moeba-border shrink-0">
@@ -108,7 +103,7 @@
                     <span class="text-xs text-moeba-green font-bold">HPIV Standard</span>
                 </div>
                 <h1 class="text-3xl lg:text-5xl font-bold mb-6 text-moeba-light">Introduction & Soft Default</h1>
-                <p class="text-lg text-moeba-muted mb-8 leading-relaxed">Moeba Protocol is the first decentralized parametric insurance infrastructure introducing the <strong>"Soft Default"</strong> mechanism to democratize Catastrophe Bonds (Cat Bonds) via EVM compatible networks.</p>
+                <p class="text-lg text-moeba-muted mb-8 leading-relaxed">Moeba Protocol is the first decentralized parametric insurance infrastructure introducing the <strong>"Soft Default"</strong> mechanism to democratize Catastrophe Bonds (Cat Bonds) via ERC-4626 Tokenized Vaults.</p>
 
                 <div class="bg-moeba-card border-l-4 border-moeba-green p-6 rounded-r-xl mb-8">
                     <h3 class="font-bold text-moeba-green mb-2">The Binary Risk Problem</h3>
@@ -116,15 +111,15 @@
                 </div>
 
                 <h2 class="text-2xl font-bold mb-4 text-moeba-light border-b border-moeba-border pb-2">The Moeba Solution</h2>
-                <p class="text-moeba-muted mb-6">We transform binary risk into a manageable, linear risk via the <strong>Hybrid Parametric Insurance Vault (HPIV)</strong>. Through sequential loss absorption, an extreme event results in a partial loss (e.g., 14%) for Senior investors, rather than total annihilation.</p>
+                <p class="text-moeba-muted mb-6">We transform binary risk into a manageable, linear risk via the Hybrid Parametric Insurance Vault. Through sequential loss absorption, an extreme event results in a partial loss for Senior investors, rather than total annihilation.</p>
             </article>
 
             <article id="waterfall" class="doc-section">
-                <div class="inline-flex items-center gap-2 px-3 py-1 bg-yellow-500/10 border border-yellow-500/30 rounded-full mb-4">
-                    <span class="text-xs text-yellow-500 font-bold">Economics</span>
+                <div class="inline-flex items-center gap-2 px-3 py-1 bg-blue-500/10 border border-blue-500/30 rounded-full mb-4">
+                    <span class="text-xs text-blue-400 font-bold">Architecture</span>
                 </div>
                 <h1 class="text-3xl lg:text-5xl font-bold mb-6 text-moeba-light">The 4-Step Waterfall</h1>
-                <p class="text-lg text-moeba-muted mb-8 leading-relaxed">The cornerstone of the protocol is its capital hierarchy. Losses are absorbed sequentially to protect the Senior Tranche.</p>
+                <p class="text-lg text-moeba-muted mb-8 leading-relaxed">The cornerstone of the protocol is its capital hierarchy. When a claim is triggered, losses are absorbed sequentially to protect the Senior Tranche.</p>
 
                 <div class="space-y-4 mb-8">
                     <div class="p-5 border border-moeba-border rounded-xl bg-gradient-to-r from-moeba-pink/10 to-transparent">
@@ -146,37 +141,28 @@
                 </div>
             </article>
 
-            <article id="sc-vault" class="doc-section">
-                <div class="inline-flex items-center gap-2 px-3 py-1 bg-blue-500/10 border border-blue-500/30 rounded-full mb-4">
-                    <span class="text-xs text-blue-400 font-bold">Solidity</span>
+            <article id="yield" class="doc-section">
+                <div class="inline-flex items-center gap-2 px-3 py-1 bg-yellow-500/10 border border-yellow-500/30 rounded-full mb-4">
+                    <span class="text-xs text-yellow-500 font-bold">Tokenomics</span>
                 </div>
-                <h1 class="text-3xl lg:text-5xl font-bold mb-6 text-moeba-light">ERC-4626 Vaults</h1>
-                <p class="text-moeba-muted mb-6">Each vault is deployed via <code>HPIVFactory.sol</code> and inherits the ERC-4626 standard, ensuring maximum composability within the DeFi ecosystem.</p>
+                <h1 class="text-3xl lg:text-5xl font-bold mb-6 text-moeba-light">Yield Splitting Model</h1>
+                <p class="text-moeba-muted mb-6">Moeba utilizes an asymmetric yield distribution. The Junior tranche assumes more risk but captures the excess yield generated by the Senior capital.</p>
 
-                <h3 class="text-xl font-bold mb-3 text-moeba-light">Fully Funded Guarantee</h3>
-                <p class="text-moeba-muted mb-4">The smart contract strictly enforces that <code>TotalAssets >= Capacity</code> before the vault becomes active. This entirely eliminates counterparty risk.</p>
-
-                <div class="bg-[#1e1e1e] rounded-xl p-5 mb-8 border border-moeba-border font-mono text-sm overflow-x-auto text-gray-300">
-<pre><code>function triggerCatastrophe(uint256 claimAmount)
-    external
-    onlyRole(ORACLE_ROLE)
-{
-    require(!isCatastropheTriggered, "Already triggered");
-
-    // 1. Absorb via First Loss
-    // 2. Absorb via Premium
-    // 3. Absorb via Junior
-    // 4. Calculate Senior Haircut
-
-    isCatastropheTriggered = true;
-    emit SoftDefaultExecuted(finalSeniorLoss);
-}</code></pre>
+                <div class="bg-moeba-card p-6 rounded-xl border border-moeba-border text-sm text-moeba-muted mb-6">
+                    <h4 class="font-bold text-moeba-light text-lg mb-4">Mathematical Example</h4>
+                    <p class="mb-4">Imagine a $10M Vault with 20% Junior Capital ($2M) and 80% Senior Capital ($8M).</p>
+                    <ul class="space-y-3 font-mono">
+                        <li>• <strong>Base APR:</strong> 10% (Generates $1M in total Yield)</li>
+                        <li>• <strong>Senior APR:</strong> 7% (Seniors receive $560,000)</li>
+                        <li class="pt-2 border-t border-moeba-border text-yellow-500">➔ Remaining Yield for Junior: $440,000</li>
+                        <li class="pt-2 text-moeba-green font-bold text-base">➔ Final Junior APR = 22% <span class="text-xs font-normal text-moeba-muted">($440k divided by their $2M capital)</span></li>
+                    </ul>
                 </div>
             </article>
 
             <article id="usecases" class="doc-section">
-                <h1 class="text-3xl lg:text-5xl font-bold mb-6 text-moeba-light">Supported Risk Categories</h1>
-                <p class="text-moeba-muted mb-8">The protocol is risk-agnostic, supporting any event verifiable by deterministic data feeds.</p>
+                <h1 class="text-3xl lg:text-5xl font-bold mb-6 text-moeba-light">Categories & Triggers</h1>
+                <p class="text-moeba-muted mb-8">The protocol is risk-agnostic. Vaults can be created for any event verifiable by deterministic data feeds or IoT sensors.</p>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="p-5 border border-moeba-border bg-moeba-card rounded-xl">
@@ -185,7 +171,7 @@
                             <li>Hurricane (Wind Speed)</li>
                             <li>Earthquake (Magnitude)</li>
                             <li>Wildfire (Acres Burned)</li>
-                            <li>Flood (Water Level)</li>
+                            <li>Flood / Avalanche</li>
                         </ul>
                     </div>
                     <div class="p-5 border border-moeba-border bg-moeba-card rounded-xl">
@@ -197,21 +183,38 @@
                             <li>Revenue Drop</li>
                         </ul>
                     </div>
+                    <div class="p-5 border border-moeba-border bg-moeba-card rounded-xl">
+                        <h4 class="font-bold text-pink-400 mb-2">Real Estate</h4>
+                        <ul class="text-sm text-moeba-muted space-y-1 list-disc pl-4">
+                            <li>Fire Detection (IoT)</li>
+                            <li>Flood Sensors (IoT)</li>
+                            <li>Structural Damage (IoT)</li>
+                        </ul>
+                    </div>
+                    <div class="p-5 border border-moeba-border bg-moeba-card rounded-xl">
+                        <h4 class="font-bold text-teal-400 mb-2">Flight & Maritime</h4>
+                        <ul class="text-sm text-moeba-muted space-y-1 list-disc pl-4">
+                            <li>Mass Flight Cancellation</li>
+                            <li>Vessel Sinking (IoT Tilt)</li>
+                            <li>Cargo Spoilage (IoT Temp)</li>
+                            <li>Container Loss (Twistlocks)</li>
+                        </ul>
+                    </div>
                 </div>
             </article>
 
             <article id="iot-sensors" class="doc-section">
                 <div class="inline-flex items-center gap-2 px-3 py-1 bg-rose-500/10 border border-rose-500/30 rounded-full mb-4">
-                    <span class="text-xs text-rose-400 font-bold">Hardware</span>
+                    <span class="text-xs text-rose-400 font-bold">Hardware Integration</span>
                 </div>
                 <h1 class="text-3xl lg:text-5xl font-bold mb-6 text-moeba-light">IoT & Smart Twistlocks</h1>
-                <p class="text-moeba-muted mb-6">For physical assets (Real Estate and Maritime), the protocol integrates directly with IoT sensor data to trigger claims instantly without human loss adjusters.</p>
+                <p class="text-moeba-muted mb-6">For physical assets (Real Estate and Maritime), the protocol integrates directly with IoT sensor data to trigger claims instantly.</p>
 
-                <h3 class="text-xl font-bold mb-3 text-moeba-light">Maritime Logistics</h3>
-                <p class="text-moeba-muted mb-4">A critical use case is marine container loss. By utilizing <strong>Smart Twistlocks</strong> (the securing mechanisms on cargo ships equipped with connection sensors), the Oracle can precisely detect how many containers have fallen overboard based on sudden signal loss.</p>
+                <h3 class="text-xl font-bold mb-3 text-moeba-light">Maritime Logistics Focus</h3>
+                <p class="text-moeba-muted mb-4">A critical use case is marine container loss. By utilizing <strong>Smart Twistlocks</strong> (the securing mechanisms on cargo ships equipped with connection sensors) combined with Computer Vision, the Oracle can precisely detect how many containers have fallen overboard based on sudden signal loss.</p>
 
                 <div class="bg-moeba-card p-5 rounded-xl border border-moeba-border text-sm text-moeba-muted mb-6">
-                    <p class="font-bold text-moeba-light mb-2">Example Payout Logic:</p>
+                    <p class="font-bold text-moeba-light mb-2">Pro Rata Compensation Example:</p>
                     <p>Trigger: 15 units (Smart Twistlock signal lost)<br>
                     Agreed Payout: $10,000 per container<br>
                     Total Claim: $150,000 processed instantly via Oracle.</p>
@@ -223,15 +226,15 @@
                 <p class="text-moeba-muted mb-6">Moeba Protocol utilizes the <strong>UMA Optimistic Oracle (OO)</strong> to securely bring real-world data on-chain. Rather than relying on rigid, pre-programmed price feeds, UMA allows any verifiable truth to be asserted on-chain.</p>
 
                 <ul class="text-moeba-muted space-y-3 mb-8">
-                    <li><strong class="text-moeba-light">1. Assertion:</strong> A bot or user asserts that a specific event occurred (e.g., "Hurricane Milton reached Category 4").</li>
-                    <li><strong class="text-moeba-light">2. Dispute Window:</strong> A liveness period (e.g., 2 hours) opens. If no one disputes the claim, it is taken as truth.</li>
+                    <li><strong class="text-moeba-light">1. Assertion:</strong> A bot or user asserts that a specific event occurred (e.g., "Hurricane Milton reached Category 4 according to NOAA").</li>
+                    <li><strong class="text-moeba-light">2. Dispute Window:</strong> A liveness period opens. If no one disputes the claim, it is taken as truth.</li>
                     <li><strong class="text-moeba-light">3. DVM Resolution:</strong> If disputed, UMA token holders vote to resolve the truth via the Data Verification Mechanism.</li>
                 </ul>
             </article>
 
             <article id="legal-struct" class="doc-section">
                 <div class="inline-flex items-center gap-2 px-3 py-1 bg-purple-500/10 border border-purple-500/30 rounded-full mb-4">
-                    <span class="text-xs text-purple-400 font-bold">Legal</span>
+                    <span class="text-xs text-purple-400 font-bold">Legal Framework</span>
                 </div>
                 <h1 class="text-3xl lg:text-5xl font-bold mb-6 text-moeba-light">VUSA & DLT Law (Swiss)</h1>
                 <p class="text-moeba-muted mb-6">Moeba operates under the cutting-edge Swiss regulatory framework, bridging DeFi and institutional compliance.</p>
@@ -239,11 +242,15 @@
                 <div class="space-y-6">
                     <div>
                         <h3 class="text-xl font-bold mb-2 text-moeba-light">VUSA (ISPV) Structure</h3>
-                        <p class="text-sm text-moeba-muted">Under the revised Swiss Insurance Supervision Act (ISA Art. 30e), Moeba acts as an Insurance Special Purpose Vehicle. Because vaults are 100% "Fully Funded" upfront, capital requirements are drastically reduced, eliminating counterparty risk.</p>
+                        <p class="text-sm text-moeba-muted">Under the revised Swiss Insurance Supervision Act (ISA Art. 30e), Moeba acts as an Insurance Special Purpose Vehicle. Because vaults are 100% "Fully Funded" upfront, capital requirements are drastically reduced.</p>
                     </div>
                     <div>
                         <h3 class="text-xl font-bold mb-2 text-moeba-light">DLT Law & Ledger-based Securities</h3>
                         <p class="text-sm text-moeba-muted">HPIV tokens are not mere utility tokens. Under Art. 973d of the Swiss Code of Obligations, they are classified as Ledger-based Securities (Droits-Valeurs Inscrits). Transferring the token legally transfers the underlying debt claim.</p>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold mb-2 text-moeba-light">AMLA & FinSA (KYB/KYC)</h3>
+                        <p class="text-sm text-moeba-muted">Moeba is a Permissioned DeFi protocol. Only whitelisted Insurers (KYB) can deploy vaults via <code>HPIVFactory.sol</code>, and only verified investors (KYC via Soulbound Tokens) can deposit capital.</p>
                     </div>
                 </div>
             </article>
@@ -253,7 +260,7 @@
                 <p class="text-moeba-muted mb-6">To avoid the pitfalls of "1-token-1-vote" governance (whale centralization), Moeba utilizes a <strong>Tokenless Reputation Council</strong>.</p>
 
                 <h3 class="text-xl font-bold mb-3 text-moeba-light">The 3-of-5 Multisig</h3>
-                <p class="text-moeba-muted mb-4">The `DAO_ROLE` is held by a Gnosis Safe controlled by 5 distinct seats, requiring 3 signatures for any upgrade:</p>
+                <p class="text-moeba-muted mb-4">The DAO_ROLE is held by a Gnosis Safe controlled by 5 distinct seats, requiring 3 signatures for any upgrade:</p>
                 <ul class="text-sm text-moeba-muted space-y-2 list-disc pl-4 mb-6">
                     <li>Core Team (Technical updates)</li>
                     <li>Insurer Seat (Sponsor representative)</li>
