@@ -1,6 +1,6 @@
 /* ============================================
    MOEBA PROTOCOL - Professional Landing Page
-   Inspired by Dune.com & Gauntlet.xyz
+   Sanzo Wada Inspired Color Palette
    ============================================ */
 
 /* Smooth scrolling */
@@ -8,28 +8,28 @@ html {
     scroll-behavior: smooth;
 }
 
-/* Custom scrollbar */
+/* Custom scrollbar - Wada inspired */
 ::-webkit-scrollbar {
     width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-    background: #0a0f14;
+    background: #0f1419;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #1e2a36;
+    background: #252d38;
     border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #2a3a4a;
+    background: #3a4552;
 }
 
-/* Selection color */
+/* Selection color - Moeba Green */
 ::selection {
     background: rgba(181, 232, 51, 0.3);
-    color: #f8fafc;
+    color: #F5F0E6;
 }
 
 /* ============================================
@@ -41,7 +41,7 @@ html {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: #0a0f14;
+    background-color: #0f1419;
     z-index: 10000;
     display: flex;
     justify-content: center;
@@ -169,60 +169,62 @@ html {
 }
 
 /* ============================================
-   LIGHT THEME OVERRIDES
+   LIGHT THEME - Sanzo Wada Warm Palette
    ============================================ */
 body.light-theme {
-    --bg-dark: #f8fafc;
-    --bg-darker: #f1f5f9;
-    --bg-card: #ffffff;
-    --border-color: #e2e8f0;
-    --text-light: #0f172a;
-    --text-muted: #64748b;
+    /* Wada-inspired warm neutrals */
+    --bg-dark: #FAF8F3;        /* Warm paper white */
+    --bg-darker: #F5F0E6;      /* Cream */
+    --bg-card: #FFFFFF;
+    --border-color: #E8E2D6;   /* Warm gray border */
+    --text-light: #1A1A1A;     /* Deep charcoal */
+    --text-muted: #6B6560;     /* Warm gray */
 }
 
 body.light-theme {
-    background-color: #f8fafc;
-    color: #0f172a;
+    background-color: #FAF8F3;
+    color: #1A1A1A;
 }
 
 body.light-theme .bg-moeba-dark {
-    background-color: #f8fafc;
+    background-color: #FAF8F3;
 }
 
 body.light-theme .bg-moeba-darker {
-    background-color: #f1f5f9;
+    background-color: #F5F0E6;
 }
 
 body.light-theme .bg-moeba-card {
-    background-color: #ffffff;
+    background-color: #FFFFFF;
 }
 
 body.light-theme .border-moeba-border {
-    border-color: #e2e8f0;
+    border-color: #E8E2D6;
 }
 
-body.light-theme .text-moeba-light {
-    color: #0f172a;
+body.light-theme .text-moeba-light,
+body.light-theme .text-moeba-cream {
+    color: #1A1A1A;
 }
 
 body.light-theme .text-moeba-muted {
-    color: #64748b;
+    color: #6B6560;
 }
 
 body.light-theme .bg-moeba-dark\/80 {
-    background-color: rgba(248, 250, 252, 0.8);
+    background-color: rgba(250, 248, 243, 0.9);
 }
 
 body.light-theme .loader-overlay {
-    background-color: #f8fafc;
+    background-color: #FAF8F3;
 }
 
 body.light-theme ::-webkit-scrollbar-track {
-    background: #f8fafc;
+    background: #FAF8F3;
 }
 
 body.light-theme ::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
+    background: #D4CFC5;
 }
 
 /* ============================================
@@ -273,11 +275,11 @@ body.light-theme ::-webkit-scrollbar-thumb {
    ============================================ */
 @media (max-width: 640px) {
     .loader-overlay {
-        background-color: #0a0f14;
+        background-color: #0f1419;
     }
     
     body.light-theme .loader-overlay {
-        background-color: #f8fafc;
+        background-color: #FAF8F3;
     }
 }
 
@@ -471,12 +473,49 @@ body.light-theme .tech-card {
     background: rgba(255, 255, 255, 0.9);
 }
 
-body.light-theme pre {
-    background: #1e293b;
+/* ============================================
+   WATERFALL VISUALIZATION
+   ============================================ */
+.waterfall-step {
+    opacity: 0;
+    animation: waterfallFadeIn 0.6s ease-out forwards;
 }
 
-body.light-theme pre code {
-    color: #94a3b8;
+.waterfall-step:nth-child(1) { animation-delay: 0.1s; }
+.waterfall-step:nth-child(3) { animation-delay: 0.2s; }
+.waterfall-step:nth-child(5) { animation-delay: 0.3s; }
+.waterfall-step:nth-child(7) { animation-delay: 0.4s; }
+
+@keyframes waterfallFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Waterfall connection lines */
+.waterfall-step > div {
+    position: relative;
+}
+
+.waterfall-step > div::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: -20px;
+    width: 4px;
+    height: 4px;
+    background: currentColor;
+    border-radius: 50%;
+    opacity: 0.3;
+}
+
+.waterfall-step:first-child > div::before {
+    display: none;
 }
 
 /* Responsive adjustments for parallax */

@@ -99,6 +99,8 @@ const translations = {
         tech2_desc: "UMA Optimistic Oracle pour la résolution des litiges. Flux de données en temps réel depuis des sources certifiées pour les déclencheurs paramétriques.",
         tech3_title: "Tokenomics & Rendements",
         tech3_desc: "Modèle de distribution asymétrique des rendements. Stabilité APR Senior vs rendements à effet de levier Junior via allocation des primes.",
+        waterfall_title: "Cascade Soft Default",
+        waterfall_subtitle: "Absorption séquentielle des pertes protégeant les investisseurs Senior",
         
         // CTA
         cta_title: "Prêt à Construire le Futur de l'Assurance ?",
@@ -217,6 +219,8 @@ const translations = {
         tech2_desc: "UMA Optimistic Oracle for dispute resolution. Real-time data feeds from certified sources for parametric triggers.",
         tech3_title: "Tokenomics & Yields",
         tech3_desc: "Asymmetric yield distribution model. Senior APR stability vs Junior leveraged returns through premium allocation.",
+        waterfall_title: "Soft Default Waterfall",
+        waterfall_subtitle: "Sequential loss absorption protecting Senior investors",
         
         // CTA
         cta_title: "Ready to Build the Future of Insurance?",

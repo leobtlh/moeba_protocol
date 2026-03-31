@@ -19,15 +19,24 @@
                 extend: {
                     colors: {
                         'moeba': {
-                            'dark': '#0a0f14',
-                            'darker': '#060a0d',
-                            'card': '#111820',
-                            'border': '#1e2a36',
+                            // Sanzo Wada inspired palette - harmonizing with logo green (#B5E833) and pink (#E83D81)
+                            // Dark mode: Deep indigo-charcoal base (Wada #264 inspired)
+                            'dark': '#0f1419',
+                            'darker': '#0a0d12',
+                            'card': '#151b24',
+                            'border': '#252d38',
+                            // Logo colors preserved
                             'green': '#B5E833',
-                            'green-hover': '#C2FC2D',
+                            'green-hover': '#C8F54A',
                             'pink': '#E83D81',
-                            'muted': '#6b7a8a',
-                            'light': '#f8fafc',
+                            'pink-hover': '#F25B96',
+                            // Wada complementary accents
+                            'sage': '#8BA888',       // Wada sage green - softer complement
+                            'cream': '#F5F0E6',      // Wada warm white
+                            'charcoal': '#2D3640',   // Wada blue-gray
+                            // Neutrals
+                            'muted': '#7A8694',
+                            'light': '#F5F0E6',
                         }
                     },
                     fontFamily: {
@@ -39,7 +48,7 @@
     </script>
     <link rel="stylesheet" href="static/css/index.css">
 </head>
-<body class="bg-moeba-dark text-moeba-light font-sans antialiased">
+<body class="bg-moeba-dark text-moeba-cream font-sans antialiased">
     
     <!-- Loader (keeping original animation) -->
     <div id="moebaLoader" class="loader-overlay">
@@ -574,35 +583,106 @@
                     </div>
                 </div>
                 
-                <!-- Interactive Terminal/Code Preview -->
-                <div class="mt-16 bg-moeba-darker border border-moeba-border rounded-3xl overflow-hidden">
-                    <div class="flex items-center gap-2 px-6 py-4 border-b border-moeba-border bg-moeba-card/50">
-                        <div class="w-3 h-3 rounded-full bg-red-500/80"></div>
-                        <div class="w-3 h-3 rounded-full bg-yellow-500/80"></div>
-                        <div class="w-3 h-3 rounded-full bg-green-500/80"></div>
-                        <span class="ml-4 text-sm text-moeba-muted font-mono">HPIVVault.sol - Soft Default Logic</span>
+                <!-- Waterfall Visual Schema -->
+                <div class="mt-16 bg-moeba-darker border border-moeba-border rounded-3xl overflow-hidden p-8 lg:p-12">
+                    <div class="text-center mb-10">
+                        <h3 class="text-xl lg:text-2xl font-bold mb-2" data-i18n="waterfall_title">Soft Default Waterfall</h3>
+                        <p class="text-moeba-muted text-sm" data-i18n="waterfall_subtitle">Sequential loss absorption protecting Senior investors</p>
                     </div>
-                    <div class="p-6 font-mono text-sm overflow-x-auto">
-                        <pre class="text-moeba-muted leading-relaxed"><code><span class="text-moeba-pink">function</span> <span class="text-moeba-green">processClaim</span>(<span class="text-yellow-500">uint256</span> claimAmount) <span class="text-moeba-pink">external</span> onlyOracle {
-    <span class="text-moeba-muted">// 1. First Loss: Sponsor absorbs 100%</span>
-    <span class="text-moeba-pink">uint256</span> sponsorLoss = <span class="text-moeba-green">min</span>(claimAmount, sponsorCapital);
-    sponsorCapital -= sponsorLoss;
-    claimAmount -= sponsorLoss;
-    
-    <span class="text-moeba-muted">// 2. Premium Reserve Buffer</span>
-    <span class="text-moeba-pink">if</span> (claimAmount > <span class="text-yellow-500">0</span>) {
-        <span class="text-moeba-pink">uint256</span> reserveLoss = <span class="text-moeba-green">min</span>(claimAmount, premiumReserve);
-        premiumReserve -= reserveLoss;
-        claimAmount -= reserveLoss;
-    }
-    
-    <span class="text-moeba-muted">// 3. Junior Tranche Waterfall</span>
-    <span class="text-moeba-pink">if</span> (claimAmount > <span class="text-yellow-500">0</span>) {
-        juniorTranche.<span class="text-moeba-green">absorbLoss</span>(claimAmount);
-    }
-    
-    <span class="text-moeba-pink">emit</span> <span class="text-cyan-400">ClaimProcessed</span>(claimAmount, sponsorLoss);
-}</code></pre>
+                    
+                    <!-- Waterfall Visualization -->
+                    <div class="flex flex-col lg:flex-row items-center justify-center gap-6 lg:gap-4">
+                        <!-- Step 1: Sponsor -->
+                        <div class="waterfall-step group relative">
+                            <div class="w-36 lg:w-40 bg-gradient-to-b from-moeba-pink/20 to-moeba-pink/5 border-2 border-moeba-pink rounded-2xl p-5 text-center transition-all hover:scale-105 hover:border-moeba-pink-hover">
+                                <div class="w-10 h-10 mx-auto mb-3 bg-moeba-pink/20 rounded-xl flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-moeba-pink" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"/></svg>
+                                </div>
+                                <div class="text-moeba-pink font-bold text-sm mb-1">1st Loss</div>
+                                <div class="text-moeba-cream text-xs font-medium">Sponsor</div>
+                                <div class="text-moeba-muted text-xs mt-2">100% absorbed</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Arrow -->
+                        <div class="hidden lg:flex items-center text-moeba-muted">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                        </div>
+                        <div class="lg:hidden text-moeba-muted">
+                            <svg class="w-6 h-6 rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                        </div>
+                        
+                        <!-- Step 2: Premium Reserve -->
+                        <div class="waterfall-step group relative">
+                            <div class="w-36 lg:w-40 bg-gradient-to-b from-moeba-sage/20 to-moeba-sage/5 border-2 border-moeba-sage rounded-2xl p-5 text-center transition-all hover:scale-105">
+                                <div class="w-10 h-10 mx-auto mb-3 bg-moeba-sage/20 rounded-xl flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-moeba-sage" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                                </div>
+                                <div class="text-moeba-sage font-bold text-sm mb-1">2nd Buffer</div>
+                                <div class="text-moeba-cream text-xs font-medium">Premium Reserve</div>
+                                <div class="text-moeba-muted text-xs mt-2">Accumulated yield</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Arrow -->
+                        <div class="hidden lg:flex items-center text-moeba-muted">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                        </div>
+                        <div class="lg:hidden text-moeba-muted">
+                            <svg class="w-6 h-6 rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                        </div>
+                        
+                        <!-- Step 3: Junior -->
+                        <div class="waterfall-step group relative">
+                            <div class="w-36 lg:w-40 bg-gradient-to-b from-amber-500/20 to-amber-500/5 border-2 border-amber-500 rounded-2xl p-5 text-center transition-all hover:scale-105">
+                                <div class="w-10 h-10 mx-auto mb-3 bg-amber-500/20 rounded-xl flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+                                </div>
+                                <div class="text-amber-500 font-bold text-sm mb-1">3rd Absorber</div>
+                                <div class="text-moeba-cream text-xs font-medium">Junior Tranche</div>
+                                <div class="text-moeba-muted text-xs mt-2">High risk / High APR</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Arrow -->
+                        <div class="hidden lg:flex items-center text-moeba-muted">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                        </div>
+                        <div class="lg:hidden text-moeba-muted">
+                            <svg class="w-6 h-6 rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                        </div>
+                        
+                        <!-- Step 4: Senior (Protected) -->
+                        <div class="waterfall-step group relative">
+                            <div class="w-36 lg:w-40 bg-gradient-to-b from-moeba-green/20 to-moeba-green/5 border-2 border-moeba-green rounded-2xl p-5 text-center transition-all hover:scale-105 hover:border-moeba-green-hover">
+                                <div class="w-10 h-10 mx-auto mb-3 bg-moeba-green/20 rounded-xl flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-moeba-green" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                                </div>
+                                <div class="text-moeba-green font-bold text-sm mb-1">Protected</div>
+                                <div class="text-moeba-cream text-xs font-medium">Senior Tranche</div>
+                                <div class="text-moeba-muted text-xs mt-2">Stable APR 4-8%</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Stats Bar -->
+                    <div class="mt-10 pt-8 border-t border-moeba-border grid grid-cols-2 lg:grid-cols-4 gap-6 text-center">
+                        <div>
+                            <div class="text-2xl lg:text-3xl font-bold text-moeba-green mb-1">100%</div>
+                            <div class="text-moeba-muted text-xs uppercase tracking-wider">Fully Funded</div>
+                        </div>
+                        <div>
+                            <div class="text-2xl lg:text-3xl font-bold text-moeba-pink mb-1">0</div>
+                            <div class="text-moeba-muted text-xs uppercase tracking-wider">Counterparty Risk</div>
+                        </div>
+                        <div>
+                            <div class="text-2xl lg:text-3xl font-bold text-moeba-sage mb-1">4</div>
+                            <div class="text-moeba-muted text-xs uppercase tracking-wider">Protection Layers</div>
+                        </div>
+                        <div>
+                            <div class="text-2xl lg:text-3xl font-bold text-amber-500 mb-1">UMA</div>
+                            <div class="text-moeba-muted text-xs uppercase tracking-wider">Oracle Verified</div>
+                        </div>
                     </div>
                 </div>
             </div>
