@@ -1,0 +1,67 @@
+/* ============================================
+   MOEBA PROTOCOL - Docs Styling
+   ============================================ */
+
+/* Hide scrollbar completely for sidebar */
+.hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+/* Main content scrollbar (Wada styling) */
+main::-webkit-scrollbar {
+    width: 8px;
+}
+main::-webkit-scrollbar-track {
+    background: #0f1419;
+}
+main::-webkit-scrollbar-thumb {
+    background: #252d38;
+    border-radius: 4px;
+}
+main::-webkit-scrollbar-thumb:hover {
+    background: #3a4552;
+}
+
+/* Sidebar Navigation Links */
+.nav-link {
+    display: block;
+    padding: 8px 12px;
+    margin-left: 12px;
+    border-radius: 6px;
+    color: #7A8694; /* moeba-muted */
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    border-left: 2px solid transparent;
+}
+
+.nav-link:hover {
+    color: #F5F0E6; /* moeba-light */
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.nav-link.active {
+    color: #B5E833; /* moeba-green */
+    font-weight: 600;
+    border-left-color: #B5E833;
+    background-color: rgba(181, 232, 51, 0.1);
+}
+
+/* Documentation Sections */
+.doc-section {
+    display: none;
+    animation: fadeIn 0.4s ease-out;
+}
+
+.doc-section.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}

@@ -12,6 +12,7 @@ const translations = {
         nav_deepdive: "Deep Dive",
         nav_compliance: "Conformité",
         nav_whitepaper: "Whitepaper",
+        nav_docs: "Documentation",
         launch_dapp: "Lancer dApp",
         
         // Hero
@@ -132,6 +133,7 @@ const translations = {
         nav_deepdive: "Deep Dive",
         nav_compliance: "Compliance",
         nav_whitepaper: "Whitepaper",
+        nav_docs: "Documentation",
         launch_dapp: "Launch dApp",
         
         // Hero
@@ -470,116 +472,96 @@ class LogoPixelAnimation {
     }
     
     extractPixels() {
-        // Create offscreen canvas to read logo pixels
         const offCanvas = document.createElement('canvas');
         const offCtx = offCanvas.getContext('2d');
-        
+
         const logoSize = Math.min(this.width, this.height) * 0.75;
         offCanvas.width = logoSize;
         offCanvas.height = logoSize;
-        
+
         offCtx.drawImage(this.logoImage, 0, 0, logoSize, logoSize);
-        
+
         const imageData = offCtx.getImageData(0, 0, logoSize, logoSize);
         const pixels = imageData.data;
-        
+
         this.particles = [];
-        
+
         const centerX = this.width / 2;
         const centerY = this.height / 2;
         const offsetX = centerX - logoSize / 2;
         const offsetY = centerY - logoSize / 2;
-        
+
         for (let y = 0; y < logoSize; y += this.pixelSize + this.gap) {
             for (let x = 0; x < logoSize; x += this.pixelSize + this.gap) {
                 const index = (y * logoSize + x) * 4;
                 const alpha = pixels[index + 3];
-                
+
                 if (alpha > 128) {
                     const r = pixels[index];
                     const g = pixels[index + 1];
                     const b = pixels[index + 2];
-                    
-                    // Random starting position (scattered)
-                    const angle = Math.random() * Math.PI * 2;
-                    const distance = Math.random() * Math.max(this.width, this.height);
-                    
+
                     this.particles.push({
-                        // Target position (assembled logo)
                         targetX: x + offsetX,
                         targetY: y + offsetY,
-                        // Current position (starts scattered)
-                        x: centerX + Math.cos(angle) * distance,
-                        y: centerY + Math.sin(angle) * distance,
-                        // Velocity
+                        // Départ directement à la position finale (pas d'éparpillement)
+                        x: x + offsetX,
+                        y: y + offsetY,
                         vx: 0,
                         vy: 0,
-                        // Color
                         color: `rgb(${r}, ${g}, ${b})`,
-                        // Size with slight variation
                         size: this.pixelSize * (0.8 + Math.random() * 0.4),
-                        // Delay for staggered animation
-                        delay: Math.random() * 60,
-                        // Original alpha
                         alpha: alpha / 255
                     });
                 }
             }
         }
     }
-    
+
     animate() {
         this.ctx.clearRect(0, 0, this.width, this.height);
-        
-        this.assembleProgress++;
-        
+
         for (let i = 0; i < this.particles.length; i++) {
             const p = this.particles[i];
-            
-            // Staggered assembly
-            if (this.assembleProgress > p.delay) {
-                // Ease towards target
-                const dx = p.targetX - p.x;
-                const dy = p.targetY - p.y;
-                
-                p.vx += dx * 0.05;
-                p.vy += dy * 0.05;
-                
-                // Friction
-                p.vx *= 0.85;
-                p.vy *= 0.85;
-                
-                // Mouse repulsion when assembled
-                if (this.mouse.x !== null && this.mouse.y !== null) {
-                    const mouseDx = p.x - this.mouse.x;
-                    const mouseDy = p.y - this.mouse.y;
-                    const mouseDist = Math.sqrt(mouseDx * mouseDx + mouseDy * mouseDy);
-                    
-                    if (mouseDist < this.mouse.radius) {
-                        const force = (this.mouse.radius - mouseDist) / this.mouse.radius;
-                        const angle = Math.atan2(mouseDy, mouseDx);
-                        p.vx += Math.cos(angle) * force * 8;
-                        p.vy += Math.sin(angle) * force * 8;
-                    }
+
+            // Retour élastique vers la position cible
+            const dx = p.targetX - p.x;
+            const dy = p.targetY - p.y;
+
+            p.vx += dx * 0.05;
+            p.vy += dy * 0.05;
+
+            // Friction
+            p.vx *= 0.85;
+            p.vy *= 0.85;
+
+            // Répulsion de la souris
+            if (this.mouse.x !== null && this.mouse.y !== null) {
+                const mouseDx = p.x - this.mouse.x;
+                const mouseDy = p.y - this.mouse.y;
+                const mouseDist = Math.sqrt(mouseDx * mouseDx + mouseDy * mouseDy);
+
+                if (mouseDist < this.mouse.radius) {
+                    const force = (this.mouse.radius - mouseDist) / this.mouse.radius;
+                    const angle = Math.atan2(mouseDy, mouseDx);
+                    p.vx += Math.cos(angle) * force * 8;
+                    p.vy += Math.sin(angle) * force * 8;
                 }
-                
-                p.x += p.vx;
-                p.y += p.vy;
             }
-            
-            // Draw particle
+
+            p.x += p.vx;
+            p.y += p.vy;
+
             this.ctx.globalAlpha = p.alpha;
             this.ctx.fillStyle = p.color;
-            
-            // Rounded rectangles for pixels
+
             const radius = 1;
             this.ctx.beginPath();
             this.ctx.roundRect(p.x - p.size / 2, p.y - p.size / 2, p.size, p.size, radius);
             this.ctx.fill();
         }
-        
+
         this.ctx.globalAlpha = 1;
-        
         this.animationId = requestAnimationFrame(() => this.animate());
     }
     
