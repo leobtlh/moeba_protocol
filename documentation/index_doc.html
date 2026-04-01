@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Moeba Protocol - Technical Documentation</title>
-    <link rel="icon" href="../img/IconTest02.png" type="image/png">
+    <title>Moeba Protocol - Comprehensive Technical Documentation</title>
+    <link rel="icon" href="../img/MoebaLogo02.png" type="image/png">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -43,20 +43,24 @@
 
     <div class="md:hidden flex items-center justify-between p-4 bg-moeba-darker border-b border-moeba-border shrink-0 z-50">
         <a href="../index.html" class="flex items-center gap-2">
-            <img src="../img/IconTest02.png" alt="Moeba" class="h-8 w-8">
+            <img src="../img/MoebaLogo02.png" alt="Moeba" class="h-8 w-8">
             <span class="font-bold text-lg">Docs</span>
         </a>
-        <button id="menu-toggle" class="text-moeba-muted hover:text-moeba-light p-2">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
-        </button>
+        <div class="flex items-center gap-1">
+            <button class="theme-toggle-btn text-moeba-muted hover:text-moeba-light p-2" aria-label="Toggle theme"></button>
+            <button id="menu-toggle" class="text-moeba-muted hover:text-moeba-light p-2">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+            </button>
+        </div>
     </div>
 
     <aside id="sidebar" class="fixed md:static inset-y-0 left-0 w-64 lg:w-72 bg-moeba-darker border-r border-moeba-border flex flex-col transform -translate-x-full md:translate-x-0 transition-transform duration-300 z-40 h-full">
-        <div class="p-6 hidden md:flex items-center gap-3 border-b border-moeba-border shrink-0">
+        <div class="p-6 hidden md:flex items-center justify-between border-b border-moeba-border shrink-0">
             <a href="../index.html" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
-                <img src="../img/IconTest02.png" alt="Moeba" class="h-8 w-8">
+                <img src="../img/MoebaLogo02.png" alt="Moeba" class="h-8 w-8">
                 <span class="font-bold text-lg text-moeba-light">Moeba Docs</span>
             </a>
+            <button class="theme-toggle-btn text-moeba-muted hover:text-moeba-light p-2" aria-label="Toggle theme"></button>
         </div>
 
         <div class="flex-1 overflow-y-auto hide-scrollbar p-4 space-y-6">
@@ -64,25 +68,33 @@
                 <h3 class="text-xs font-bold text-moeba-muted uppercase tracking-wider mb-3 px-3">Architecture & Mechanics</h3>
                 <ul class="space-y-1">
                     <li><a href="#" class="nav-link active" data-target="intro">Introduction & Soft Default</a></li>
-                    <li><a href="#" class="nav-link" data-target="waterfall">The 4-Step Waterfall</a></li>
-                    <li><a href="#" class="nav-link" data-target="yield">Yield Splitting Model</a></li>
+                    <li><a href="#" class="nav-link" data-target="waterfall">The Waterfall Engine (Code)</a></li>
+                    <li><a href="#" class="nav-link" data-target="yield">Tokenomics & Yield Splitting</a></li>
+                    <li><a href="#" class="nav-link" data-target="security">Security & Anti-Inflation</a></li>
                 </ul>
             </div>
 
             <div>
                 <h3 class="text-xs font-bold text-moeba-muted uppercase tracking-wider mb-3 px-3">Risks, Oracles & IoT</h3>
                 <ul class="space-y-1">
-                    <li><a href="#" class="nav-link" data-target="usecases">Categories & Parameters</a></li>
+                    <li><a href="#" class="nav-link" data-target="usecases">Risk Categories Deep Dive</a></li>
                     <li><a href="#" class="nav-link" data-target="oracles">UMA Optimistic Oracle</a></li>
-                    <li><a href="#" class="nav-link" data-target="iot-sensors">IoT & Smart Twistlocks</a></li>
                 </ul>
             </div>
 
             <div>
-                <h3 class="text-xs font-bold text-moeba-muted uppercase tracking-wider mb-3 px-3">Compliance & Governance</h3>
+                <h3 class="text-xs font-bold text-moeba-muted uppercase tracking-wider mb-3 px-3">Compliance & Swiss Law</h3>
                 <ul class="space-y-1">
-                    <li><a href="#" class="nav-link" data-target="legal-struct">VUSA & DLT Law (Swiss)</a></li>
-                    <li><a href="#" class="nav-link" data-target="gov-model">Multisig & Timelock</a></li>
+                    <li><a href="#" class="nav-link" data-target="legal-struct">VUSA & DLT Law Framework</a></li>
+                    <li><a href="#" class="nav-link" data-target="compliance-code">KYB/KYC & Permissioned DeFi</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h3 class="text-xs font-bold text-moeba-muted uppercase tracking-wider mb-3 px-3">dApp & User Interface</h3>
+                <ul class="space-y-1">
+                    <li><a href="#" class="nav-link" data-target="dapp-sponsor">Sponsor Dashboard & Vault Creation</a></li>
+                    <li><a href="#" class="nav-link" data-target="dapp-investor">Marketplace & Portfolio Tracking</a></li>
                 </ul>
             </div>
         </div>
@@ -106,171 +118,339 @@
                 <p class="text-lg text-moeba-muted mb-8 leading-relaxed">Moeba Protocol is the first decentralized parametric insurance infrastructure introducing the <strong>"Soft Default"</strong> mechanism to democratize Catastrophe Bonds (Cat Bonds) via ERC-4626 Tokenized Vaults.</p>
 
                 <div class="bg-moeba-card border-l-4 border-moeba-green p-6 rounded-r-xl mb-8">
-                    <h3 class="font-bold text-moeba-green mb-2">The Binary Risk Problem</h3>
-                    <p class="text-sm text-moeba-muted">Traditional Cat Bonds are inaccessible due to binary risk: if a hurricane hits 250km/h, investors lose 100% of their capital. If it's 249km/h, they lose nothing. This "Russian roulette" profile keeps DeFi liquidity away from real-world reinsurance yields.</p>
+                    <h3 class="font-bold text-moeba-green mb-2">Solving the Binary Risk Problem</h3>
+                    <p class="text-sm text-moeba-muted">Traditional Cat Bonds are highly inaccessible due to their binary risk profile ("All or Nothing"): if a hurricane reaches 250km/h, the investor loses 100% of their capital; at 249km/h, they lose nothing. Moeba's multi-tranche architecture transforms this binary risk into a manageable, linear risk, enabling sequential partial losses rather than total annihilation.</p>
                 </div>
-
-                <h2 class="text-2xl font-bold mb-4 text-moeba-light border-b border-moeba-border pb-2">The Moeba Solution</h2>
-                <p class="text-moeba-muted mb-6">We transform binary risk into a manageable, linear risk via the Hybrid Parametric Insurance Vault. Through sequential loss absorption, an extreme event results in a partial loss for Senior investors, rather than total annihilation.</p>
             </article>
 
             <article id="waterfall" class="doc-section">
                 <div class="inline-flex items-center gap-2 px-3 py-1 bg-blue-500/10 border border-blue-500/30 rounded-full mb-4">
-                    <span class="text-xs text-blue-400 font-bold">Architecture</span>
+                    <span class="text-xs text-blue-400 font-bold">Architecture & Smart Contracts</span>
                 </div>
-                <h1 class="text-3xl lg:text-5xl font-bold mb-6 text-moeba-light">The 4-Step Waterfall</h1>
-                <p class="text-lg text-moeba-muted mb-8 leading-relaxed">The cornerstone of the protocol is its capital hierarchy. When a claim is triggered, losses are absorbed sequentially to protect the Senior Tranche.</p>
+                <h1 class="text-3xl lg:text-5xl font-bold mb-6 text-moeba-light">The Waterfall Engine</h1>
+                <p class="text-lg text-moeba-muted mb-6 leading-relaxed">The cornerstone of the protocol is its capital hierarchy. During a claim event, the `triggerCatastrophe` function in `HPIVVault.sol` executes a strict sequential loss absorption cascade to protect Senior investors.</p>
 
-                <div class="space-y-4 mb-8">
-                    <div class="p-5 border border-moeba-border rounded-xl bg-gradient-to-r from-moeba-pink/10 to-transparent">
-                        <h4 class="font-bold text-moeba-pink mb-1">1. Insurer First Loss Capital</h4>
-                        <p class="text-sm text-moeba-muted">The Sponsor (Insurer) must deploy their own capital before opening the vault. This acts as the primary shield absorbing 100% of initial losses.</p>
-                    </div>
-                    <div class="p-5 border border-moeba-border rounded-xl bg-gradient-to-r from-moeba-sage/10 to-transparent">
-                        <h4 class="font-bold text-moeba-sage mb-1">2. Premium Reserve Buffer</h4>
-                        <p class="text-sm text-moeba-muted">The upfront insurance premium paid by the Sponsor is ring-fenced. It acts as a secondary buffer against claims.</p>
-                    </div>
-                    <div class="p-5 border border-moeba-border rounded-xl bg-gradient-to-r from-yellow-500/10 to-transparent">
-                        <h4 class="font-bold text-yellow-500 mb-1">3. Junior Tranche (ERC-20)</h4>
-                        <p class="text-sm text-moeba-muted">High-risk DeFi investors who absorb the remaining losses in exchange for leveraged, highly boosted APR.</p>
-                    </div>
-                    <div class="p-5 border border-moeba-border rounded-xl bg-gradient-to-r from-moeba-green/10 to-transparent">
-                        <h4 class="font-bold text-moeba-green mb-1">4. Senior Tranche (ERC-4626)</h4>
-                        <p class="text-sm text-moeba-muted">The protected core. These investors are only exposed if the catastrophe completely annihilates the first three layers.</p>
-                    </div>
+                <div class="bg-slate-900 p-5 rounded-xl border border-slate-700 font-mono text-sm overflow-x-auto text-emerald-400 mb-8 shadow-inner">
+<pre><code><span class="text-slate-500">// Snippet from HPIVVault.sol : The Claim Engine</span>
+function triggerCatastrophe(uint256 claimAmount) external onlyRole(ORACLE_ROLE) nonReentrant {
+    require(status == VaultStatus.ACTIVE || ... , "Invalid state");
+    uint256 remainingClaim = claimAmount;
+
+    <span class="text-blue-400">// STEP 1: Insurer Capital (First Loss)</span>
+    if (sponsorFirstLossCapital >= remainingClaim) {
+        sponsorFirstLossCapital -= remainingClaim;
+        remainingClaim = 0;
+    } else {
+        remainingClaim -= sponsorFirstLossCapital;
+        sponsorFirstLossCapital = 0;
+    }
+
+    <span class="text-blue-400">// STEP 2: Premium Reserve (Yield acts as a buffer)</span>
+    if (remainingClaim > 0) {
+         if (premiumReserve >= remainingClaim) {
+            premiumReserve -= remainingClaim;
+            remainingClaim = 0;
+        } else {
+            remainingClaim -= premiumReserve;
+            premiumReserve = 0;
+        }
+    }
+
+    <span class="text-blue-400">// STEP 3: Junior Tranche (ERC-20)</span>
+    if (remainingClaim > 0) {
+        if (juniorPrincipal >= remainingClaim) {
+            juniorPrincipal -= remainingClaim;
+            juniorLossPercent = (remainingClaim * 1e18) / (juniorPrincipal + remainingClaim);
+            remainingClaim = 0;
+        } else {
+            uint256 loss = juniorPrincipal;
+            juniorPrincipal = 0;
+            juniorLossPercent = 1e18; <span class="text-slate-500">// 100% loss</span>
+            remainingClaim -= loss;
+        }
+    }
+
+    <span class="text-blue-400">// STEP 4: Senior Tranche (Protected ERC-4626)</span>
+    if (remainingClaim > 0) {
+        if (seniorPrincipal >= remainingClaim) {
+            seniorPrincipal -= remainingClaim;
+            seniorLossPercent = (remainingClaim * 1e18) / (seniorPrincipal + remainingClaim);
+            remainingClaim = 0;
+        } else {
+            seniorPrincipal = 0; <span class="text-slate-500">// Total Default</span>
+            seniorLossPercent = 1e18;
+        }
+    }
+
+    <span class="text-slate-500">// Process claim and lock the vault</span>
+    IERC20(asset()).transfer(address(0xdead), claimAmount);
+    status = VaultStatus.TRIGGERED;
+}</code></pre>
                 </div>
             </article>
 
             <article id="yield" class="doc-section">
                 <div class="inline-flex items-center gap-2 px-3 py-1 bg-yellow-500/10 border border-yellow-500/30 rounded-full mb-4">
-                    <span class="text-xs text-yellow-500 font-bold">Tokenomics</span>
+                    <span class="text-xs text-yellow-500 font-bold">Tokenomics & Mathematics</span>
                 </div>
                 <h1 class="text-3xl lg:text-5xl font-bold mb-6 text-moeba-light">Yield Splitting Model</h1>
-                <p class="text-moeba-muted mb-6">Moeba utilizes an asymmetric yield distribution. The Junior tranche assumes more risk but captures the excess yield generated by the Senior capital.</p>
+                <p class="text-moeba-muted mb-6">Yield is generated from the Insurance Premium (`premiumReserve`) paid upfront by the Sponsor. The distribution is deliberately asymmetric to create leverage for the Junior tranche while ensuring stable returns for the Senior tranche.</p>
 
-                <div class="bg-moeba-card p-6 rounded-xl border border-moeba-border text-sm text-moeba-muted mb-6">
-                    <h4 class="font-bold text-moeba-light text-lg mb-4">Mathematical Example</h4>
-                    <p class="mb-4">Imagine a $10M Vault with 20% Junior Capital ($2M) and 80% Senior Capital ($8M).</p>
-                    <ul class="space-y-3 font-mono">
-                        <li>• <strong>Base APR:</strong> 10% (Generates $1M in total Yield)</li>
-                        <li>• <strong>Senior APR:</strong> 7% (Seniors receive $560,000)</li>
-                        <li class="pt-2 border-t border-moeba-border text-yellow-500">➔ Remaining Yield for Junior: $440,000</li>
-                        <li class="pt-2 text-moeba-green font-bold text-base">➔ Final Junior APR = 22% <span class="text-xs font-normal text-moeba-muted">($440k divided by their $2M capital)</span></li>
+                <div class="bg-moeba-card p-6 rounded-xl border border-moeba-border mb-8">
+                    <h3 class="font-bold text-moeba-light mb-4">On-Chain APR Formulas</h3>
+                    <ul class="space-y-4 font-mono text-sm">
+                        <li class="flex items-center gap-4">
+                            <span class="text-moeba-muted w-32">APR_Base</span>
+                            <span class="text-moeba-light">= (Premium / Total_Capital) * (365 / Duration_Days)</span>
+                        </li>
+                        <li class="flex items-center gap-4">
+                            <span class="text-moeba-muted w-32">APR_Senior</span>
+                            <span class="text-blue-400">= APR_Base * 0.70</span>
+                        </li>
+                        <li class="flex items-center gap-4">
+                            <span class="text-moeba-muted w-32">Yield_Junior</span>
+                            <span class="text-yellow-500">= Yield_Total - (Capital_Senior * APR_Senior)</span>
+                        </li>
+                        <li class="flex items-center gap-4">
+                            <span class="text-moeba-muted w-32">APR_Junior</span>
+                            <span class="text-moeba-green font-bold">= Yield_Junior / Capital_Junior</span>
+                        </li>
                     </ul>
+                </div>
+
+                <h3 class="font-bold text-moeba-light mb-4">On-Chain Junior Equity Calculation</h3>
+                <p class="text-sm text-moeba-muted mb-4">The Junior tranche withdrawal (`withdrawJunior`) uses the internal `_calculateJuniorEquity` function to precisely determine their remaining principal plus their proportional share of the premium :</p>
+
+                <div class="bg-slate-900 p-4 rounded-xl border border-slate-700 font-mono text-xs overflow-x-auto text-emerald-400">
+<pre><code>function _calculateJuniorEquity() internal view returns (uint256) {
+    if (juniorPrincipal == 0) return 0;
+    if (status == VaultStatus.TRIGGERED && juniorPrincipal == 0) return 0;
+
+    <span class="text-slate-500">// Junior retrieves remaining principal + share of premium</span>
+    uint256 totalPrincipal = seniorPrincipal + juniorPrincipal;
+    if (totalPrincipal == 0) return 0;
+
+    uint256 juniorShareOfPremium = (premiumReserve * juniorPrincipal) / totalPrincipal;
+    return juniorPrincipal + juniorShareOfPremium;
+}</code></pre>
+                </div>
+            </article>
+
+            <article id="security" class="doc-section">
+                <div class="inline-flex items-center gap-2 px-3 py-1 bg-red-500/10 border border-red-500/30 rounded-full mb-4">
+                    <span class="text-xs text-red-400 font-bold">Smart Contract Security</span>
+                </div>
+                <h1 class="text-3xl lg:text-5xl font-bold mb-6 text-moeba-light">Anti-Inflation Attack Defense</h1>
+                <p class="text-moeba-muted mb-6">Standard ERC-4626 Vaults are vulnerable to "Donation Attacks" (Inflation Attacks), where a malicious actor manipulates the initial exchange rate by donating assets to the Vault, thereby stealing subsequent deposits. Moeba Protocol mathematically neutralizes this flaw during the vault's initialization.</p>
+
+                <div class="bg-slate-900 p-5 rounded-xl border border-slate-700 font-mono text-sm overflow-x-auto text-emerald-400">
+<pre><code><span class="text-slate-500">// Snippet from initializeVault() in HPIVVault.sol</span>
+<span class="text-blue-400">// ANTI-INFLATION PROTECTION (DONATION ATTACK)</span>
+<span class="text-slate-500">// We mint 1000 shares of Senior and Junior to the 0xdead address (Burn).
+// This permanently locks the initial denominator and prevents rounding attacks.
+// These 1000 wei come directly from the Insurer's capital (negligible security cost).</span>
+
+<span class="text-slate-500">// Lock Senior Dead Shares</span>
+_mint(address(0xdead), 1000);
+seniorPrincipal += 1000;
+
+<span class="text-slate-500">// Lock Junior Dead Shares</span>
+juniorToken.mint(address(0xdead), 1000);
+juniorPrincipal += 1000;
+
+<span class="text-slate-500">// Adjust effective sponsor capital</span>
+sponsorFirstLossCapital -= 2000;</code></pre>
                 </div>
             </article>
 
             <article id="usecases" class="doc-section">
-                <h1 class="text-3xl lg:text-5xl font-bold mb-6 text-moeba-light">Categories & Triggers</h1>
-                <p class="text-moeba-muted mb-8">The protocol is risk-agnostic. Vaults can be created for any event verifiable by deterministic data feeds or IoT sensors.</p>
+                <h1 class="text-3xl lg:text-5xl font-bold mb-6 text-moeba-light">Risk Categories & Triggers</h1>
+                <p class="text-moeba-muted mb-8">The Moeba infrastructure is risk-agnostic. Vaults can cover any event verifiable by deterministic data feeds or physical IoT sensors. The dApp natively categorizes these into specific deployable templates.</p>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="p-5 border border-moeba-border bg-moeba-card rounded-xl">
-                        <h4 class="font-bold text-cyan-400 mb-2">Climate & Weather</h4>
+                        <h4 class="font-bold text-sky-400 mb-2">Climate & Weather</h4>
+                        <p class="text-xs text-moeba-muted mb-3">Parameters defined by GPS coordinates and public APIs (NOAA, USGS).</p>
                         <ul class="text-sm text-moeba-muted space-y-1 list-disc pl-4">
                             <li>Hurricane (Wind Speed)</li>
-                            <li>Earthquake (Magnitude)</li>
+                            <li>Earthquake (Richter Magnitude)</li>
                             <li>Wildfire (Acres Burned)</li>
-                            <li>Flood / Avalanche</li>
+                            <li>Flood, Avalanche, Landslide</li>
                         </ul>
                     </div>
                     <div class="p-5 border border-moeba-border bg-moeba-card rounded-xl">
-                        <h4 class="font-bold text-amber-400 mb-2">Business & Cyber</h4>
+                        <h4 class="font-bold text-rose-400 mb-2">Cyber Risks</h4>
+                        <p class="text-xs text-moeba-muted mb-3">Requires post-mortem forensic audits or on-chain proofs pushed to the Oracle.</p>
                         <ul class="text-sm text-moeba-muted space-y-1 list-disc pl-4">
                             <li>Smart Contract Exploit</li>
-                            <li>IT System Outage</li>
-                            <li>Supply Chain Delay</li>
+                            <li>IT System Outage (e.g., Cloud Down)</li>
+                        </ul>
+                    </div>
+                    <div class="p-5 border border-moeba-border bg-moeba-card rounded-xl">
+                        <h4 class="font-bold text-amber-400 mb-2">Business Interruption</h4>
+                        <p class="text-xs text-moeba-muted mb-3">Linked to tokenized cash flows; triggers automatically when KPIs drop below a mathematical threshold.</p>
+                        <ul class="text-sm text-moeba-muted space-y-1 list-disc pl-4">
                             <li>Revenue Drop</li>
+                            <li>Supply Chain Delay</li>
                         </ul>
                     </div>
                     <div class="p-5 border border-moeba-border bg-moeba-card rounded-xl">
-                        <h4 class="font-bold text-pink-400 mb-2">Real Estate</h4>
+                        <h4 class="font-bold text-indigo-400 mb-2">Flight & Travel</h4>
+                        <p class="text-xs text-moeba-muted mb-3">Queries international civil aviation APIs to deterministically confirm disruptions.</p>
                         <ul class="text-sm text-moeba-muted space-y-1 list-disc pl-4">
-                            <li>Fire Detection (IoT)</li>
-                            <li>Flood Sensors (IoT)</li>
-                            <li>Structural Damage (IoT)</li>
+                            <li>Mass Cancellation</li>
+                            <li>Airspace Closure</li>
+                            <li>Airport Strike</li>
                         </ul>
                     </div>
                     <div class="p-5 border border-moeba-border bg-moeba-card rounded-xl">
-                        <h4 class="font-bold text-teal-400 mb-2">Flight & Maritime</h4>
+                        <h4 class="font-bold text-pink-400 mb-2">Real Estate (IoT)</h4>
+                        <p class="text-xs text-moeba-muted mb-3">Utilizes Optimistic Oracles coupled with physical hardware installed in certified buildings.</p>
                         <ul class="text-sm text-moeba-muted space-y-1 list-disc pl-4">
-                            <li>Mass Flight Cancellation</li>
+                            <li>Flood Sensors</li>
+                            <li>Earthquake / Structural Sensors</li>
+                            <li>Fire Detection</li>
+                        </ul>
+                    </div>
+                    <div class="p-5 border border-moeba-border bg-moeba-card rounded-xl">
+                        <h4 class="font-bold text-blue-400 mb-2">Maritime Logistics</h4>
+                        <p class="text-xs text-moeba-muted mb-3">Leverages Computer Vision and Smart Twistlocks on cargo ships to precisely detect lost TEUs (Twenty-foot Equivalent Units).</p>
+                        <ul class="text-sm text-moeba-muted space-y-1 list-disc pl-4">
+                            <li>Container Loss (IoT Twistlock)</li>
                             <li>Vessel Sinking (IoT Tilt)</li>
                             <li>Cargo Spoilage (IoT Temp)</li>
-                            <li>Container Loss (Twistlocks)</li>
                         </ul>
                     </div>
-                </div>
-            </article>
-
-            <article id="iot-sensors" class="doc-section">
-                <div class="inline-flex items-center gap-2 px-3 py-1 bg-rose-500/10 border border-rose-500/30 rounded-full mb-4">
-                    <span class="text-xs text-rose-400 font-bold">Hardware Integration</span>
-                </div>
-                <h1 class="text-3xl lg:text-5xl font-bold mb-6 text-moeba-light">IoT & Smart Twistlocks</h1>
-                <p class="text-moeba-muted mb-6">For physical assets (Real Estate and Maritime), the protocol integrates directly with IoT sensor data to trigger claims instantly.</p>
-
-                <h3 class="text-xl font-bold mb-3 text-moeba-light">Maritime Logistics Focus</h3>
-                <p class="text-moeba-muted mb-4">A critical use case is marine container loss. By utilizing <strong>Smart Twistlocks</strong> (the securing mechanisms on cargo ships equipped with connection sensors) combined with Computer Vision, the Oracle can precisely detect how many containers have fallen overboard based on sudden signal loss.</p>
-
-                <div class="bg-moeba-card p-5 rounded-xl border border-moeba-border text-sm text-moeba-muted mb-6">
-                    <p class="font-bold text-moeba-light mb-2">Pro Rata Compensation Example:</p>
-                    <p>Trigger: 15 units (Smart Twistlock signal lost)<br>
-                    Agreed Payout: $10,000 per container<br>
-                    Total Claim: $150,000 processed instantly via Oracle.</p>
                 </div>
             </article>
 
             <article id="oracles" class="doc-section">
                 <h1 class="text-3xl lg:text-5xl font-bold mb-6 text-moeba-light">UMA Optimistic Oracle</h1>
-                <p class="text-moeba-muted mb-6">Moeba Protocol utilizes the <strong>UMA Optimistic Oracle (OO)</strong> to securely bring real-world data on-chain. Rather than relying on rigid, pre-programmed price feeds, UMA allows any verifiable truth to be asserted on-chain.</p>
+                <p class="text-moeba-muted mb-6">Moeba Protocol utilizes the <strong>UMA Optimistic Oracle (OO)</strong> to securely bring real-world data on-chain. Rather than relying on rigid price feeds, UMA allows any verifiable truth (even subjective audits) to be asserted on-chain.</p>
 
-                <ul class="text-moeba-muted space-y-3 mb-8">
-                    <li><strong class="text-moeba-light">1. Assertion:</strong> A bot or user asserts that a specific event occurred (e.g., "Hurricane Milton reached Category 4 according to NOAA").</li>
-                    <li><strong class="text-moeba-light">2. Dispute Window:</strong> A liveness period opens. If no one disputes the claim, it is taken as truth.</li>
-                    <li><strong class="text-moeba-light">3. DVM Resolution:</strong> If disputed, UMA token holders vote to resolve the truth via the Data Verification Mechanism.</li>
+                <ul class="text-moeba-muted space-y-4 mb-8">
+                    <li class="p-4 bg-moeba-card rounded-lg border border-moeba-border">
+                        <strong class="text-moeba-light block mb-1">1. Assertion :</strong> An actor asserts that a specific event occurred (e.g., "Hurricane reached Category 4" or "Forensic audit confirmed a 40% revenue drop").
+                    </li>
+                    <li class="p-4 bg-moeba-card rounded-lg border border-moeba-border">
+                        <strong class="text-moeba-light block mb-1">2. Dispute Window :</strong> A liveness period opens. If no one disputes the claim by providing contrary evidence, the data is taken as mathematical truth and the claim is validated.
+                    </li>
+                    <li class="p-4 bg-moeba-card rounded-lg border border-moeba-border">
+                        <strong class="text-moeba-light block mb-1">3. DVM Resolution :</strong> If disputed, UMA token holders vote to resolve the truth via the decentralized Data Verification Mechanism.
+                    </li>
                 </ul>
             </article>
 
             <article id="legal-struct" class="doc-section">
                 <div class="inline-flex items-center gap-2 px-3 py-1 bg-purple-500/10 border border-purple-500/30 rounded-full mb-4">
-                    <span class="text-xs text-purple-400 font-bold">Legal Framework</span>
+                    <span class="text-xs text-purple-400 font-bold">Swiss Regulatory Framework</span>
                 </div>
-                <h1 class="text-3xl lg:text-5xl font-bold mb-6 text-moeba-light">VUSA & DLT Law (Swiss)</h1>
-                <p class="text-moeba-muted mb-6">Moeba operates under the cutting-edge Swiss regulatory framework, bridging DeFi and institutional compliance.</p>
+                <h1 class="text-3xl lg:text-5xl font-bold mb-6 text-moeba-light">VUSA & DLT Law</h1>
+                <p class="text-moeba-muted mb-6">Moeba bridges DeFi with institutional finance by operating strictly within the cutting-edge Swiss regulatory framework supervised by FINMA.</p>
 
-                <div class="space-y-6">
-                    <div>
-                        <h3 class="text-xl font-bold mb-2 text-moeba-light">VUSA (ISPV) Structure</h3>
-                        <p class="text-sm text-moeba-muted">Under the revised Swiss Insurance Supervision Act (ISA Art. 30e), Moeba acts as an Insurance Special Purpose Vehicle. Because vaults are 100% "Fully Funded" upfront, capital requirements are drastically reduced.</p>
+                <div class="space-y-6 mb-8">
+                    <div class="p-5 border border-moeba-border bg-moeba-card rounded-xl">
+                        <h3 class="text-xl font-bold mb-2 text-moeba-light">VUSA (Art. 30e ISA) & Fully Funded</h3>
+                        <p class="text-sm text-moeba-muted">Moeba structures vaults as Insurance Special Purpose Vehicles (VUSA). Under Article 111d of the ISO, the vehicle must be "Fully Funded". The Smart Contract mathematically guarantees this: `totalAssets() + assets <= MAX_CAPACITY` is strictly enforced upon deposit, completely eliminating counterparty risk and undercapitalization.</p>
                     </div>
-                    <div>
-                        <h3 class="text-xl font-bold mb-2 text-moeba-light">DLT Law & Ledger-based Securities</h3>
-                        <p class="text-sm text-moeba-muted">HPIV tokens are not mere utility tokens. Under Art. 973d of the Swiss Code of Obligations, they are classified as Ledger-based Securities (Droits-Valeurs Inscrits). Transferring the token legally transfers the underlying debt claim.</p>
-                    </div>
-                    <div>
-                        <h3 class="text-xl font-bold mb-2 text-moeba-light">AMLA & FinSA (KYB/KYC)</h3>
-                        <p class="text-sm text-moeba-muted">Moeba is a Permissioned DeFi protocol. Only whitelisted Insurers (KYB) can deploy vaults via <code>HPIVFactory.sol</code>, and only verified investors (KYC via Soulbound Tokens) can deposit capital.</p>
+                    <div class="p-5 border border-moeba-border bg-moeba-card rounded-xl">
+                        <h3 class="text-xl font-bold mb-2 text-moeba-light">DLT Law (Art. 973d CO)</h3>
+                        <p class="text-sm text-moeba-muted">Senior (ERC-4626) and Junior (ERC-20) tokens are classified as **Ledger-based Securities** (Registerwertrechte). Transferring the token on the blockchain legally transfers the underlying debt claim without requiring a traditional central depository, tightly binding the on-chain asset to off-chain legal reality.</p>
                     </div>
                 </div>
             </article>
 
-            <article id="gov-model" class="doc-section">
-                <h1 class="text-3xl lg:text-5xl font-bold mb-6 text-moeba-light">Governance & Security</h1>
-                <p class="text-moeba-muted mb-6">To avoid the pitfalls of "1-token-1-vote" governance (whale centralization), Moeba utilizes a <strong>Tokenless Reputation Council</strong>.</p>
+            <article id="compliance-code" class="doc-section">
+                <div class="inline-flex items-center gap-2 px-3 py-1 bg-indigo-500/10 border border-indigo-500/30 rounded-full mb-4">
+                    <span class="text-xs text-indigo-400 font-bold">AMLA & Permissioned DeFi</span>
+                </div>
+                <h1 class="text-3xl lg:text-5xl font-bold mb-6 text-moeba-light">KYB/KYC On-Chain Registries</h1>
+                <p class="text-moeba-muted mb-6">To comply with the Swiss Anti-Money Laundering Act (AMLA) and enforce the "Travel Rule", Moeba operates as a **Permissioned DeFi protocol**. Both Sponsors and Investors must be verified.</p>
 
-                <h3 class="text-xl font-bold mb-3 text-moeba-light">The 3-of-5 Multisig</h3>
-                <p class="text-moeba-muted mb-4">The DAO_ROLE is held by a Gnosis Safe controlled by 5 distinct seats, requiring 3 signatures for any upgrade:</p>
-                <ul class="text-sm text-moeba-muted space-y-2 list-disc pl-4 mb-6">
-                    <li>Core Team (Technical updates)</li>
-                    <li>Insurer Seat (Sponsor representative)</li>
-                    <li>Investor Seat (DeFi liquidity provider)</li>
-                    <li>Security Seat (Independent Auditor)</li>
-                    <li>Legal Seat (Swiss compliance expert)</li>
-                </ul>
+                <h3 class="font-bold text-moeba-light mb-3">1. KYB for Sponsors (Insurers)</h3>
+                <p class="text-sm text-moeba-muted mb-4">Insurers must submit a registration request to the `HPIVFactory.sol` containing their Legal Entity name and an IPFS hash of their KYB documentation. Only approved Sponsors can deploy Vaults.</p>
 
-                <h3 class="text-xl font-bold mb-3 text-moeba-light">Timelock & Fork-free Exit</h3>
-                <p class="text-moeba-muted">Every protocol upgrade is subject to a strict 48-hour Timelock. This guarantees the ultimate decentralization right: the ability for investors to withdraw their funds <em>before</em> any malicious update is applied.</p>
+                <div class="bg-slate-900 p-5 rounded-xl border border-slate-700 font-mono text-sm overflow-x-auto text-emerald-400 mb-8">
+<pre><code><span class="text-slate-500">// Snippet from HPIVFactory.sol : Sponsor Whitelist</span>
+struct SponsorRequest {
+    string companyName;  <span class="text-slate-500">// Legal entity name</span>
+    string kybHash;      <span class="text-slate-500">// IPFS Hash containing proof</span>
+    RequestStatus status;
+    uint256 requestDate;
+}
+
+function registerSponsor(string memory _companyName, string memory _kybHash) external {
+    require(!isWhitelistedSponsor[msg.sender], "Already whitelisted");
+    <span class="text-slate-500">// ... logic to request approval</span>
+}</code></pre>
+                </div>
+
+                <h3 class="font-bold text-moeba-light mb-3">2. KYC for Investors (Liquidity Providers)</h3>
+                <p class="text-sm text-moeba-muted mb-4">Investors must be whitelisted in the centralized `HPIVCompliance.sol` registry. This check is injected directly into the `_update` function of the Vault tokens, freezing any Peer-to-Peer transfer to an unverified address.</p>
+
+                <div class="bg-slate-900 p-5 rounded-xl border border-slate-700 font-mono text-sm overflow-x-auto text-emerald-400">
+<pre><code><span class="text-slate-500">// Snippet from HPIVJuniorToken.sol & HPIVVault.sol</span>
+function _update(address from, address to, uint256 value) internal virtual override {
+    <span class="text-slate-500">// Blocks P2P transfers if receiver is not KYC'd</span>
+    if (from != address(0) && to != address(0)) {
+        require(
+            ICompliance(complianceModule).isAllowed(to),
+            "Receiver must be KYC whitelisted"
+        );
+    }
+    super._update(from, to, value);
+}</code></pre>
+                </div>
+            </article>
+
+            <article id="dapp-sponsor" class="doc-section">
+                <div class="inline-flex items-center gap-2 px-3 py-1 bg-teal-500/10 border border-teal-500/30 rounded-full mb-4">
+                    <span class="text-xs text-teal-400 font-bold">dApp Interfaces</span>
+                </div>
+                <h1 class="text-3xl lg:text-5xl font-bold mb-6 text-moeba-light">Sponsor Dashboard & Vault Creation</h1>
+                <p class="text-moeba-muted mb-6">The Moeba dApp provides a dedicated "Sponsor Dashboard" for whitelisted insurers to deploy and manage their parametric products.</p>
+
+                <div class="space-y-6 mb-8">
+                    <div class="p-5 border border-moeba-border bg-moeba-card rounded-xl">
+                        <h3 class="text-xl font-bold mb-2 text-moeba-light">Vault Creation Wizard</h3>
+                        <p class="text-sm text-moeba-muted mb-4">Sponsors configure the vault's exact parameters using the `CreateVaultForm`. The interface dynamically adapts to the chosen risk category (e.g., Climate, Cyber). Parameters include:</p>
+                        <ul class="text-sm text-moeba-muted space-y-2 list-disc pl-4">
+                            <li><strong>Risk Category:</strong> Selected from pre-approved templates.</li>
+                            <li><strong>Geography:</strong> Country, Region, City, and impact Radius (km).</li>
+                            <li><strong>Trigger Parameters:</strong> e.g., Wind Speed threshold, Earthquake Magnitude.</li>
+                            <li><strong>Financials:</strong> Required Junior Tranche percentage and the total Premium to Pay upfront.</li>
+                        </ul>
+                    </div>
+                    <div class="p-5 border border-moeba-border bg-moeba-card rounded-xl">
+                        <h3 class="text-xl font-bold mb-2 text-moeba-light">Active Vault Management</h3>
+                        <p class="text-sm text-moeba-muted">Once deployed, the `SponsorDashboardPage` lists all active contracts. Sponsors must initialize the vault by depositing their "First Loss" capital and the "Premium" before the subscription period opens to investors.</p>
+                    </div>
+                </div>
+            </article>
+
+            <article id="dapp-investor" class="doc-section">
+                <div class="inline-flex items-center gap-2 px-3 py-1 bg-emerald-500/10 border border-emerald-500/30 rounded-full mb-4">
+                    <span class="text-xs text-emerald-400 font-bold">dApp Interfaces</span>
+                </div>
+                <h1 class="text-3xl lg:text-5xl font-bold mb-6 text-moeba-light">Marketplace & Portfolio Tracking</h1>
+                <p class="text-moeba-muted mb-6">Investors interact with Moeba through a robust Marketplace and a detailed Portfolio manager to track their positions and claims.</p>
+
+                <div class="space-y-6 mb-8">
+                    <div class="p-5 border border-moeba-border bg-moeba-card rounded-xl">
+                        <h3 class="text-xl font-bold mb-2 text-moeba-light">The Marketplace (`MarketplacePage.jsx`)</h3>
+                        <p class="text-sm text-moeba-muted mb-4">Investors can browse active vaults, filter by blockchain network (e.g., Base, Ethereum, Arbitrum), and search by specific risk categories. The Marketplace displays real-time APRs and remaining capacity.</p>
+                    </div>
+
+                    <div class="p-5 border border-moeba-border bg-moeba-card rounded-xl">
+                        <h3 class="text-xl font-bold mb-2 text-moeba-light">Vault Analytics & Testing (`VaultDetailsPage.jsx`)</h3>
+                        <p class="text-sm text-moeba-muted mb-4">Clicking a vault reveals the `VaultDetailsPage`. Here, users can view the dynamic Waterfall simulation and historical risk charts. <strong>Crucially for testing:</strong> The interface includes a "Test Zone" button (`SIMULATE CRASH`) that allows users to manually trigger the oracle (`triggerCatastrophe()`) to observe how losses are absorbed in real-time.</p>
+                    </div>
+
+                    <div class="p-5 border border-moeba-border bg-moeba-card rounded-xl">
+                        <h3 class="text-xl font-bold mb-2 text-moeba-light">Portfolio & Claims (`PortfolioPage.jsx`)</h3>
+                        <p class="text-sm text-moeba-muted">The Portfolio dashboard aggregates all user investments across Senior and Junior tranches. If a vault matures safely, or if a claim is triggered, investors use this dashboard to withdraw their recovered principal (`principalRecovered`) and accumulated yield (`yieldPayout`). The underlying math utilizes the `calculateClaimStats` helper to determine exact recovery ratios based on the severity of the loss.</p>
+                    </div>
+                </div>
             </article>
 
         </div>

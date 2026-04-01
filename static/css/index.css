@@ -14,16 +14,16 @@ html {
 }
 
 ::-webkit-scrollbar-track {
-    background: #0f1419;
+    background: #24333C; /* Iron Blue */
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #252d38;
+    background: #3D5260; /* moeba-border */
     border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #3a4552;
+    background: #4A6273;
 }
 
 /* Selection color - Moeba Green */
@@ -41,7 +41,7 @@ html {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: #0f1419;
+    background-color: #24333C; /* Iron Blue */
     z-index: 10000;
     display: flex;
     justify-content: center;
@@ -281,7 +281,7 @@ body.light-theme ::-webkit-scrollbar-thumb {
     .loader-overlay {
         background-color: #0f1419;
     }
-    
+
     body.light-theme .loader-overlay {
         background-color: #FAF8F3;
     }
@@ -292,7 +292,7 @@ body.light-theme ::-webkit-scrollbar-thumb {
     html {
         scroll-behavior: auto;
     }
-    
+
     *,
     *::before,
     *::after {
@@ -353,11 +353,14 @@ button:focus-visible {
    ============================================ */
 #logoAnimationContainer {
     position: relative;
-    min-height: 400px;
+    width: 100%;
+    height: 100%;
 }
 
 #logoPixelCanvas {
     display: block;
+    width: 100%;
+    height: 100%;
     cursor: default;
 }
 
@@ -381,8 +384,8 @@ button:focus-visible {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 250px;
-    height: 250px;
+    width: 300px;
+    height: 300px;
     background: radial-gradient(circle, rgba(232, 61, 129, 0.08) 0%, transparent 70%);
     pointer-events: none;
     z-index: -1;
@@ -527,7 +530,7 @@ body.light-theme .tech-card {
     .parallax-container {
         display: none;
     }
-    
+
     .tech-card {
         transform: none !important;
     }

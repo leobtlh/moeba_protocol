@@ -475,7 +475,7 @@ class LogoPixelAnimation {
         const offCanvas = document.createElement('canvas');
         const offCtx = offCanvas.getContext('2d');
 
-        const logoSize = Math.min(this.width, this.height) * 0.75;
+        const logoSize = Math.min(this.width, this.height) * 0.90;
         offCanvas.width = logoSize;
         offCanvas.height = logoSize;
 
@@ -501,6 +501,10 @@ class LogoPixelAnimation {
                     const g = pixels[index + 1];
                     const b = pixels[index + 2];
 
+                    // Détermine si le pixel est "vert" en fonction de la couleur (Moeba Green : ~181, 232, 51)
+                    // On vérifie si la composante verte (g) est nettement supérieure au bleu (b)
+                    const isGreen = g > b * 1.5;
+
                     this.particles.push({
                         targetX: x + offsetX,
                         targetY: y + offsetY,
@@ -511,7 +515,15 @@ class LogoPixelAnimation {
                         vy: 0,
                         color: `rgb(${r}, ${g}, ${b})`,
                         size: this.pixelSize * (0.8 + Math.random() * 0.4),
-                        alpha: alpha / 255
+                        alpha: isGreen ? 1.0 : 0.7, // Vert opaque, Rose légèrement transparent
+                        isGreen: isGreen,
+
+                        // Nouvelles propriétés pour le mouvement organique
+                        wanderSeedX: Math.random() * 1000,
+                        wanderSeedY: Math.random() * 1000,
+                        wanderSpeed: Math.random() * 0.002 + 0.001,
+                        wanderRadius: Math.random() * 10 + 2, // Amplitude du mouvement
+                        easeSpeed: Math.random() * 0.04 + 0.03 // Vitesse de retour élastique variable
                     });
                 }
             }
@@ -521,15 +533,29 @@ class LogoPixelAnimation {
     animate() {
         this.ctx.clearRect(0, 0, this.width, this.height);
 
+        const time = Date.now();
+        // Cycle d'errance global (se rassemble et se sépare lentement)
+        const globalWanderCycle = Math.sin(time * 0.0005);
+        const wanderIntensity = (globalWanderCycle + 1) / 2 * 0.8 + 0.2; // Entre 0.2 et 1.0
+
+        // 1. Mise à jour de la physique de toutes les particules
         for (let i = 0; i < this.particles.length; i++) {
             const p = this.particles[i];
 
-            // Retour élastique vers la position cible
-            const dx = p.targetX - p.x;
-            const dy = p.targetY - p.y;
+            // Calcul du mouvement organique (errance)
+            const wanderX = Math.sin(time * p.wanderSpeed + p.wanderSeedX) * p.wanderRadius * wanderIntensity;
+            const wanderY = Math.cos(time * p.wanderSpeed + p.wanderSeedY) * p.wanderRadius * wanderIntensity;
 
-            p.vx += dx * 0.05;
-            p.vy += dy * 0.05;
+            // Nouvelle cible temporaire = position initiale + errance
+            const currentTargetX = p.targetX + wanderX;
+            const currentTargetY = p.targetY + wanderY;
+
+            // Retour élastique vers la position cible
+            const dx = currentTargetX - p.x;
+            const dy = currentTargetY - p.y;
+
+            p.vx += dx * p.easeSpeed;
+            p.vy += dy * p.easeSpeed;
 
             // Friction
             p.vx *= 0.85;
@@ -544,24 +570,60 @@ class LogoPixelAnimation {
                 if (mouseDist < this.mouse.radius) {
                     const force = (this.mouse.radius - mouseDist) / this.mouse.radius;
                     const angle = Math.atan2(mouseDy, mouseDx);
-                    p.vx += Math.cos(angle) * force * 8;
-                    p.vy += Math.sin(angle) * force * 8;
+                    p.vx -= Math.cos(angle) * force * 15; // Répulsion plus forte
+                    p.vy -= Math.sin(angle) * force * 15;
                 }
             }
 
             p.x += p.vx;
             p.y += p.vy;
+        }
 
+        // Fonction helper pour dessiner une particule (avec une légère rotation basée sur la vitesse)
+        const drawParticle = (p) => {
             this.ctx.globalAlpha = p.alpha;
             this.ctx.fillStyle = p.color;
 
-            const radius = 1;
+            this.ctx.save();
+            this.ctx.translate(p.x, p.y);
+            // Légère rotation pour un effet plus organique
+            this.ctx.rotate((p.vx + p.vy) * 0.05);
+
             this.ctx.beginPath();
-            this.ctx.roundRect(p.x - p.size / 2, p.y - p.size / 2, p.size, p.size, radius);
+            this.ctx.roundRect(-p.size / 2, -p.size / 2, p.size, p.size, 1);
             this.ctx.fill();
+
+            this.ctx.restore();
+        };
+
+        // 2. Dessiner les pixels ROSES en arrière-plan
+        this.ctx.shadowColor = 'transparent';
+        for (let i = 0; i < this.particles.length; i++) {
+            if (!this.particles[i].isGreen) {
+                drawParticle(this.particles[i]);
+            }
         }
 
+        // 3. Dessiner les pixels VERTS au premier plan avec une ombre
+        // L'ombre donne l'impression que la partie verte est "au-dessus"
+        this.ctx.shadowColor = 'rgba(0, 0, 0, 0.6)';
+        this.ctx.shadowBlur = 6;
+        this.ctx.shadowOffsetX = 2;
+        this.ctx.shadowOffsetY = 3;
+
+        for (let i = 0; i < this.particles.length; i++) {
+            if (this.particles[i].isGreen) {
+                drawParticle(this.particles[i]);
+            }
+        }
+
+        // Réinitialiser les paramètres du canvas
+        this.ctx.shadowColor = 'transparent';
+        this.ctx.shadowBlur = 0;
+        this.ctx.shadowOffsetX = 0;
+        this.ctx.shadowOffsetY = 0;
         this.ctx.globalAlpha = 1;
+
         this.animationId = requestAnimationFrame(() => this.animate());
     }
     

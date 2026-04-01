@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Moeba Protocol - Decentralized Parametric Insurance</title>
     <link rel="icon" href="img/IconTest03.png" type="image/png">
-    
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -19,28 +19,29 @@
                 extend: {
                     colors: {
                         'moeba': {
-                            // Sanzo Wada inspired palette - harmonizing with logo green (#B5E833) and pink (#E83D81)
-                            // Dark mode: Deep indigo-charcoal base (Wada #264 inspired)
-                            'dark': '#0f1419',
-                            'darker': '#0a0d12',
-                            'card': '#151b24',
-                            'border': '#252d38',
-                            // Logo colors preserved
+                            // Sanzo Wada "Iron Blue" Palette
+                            'dark': '#24333C',      // Fond principal (Iron Blue)
+                            'darker': '#1C2830',    // Fond secondaire (Footer, éléments contrastés)
+                            'card': '#2A3B45',      // Fond des cartes
+                            'border': '#3D5260',    // Lignes et bordures douces
+
+                            // Couleurs d'accentuation (conservées)
                             'green': '#B5E833',
                             'green-hover': '#C8F54A',
                             'pink': '#E83D81',
                             'pink-hover': '#F25B96',
-                            // Wada complementary accents
-                            'sage': '#8BA888',       // Wada sage green - softer complement
-                            'cream': '#F5F0E6',      // Wada warm white
-                            'charcoal': '#2D3640',   // Wada blue-gray
-                            // Neutrals
-                            'muted': '#7A8694',
-                            'light': '#F5F0E6',
+                            'sage': '#8BA888',
+
+                            // Textes
+                            'cream': '#F5F0E6',
+                            'charcoal': '#2D3640',
+                            'muted': '#94a3b8',     // Slate-400 (plus lisible sur le Iron Blue)
+                            'light': '#f8fafc',     // Slate-50
                         }
                     },
                     fontFamily: {
                         'sans': ['Inter', 'system-ui', 'sans-serif'],
+                        'mono': ['JetBrains Mono', 'monospace'],
                     }
                 }
             }
@@ -49,7 +50,7 @@
     <link rel="stylesheet" href="static/css/index.css">
 </head>
 <body class="bg-moeba-dark text-moeba-cream font-sans antialiased">
-    
+
     <!-- Loader (keeping original animation) -->
     <div id="moebaLoader" class="loader-overlay">
         <div class="fusion-container">
@@ -68,7 +69,7 @@
                     <img src="img/IconTest03.png" alt="Moeba" class="h-10 w-10 lg:h-12 lg:w-12">
                     <span class="text-lg lg:text-xl font-bold tracking-tight">Moeba Protocol</span>
                 </a>
-                
+
                 <!-- Desktop Navigation -->
                 <div class="hidden lg:flex items-center gap-8">
                     <a href="#features" class="text-sm text-moeba-muted hover:text-moeba-light transition-colors" data-i18n="nav_features">Features</a>
@@ -78,13 +79,13 @@
                     <a href="#compliance" class="text-sm text-moeba-muted hover:text-moeba-light transition-colors" data-i18n="nav_compliance">Compliance</a>
                     <a href="documentation/index_doc.html" target="_blank" class="text-sm text-moeba-muted hover:text-moeba-light transition-colors" data-i18n="nav_docs">Documentation</a>
                 </div>
-                
+
                 <!-- Actions -->
                 <div class="flex items-center gap-3 lg:gap-4">
                     <button id="langToggle" onclick="toggleLanguage()" class="text-sm text-moeba-muted hover:text-moeba-light transition-colors px-2 py-1">FR</button>
                     <button id="themeSwitch" class="text-moeba-muted hover:text-moeba-light transition-colors p-2" aria-label="Toggle theme"></button>
                     <a href="/app/" target="_blank" class="bg-moeba-green text-moeba-dark px-4 py-2 lg:px-6 lg:py-2.5 rounded-lg font-semibold text-sm hover:bg-moeba-green-hover transition-all hover:scale-105" data-i18n="launch_dapp">Launch dApp</a>
-                    
+
                     <!-- Mobile menu button -->
                     <button id="mobileMenuBtn" class="lg:hidden p-2 text-moeba-muted hover:text-moeba-light">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -93,7 +94,7 @@
                     </button>
                 </div>
             </div>
-            
+
             <!-- Mobile Navigation -->
             <div id="mobileMenu" class="lg:hidden hidden pb-4">
                 <div class="flex flex-col gap-3 pt-4 border-t border-moeba-border">
@@ -110,33 +111,34 @@
 
     <main>
         <!-- Hero Section -->
-        <section class="min-h-screen flex items-center justify-center relative overflow-hidden pt-20">
+        <section class="min-h-screen flex items-center relative overflow-hidden pt-20">
             <!-- Background gradient -->
             <div class="absolute inset-0 bg-gradient-to-b from-moeba-green/5 via-transparent to-transparent"></div>
             <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-moeba-green/10 rounded-full blur-3xl"></div>
             <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-moeba-pink/10 rounded-full blur-3xl"></div>
-            
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10">
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-                <!-- Left: Content -->
-                <div class="text-center lg:text-left max-w-2xl mx-auto lg:mx-0">
+
+            <!-- Full-width grid: left content stays in max-w-7xl, right animation bleeds to screen edge -->
+            <div class="w-full relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pointer-events-none">
+                <!-- Left: Content (constrained) -->
+                <div class="py-20 lg:w-3/4 pointer-events-auto">
+                <div class="text-center lg:text-left">
                     <!-- Badge -->
                     <div class="inline-flex items-center gap-2 px-4 py-2 bg-moeba-green/10 border border-moeba-green/30 rounded-full mb-8">
                         <span class="w-2 h-2 bg-moeba-green rounded-full animate-pulse"></span>
                         <span class="text-sm text-moeba-green font-medium" data-i18n="badge_hpiv">Hybrid Parametric Insurance Vault (HPIV)</span>
                     </div>
-                    
+
                     <!-- Title -->
                     <h1 class="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight mb-6 leading-tight">
                         <span class="text-moeba-light" data-i18n="hero_title_1">Decentralized Parametric</span><br>
                         <span class="bg-gradient-to-r from-moeba-green to-moeba-green-hover bg-clip-text text-transparent" data-i18n="hero_title_2">Insurance Infrastructure</span>
                     </h1>
-                    
+
                     <!-- Subtitle -->
-                    <p class="text-lg sm:text-xl text-moeba-muted max-w-2xl mx-auto mb-10 leading-relaxed" data-i18n="hero_subtitle">
+                    <p class="text-lg sm:text-xl text-moeba-muted max-w-2xl mb-10 leading-relaxed" data-i18n="hero_subtitle">
                         The solution to the binary risk of traditional Cat Bonds. Multi-tranche architecture on ERC-4626 enabling Soft Default and Fully Funded solvency.
                     </p>
-                    
+
                     <!-- CTA Buttons -->
                     <div class="flex flex-col sm:flex-row items-center lg:items-start justify-center lg:justify-start gap-4 mb-12">
                         <a href="/app/" target="_blank" class="w-full sm:w-auto bg-moeba-green text-moeba-dark px-8 py-4 rounded-xl font-semibold text-base hover:bg-moeba-green-hover transition-all hover:scale-105 flex items-center justify-center gap-2" data-i18n="cta_launch">
@@ -148,9 +150,10 @@
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                         </a>
                     </div>
-                    
+
                     <!-- Stats -->
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 lg:gap-8 pt-12 border-t border-moeba-border">
+                    <hr class="w-1/2 lg:w-[650px] border-moeba-border mb-12">
+                    <div class="flex flex-col sm:flex-row flex-wrap gap-[30px]">
                         <div class="text-center lg:text-left">
                             <div class="text-2xl lg:text-3xl font-bold text-moeba-green mb-2">ERC-4626</div>
                             <div class="text-xs text-moeba-muted uppercase tracking-wider" data-i18n="stat_liquidity">Standardized Liquidity</div>
@@ -165,16 +168,16 @@
                         </div>
                     </div>
                 </div>
-                
-                <!-- Right: Logo Pixel Animation -->
-                <div class="hidden lg:flex items-center justify-center relative">
-                    <div id="logoAnimationContainer" class="relative w-full h-[600px]">
-                        <canvas id="logoPixelCanvas" class="w-full h-full"></canvas>
-                    </div>
-                </div>
                 </div>
             </div>
-            
+
+            <!-- Right: Logo Pixel Animation — bleeds to screen right edge -->
+            <div class="hidden lg:flex absolute right-0 top-[60%] -translate-y-1/2 w-[800px] h-[800px] z-0">
+                <div id="logoAnimationContainer" class="relative w-full h-full">
+                    <canvas id="logoPixelCanvas" class="w-full h-full"></canvas>
+                </div>
+            </div>
+
             <!-- Scroll indicator -->
             <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
                 <svg class="w-6 h-6 text-moeba-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -190,7 +193,7 @@
                     <h2 class="text-3xl lg:text-5xl font-bold mb-4" data-i18n="features_title">Full-Stack Insurance Infrastructure</h2>
                     <p class="text-moeba-muted text-lg max-w-2xl mx-auto" data-i18n="features_subtitle">Quantitative risk management with institutional-grade security for DeFi insurance vaults.</p>
                 </div>
-                
+
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <!-- Feature 1 -->
                     <div class="group bg-moeba-card border border-moeba-border rounded-2xl p-8 hover:border-moeba-green/50 transition-all hover:-translate-y-1">
@@ -200,7 +203,7 @@
                         <h3 class="text-xl font-semibold mb-3" data-i18n="feature1_title">First Loss Capital</h3>
                         <p class="text-moeba-muted leading-relaxed" data-i18n="feature1_desc">The insurer commits their own capital first via Junior Tranche, creating a safety buffer for Senior investors.</p>
                     </div>
-                    
+
                     <!-- Feature 2 -->
                     <div class="group bg-moeba-card border border-moeba-border rounded-2xl p-8 hover:border-moeba-green/50 transition-all hover:-translate-y-1">
                         <div class="w-12 h-12 bg-moeba-green/10 rounded-xl flex items-center justify-center mb-6">
@@ -209,7 +212,7 @@
                         <h3 class="text-xl font-semibold mb-3" data-i18n="feature2_title">Waterfall Mechanism</h3>
                         <p class="text-moeba-muted leading-relaxed" data-i18n="feature2_desc">Sequential loss absorption protects Senior tranche through systematic capital hierarchy during catastrophic events.</p>
                     </div>
-                    
+
                     <!-- Feature 3 -->
                     <div class="group bg-moeba-card border border-moeba-border rounded-2xl p-8 hover:border-moeba-green/50 transition-all hover:-translate-y-1">
                         <div class="w-12 h-12 bg-moeba-green/10 rounded-xl flex items-center justify-center mb-6">
@@ -218,7 +221,7 @@
                         <h3 class="text-xl font-semibold mb-3" data-i18n="feature3_title">Yield Splitting</h3>
                         <p class="text-moeba-muted leading-relaxed" data-i18n="feature3_desc">Asymmetric yield distribution: Senior receives stable APR while Junior captures leveraged premium returns.</p>
                     </div>
-                    
+
                     <!-- Feature 4 -->
                     <div class="group bg-moeba-card border border-moeba-border rounded-2xl p-8 hover:border-moeba-green/50 transition-all hover:-translate-y-1">
                         <div class="w-12 h-12 bg-moeba-green/10 rounded-xl flex items-center justify-center mb-6">
@@ -227,7 +230,7 @@
                         <h3 class="text-xl font-semibold mb-3" data-i18n="feature4_title">Oracle Integration</h3>
                         <p class="text-moeba-muted leading-relaxed" data-i18n="feature4_desc">Automated triggering via UMA oracles with certified data streams from USGS, NOAA for objective claims.</p>
                     </div>
-                    
+
                     <!-- Feature 5 -->
                     <div class="group bg-moeba-card border border-moeba-border rounded-2xl p-8 hover:border-moeba-green/50 transition-all hover:-translate-y-1">
                         <div class="w-12 h-12 bg-moeba-green/10 rounded-xl flex items-center justify-center mb-6">
@@ -236,7 +239,7 @@
                         <h3 class="text-xl font-semibold mb-3" data-i18n="feature5_title">Anti-Inflation Attack</h3>
                         <p class="text-moeba-muted leading-relaxed" data-i18n="feature5_desc">Dead Shares minting at initialization locks exchange rate and prevents donation attacks on ERC-4626.</p>
                     </div>
-                    
+
                     <!-- Feature 6 -->
                     <div class="group bg-moeba-card border border-moeba-border rounded-2xl p-8 hover:border-moeba-green/50 transition-all hover:-translate-y-1">
                         <div class="w-12 h-12 bg-moeba-green/10 rounded-xl flex items-center justify-center mb-6">
@@ -256,7 +259,7 @@
                     <h2 class="text-3xl lg:text-5xl font-bold mb-4" data-i18n="usecases_title">Supported Risk Categories</h2>
                     <p class="text-moeba-muted text-lg max-w-2xl mx-auto" data-i18n="usecases_subtitle">An agnostic infrastructure driven by UMA Oracles and IoT sensors for all measurable parametric risks.</p>
                 </div>
-                
+
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <!-- Use Case Cards -->
                     <div class="bg-moeba-card border border-moeba-border rounded-2xl p-6 hover:border-moeba-green/50 transition-all group">
@@ -266,7 +269,7 @@
                         <h3 class="text-lg font-semibold mb-2" data-i18n="uc1_title">Climate & Weather</h3>
                         <p class="text-moeba-muted text-sm leading-relaxed" data-i18n="uc1_desc">Parametric Cat Bonds for natural disasters. Triggered by NOAA, USGS data: hurricanes, earthquakes, wildfires, floods.</p>
                     </div>
-                    
+
                     <div class="bg-moeba-card border border-moeba-border rounded-2xl p-6 hover:border-moeba-green/50 transition-all group">
                         <div class="w-12 h-12 bg-gradient-to-br from-amber-500/20 to-orange-500/20 rounded-xl flex items-center justify-center mb-4">
                             <svg class="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
@@ -274,7 +277,7 @@
                         <h3 class="text-lg font-semibold mb-2" data-i18n="uc2_title">Real Estate (IoT)</h3>
                         <p class="text-moeba-muted text-sm leading-relaxed" data-i18n="uc2_desc">Automated coverage via on-site sensors. Fires, flooding, and seismic damage detection through smart buildings.</p>
                     </div>
-                    
+
                     <div class="bg-moeba-card border border-moeba-border rounded-2xl p-6 hover:border-moeba-green/50 transition-all group">
                         <div class="w-12 h-12 bg-gradient-to-br from-blue-500/20 to-indigo-500/20 rounded-xl flex items-center justify-center mb-4">
                             <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
@@ -282,7 +285,7 @@
                         <h3 class="text-lg font-semibold mb-2" data-i18n="uc3_title">Maritime (IoT)</h3>
                         <p class="text-moeba-muted text-sm leading-relaxed" data-i18n="uc3_desc">Supply chain and vessel telemetry protection. Onboard sensors for incidents, sinking, and cargo spoilage.</p>
                     </div>
-                    
+
                     <div class="bg-moeba-card border border-moeba-border rounded-2xl p-6 hover:border-moeba-green/50 transition-all group">
                         <div class="w-12 h-12 bg-gradient-to-br from-violet-500/20 to-purple-500/20 rounded-xl flex items-center justify-center mb-4">
                             <svg class="w-6 h-6 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
@@ -290,7 +293,7 @@
                         <h3 class="text-lg font-semibold mb-2" data-i18n="uc4_title">Cyber Security</h3>
                         <p class="text-moeba-muted text-sm leading-relaxed" data-i18n="uc4_desc">On-chain native digital risk mitigation. Smart contract exploits and massive IT outages coverage.</p>
                     </div>
-                    
+
                     <div class="bg-moeba-card border border-moeba-border rounded-2xl p-6 hover:border-moeba-green/50 transition-all group">
                         <div class="w-12 h-12 bg-gradient-to-br from-rose-500/20 to-red-500/20 rounded-xl flex items-center justify-center mb-4">
                             <svg class="w-6 h-6 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"/></svg>
@@ -298,7 +301,7 @@
                         <h3 class="text-lg font-semibold mb-2" data-i18n="uc5_title">Business Interruption</h3>
                         <p class="text-moeba-muted text-sm leading-relaxed" data-i18n="uc5_desc">Corporate financial buffers. Triggered by verifiable metrics: revenue drops and supply chain delays.</p>
                     </div>
-                    
+
                     <div class="bg-moeba-card border border-moeba-border rounded-2xl p-6 hover:border-moeba-green/50 transition-all group">
                         <div class="w-12 h-12 bg-gradient-to-br from-sky-500/20 to-teal-500/20 rounded-xl flex items-center justify-center mb-4">
                             <svg class="w-6 h-6 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
@@ -318,7 +321,7 @@
                     <div>
                         <h2 class="text-3xl lg:text-5xl font-bold mb-6" data-i18n="arch_title">Multi-Tranche Architecture</h2>
                         <p class="text-moeba-muted text-lg mb-8 leading-relaxed" data-i18n="arch_subtitle">The HPIV standard introduces a capital hierarchy to absorb shocks without liquidating investors.</p>
-                        
+
                         <div class="space-y-6">
                             <div class="flex gap-4">
                                 <div class="w-12 h-12 bg-moeba-pink/20 rounded-xl flex items-center justify-center shrink-0">
@@ -329,7 +332,7 @@
                                     <p class="text-moeba-muted text-sm" data-i18n="arch_step1_desc">Sponsor commits capital first - 100% loss absorption before any investor impact.</p>
                                 </div>
                             </div>
-                            
+
                             <div class="flex gap-4">
                                 <div class="w-12 h-12 bg-moeba-green/20 rounded-xl flex items-center justify-center shrink-0">
                                     <span class="text-moeba-green font-bold">2</span>
@@ -339,7 +342,7 @@
                                     <p class="text-moeba-muted text-sm" data-i18n="arch_step2_desc">Ring-fenced premium reserve absorbs secondary losses after insurer capital.</p>
                                 </div>
                             </div>
-                            
+
                             <div class="flex gap-4">
                                 <div class="w-12 h-12 bg-yellow-500/20 rounded-xl flex items-center justify-center shrink-0">
                                     <span class="text-yellow-500 font-bold">3</span>
@@ -349,7 +352,7 @@
                                     <p class="text-moeba-muted text-sm" data-i18n="arch_step3_desc">High-risk, high-reward investors absorb remaining losses with leveraged APR.</p>
                                 </div>
                             </div>
-                            
+
                             <div class="flex gap-4">
                                 <div class="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center shrink-0">
                                     <span class="text-blue-500 font-bold">4</span>
@@ -361,12 +364,12 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Visual representation -->
                     <div class="bg-moeba-card border border-moeba-border rounded-3xl p-8 lg:p-12">
                         <h3 class="text-xl font-semibold mb-8 text-center" data-i18n="arch_example_title">Soft Default Simulation</h3>
                         <p class="text-moeba-muted text-sm mb-6 text-center" data-i18n="arch_example_subtitle">Vault $40M | Claim $8M</p>
-                        
+
                         <div class="space-y-4">
                             <div class="relative">
                                 <div class="flex items-center justify-between mb-2">
@@ -378,7 +381,7 @@
                                 </div>
                                 <span class="text-xs text-moeba-muted mt-1 block">$4M</span>
                             </div>
-                            
+
                             <div class="relative">
                                 <div class="flex items-center justify-between mb-2">
                                     <span class="text-sm font-medium" data-i18n="arch_bar2">Junior Tranche</span>
@@ -389,7 +392,7 @@
                                 </div>
                                 <span class="text-xs text-moeba-muted mt-1 block">$4M absorbed</span>
                             </div>
-                            
+
                             <div class="relative">
                                 <div class="flex items-center justify-between mb-2">
                                     <span class="text-sm font-medium" data-i18n="arch_bar3">Senior Tranche</span>
@@ -401,7 +404,7 @@
                                 <span class="text-xs text-moeba-muted mt-1 block" data-i18n="arch_bar3_note">Fully protected</span>
                             </div>
                         </div>
-                        
+
                         <div class="mt-8 pt-6 border-t border-moeba-border">
                             <p class="text-sm text-moeba-green text-center font-medium" data-i18n="arch_result">Senior investors protected through systematic capital hierarchy</p>
                         </div>
@@ -417,7 +420,7 @@
                     <h2 class="text-3xl lg:text-5xl font-bold mb-4" data-i18n="compliance_title">Swiss Regulatory Framework</h2>
                     <p class="text-moeba-muted text-lg max-w-2xl mx-auto" data-i18n="compliance_subtitle">Designed according to revised ISA requirements and the DLT/TRD Law.</p>
                 </div>
-                
+
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div class="bg-moeba-card border border-moeba-border rounded-2xl p-8 text-center">
                         <div class="w-16 h-16 mx-auto mb-6 bg-red-500/10 rounded-2xl flex items-center justify-center">
@@ -426,7 +429,7 @@
                         <h3 class="text-xl font-semibold mb-3" data-i18n="comp1_title">VUSA (Art. 30e ISA)</h3>
                         <p class="text-moeba-muted text-sm leading-relaxed" data-i18n="comp1_desc">Insurance Special Purpose Vehicle structure. Risk transformer fully funded by the capital market with Art. 111d ISO compliance.</p>
                     </div>
-                    
+
                     <div class="bg-moeba-card border border-moeba-border rounded-2xl p-8 text-center">
                         <div class="w-16 h-16 mx-auto mb-6 bg-blue-500/10 rounded-2xl flex items-center justify-center">
                             <svg class="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
@@ -434,7 +437,7 @@
                         <h3 class="text-xl font-semibold mb-3" data-i18n="comp2_title">DLT Law (Art. 973d CO)</h3>
                         <p class="text-moeba-muted text-sm leading-relaxed" data-i18n="comp2_desc">HPIV tokens qualified as Ledger-based Securities. Blockchain acts as official registry of ownership.</p>
                     </div>
-                    
+
                     <div class="bg-moeba-card border border-moeba-border rounded-2xl p-8 text-center">
                         <div class="w-16 h-16 mx-auto mb-6 bg-moeba-green/10 rounded-2xl flex items-center justify-center">
                             <svg class="w-8 h-8 text-moeba-green" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
@@ -449,7 +452,7 @@
         <!-- Technical Deep Dive Section - 3D Parallax Navigation -->
         <section id="deepdive" class="py-24 lg:py-32 relative overflow-hidden">
             <div class="absolute inset-0 bg-moeba-dark"></div>
-            
+
             <!-- Parallax Background Layers -->
             <div class="parallax-container absolute inset-0 overflow-hidden pointer-events-none">
                 <div class="parallax-layer parallax-back absolute w-full h-full opacity-20">
@@ -463,7 +466,7 @@
                     <div class="absolute bottom-1/3 right-1/3 w-5 h-5 bg-moeba-green/30 rounded-full blur-sm"></div>
                 </div>
             </div>
-            
+
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 <div class="text-center mb-16">
                     <div class="inline-flex items-center gap-2 px-4 py-2 bg-moeba-pink/10 border border-moeba-pink/30 rounded-full mb-6">
@@ -473,7 +476,7 @@
                     <h2 class="text-3xl lg:text-5xl font-bold mb-4" data-i18n="deepdive_title">Protocol Deep Dive</h2>
                     <p class="text-moeba-muted text-lg max-w-2xl mx-auto" data-i18n="deepdive_subtitle">Explore the technical foundations powering Moeba Protocol&apos;s decentralized insurance infrastructure.</p>
                 </div>
-                
+
                 <!-- Interactive Cards Grid with Depth -->
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <!-- Card 1 - Smart Contracts -->
@@ -485,7 +488,7 @@
                             </div>
                             <h3 class="text-xl font-bold mb-3" data-i18n="tech1_title">Smart Contracts</h3>
                             <p class="text-moeba-muted text-sm leading-relaxed mb-6" data-i18n="tech1_desc">ERC-4626 Tokenized Vault Standard with multi-tranche architecture. Audited Solidity contracts on Ethereum/Polygon.</p>
-                            
+
                             <div class="space-y-3">
                                 <div class="flex items-center gap-3 text-sm">
                                     <span class="w-2 h-2 bg-moeba-green rounded-full"></span>
@@ -503,14 +506,14 @@
                                     <span class="ml-auto text-moeba-green font-mono text-xs">KYC/AML</span>
                                 </div>
                             </div>
-                            
+
                             <a href="https://github.com/leobtlh/moeba_protocol/tree/main/contracts" target="_blank" class="inline-flex items-center gap-2 mt-6 text-moeba-green text-sm font-medium hover:underline">
                                 View on GitHub
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                             </a>
                         </div>
                     </div>
-                    
+
                     <!-- Card 2 - Oracle System -->
                     <div class="tech-card group relative bg-moeba-card/80 backdrop-blur-sm border border-moeba-border rounded-3xl p-8 hover:border-moeba-pink/50 transition-all duration-500 hover:transform hover:scale-[1.02] hover:shadow-2xl hover:shadow-moeba-pink/10">
                         <div class="absolute inset-0 bg-gradient-to-br from-moeba-pink/5 to-transparent rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
@@ -520,7 +523,7 @@
                             </div>
                             <h3 class="text-xl font-bold mb-3" data-i18n="tech2_title">Oracle Integration</h3>
                             <p class="text-moeba-muted text-sm leading-relaxed mb-6" data-i18n="tech2_desc">UMA Optimistic Oracle for dispute resolution. Real-time data feeds from certified sources for parametric triggers.</p>
-                            
+
                             <div class="space-y-3">
                                 <div class="flex items-center gap-3 text-sm">
                                     <span class="w-2 h-2 bg-moeba-pink rounded-full"></span>
@@ -538,14 +541,14 @@
                                     <span class="ml-auto text-moeba-pink font-mono text-xs">Resolver</span>
                                 </div>
                             </div>
-                            
+
                             <a href="https://github.com/leobtlh/moeba_protocol/blob/main/ressources/whitepaper.md#oracles" target="_blank" class="inline-flex items-center gap-2 mt-6 text-moeba-pink text-sm font-medium hover:underline">
                                 Read Documentation
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                             </a>
                         </div>
                     </div>
-                    
+
                     <!-- Card 3 - Tokenomics -->
                     <div class="tech-card group relative bg-moeba-card/80 backdrop-blur-sm border border-moeba-border rounded-3xl p-8 hover:border-yellow-500/50 transition-all duration-500 hover:transform hover:scale-[1.02] hover:shadow-2xl hover:shadow-yellow-500/10">
                         <div class="absolute inset-0 bg-gradient-to-br from-yellow-500/5 to-transparent rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
@@ -555,7 +558,7 @@
                             </div>
                             <h3 class="text-xl font-bold mb-3" data-i18n="tech3_title">Tokenomics & Yields</h3>
                             <p class="text-moeba-muted text-sm leading-relaxed mb-6" data-i18n="tech3_desc">Asymmetric yield distribution model. Senior APR stability vs Junior leveraged returns through premium allocation.</p>
-                            
+
                             <div class="space-y-3">
                                 <div class="flex items-center justify-between text-sm">
                                     <span class="text-moeba-muted">Senior APR (Stable)</span>
@@ -570,7 +573,7 @@
                                     <span class="text-yellow-500 font-mono font-bold">0.5%</span>
                                 </div>
                             </div>
-                            
+
                             <a href="https://github.com/leobtlh/moeba_protocol/blob/main/ressources/whitepaper.md#tokenomics" target="_blank" class="inline-flex items-center gap-2 mt-6 text-yellow-500 text-sm font-medium hover:underline">
                                 Explore Tokenomics
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
@@ -578,14 +581,14 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Waterfall Visual Schema -->
                 <div class="mt-16 bg-moeba-darker border border-moeba-border rounded-3xl overflow-hidden p-8 lg:p-12">
                     <div class="text-center mb-10">
                         <h3 class="text-xl lg:text-2xl font-bold mb-2" data-i18n="waterfall_title">Soft Default Waterfall</h3>
                         <p class="text-moeba-muted text-sm" data-i18n="waterfall_subtitle">Sequential loss absorption protecting Senior investors</p>
                     </div>
-                    
+
                     <!-- Waterfall Visualization -->
                     <div class="flex flex-col lg:flex-row items-center justify-center gap-6 lg:gap-4">
                         <!-- Step 1: Sponsor -->
@@ -599,7 +602,7 @@
                                 <div class="text-moeba-muted text-xs mt-2">100% absorbed</div>
                             </div>
                         </div>
-                        
+
                         <!-- Arrow -->
                         <div class="hidden lg:flex items-center text-moeba-muted">
                             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
@@ -607,7 +610,7 @@
                         <div class="lg:hidden text-moeba-muted">
                             <svg class="w-6 h-6 rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
                         </div>
-                        
+
                         <!-- Step 2: Premium Reserve -->
                         <div class="waterfall-step group relative">
                             <div class="w-36 lg:w-40 bg-gradient-to-b from-moeba-sage/20 to-moeba-sage/5 border-2 border-moeba-sage rounded-2xl p-5 text-center transition-all hover:scale-105">
@@ -619,7 +622,7 @@
                                 <div class="text-moeba-muted text-xs mt-2">Accumulated yield</div>
                             </div>
                         </div>
-                        
+
                         <!-- Arrow -->
                         <div class="hidden lg:flex items-center text-moeba-muted">
                             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
@@ -627,7 +630,7 @@
                         <div class="lg:hidden text-moeba-muted">
                             <svg class="w-6 h-6 rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
                         </div>
-                        
+
                         <!-- Step 3: Junior -->
                         <div class="waterfall-step group relative">
                             <div class="w-36 lg:w-40 bg-gradient-to-b from-amber-500/20 to-amber-500/5 border-2 border-amber-500 rounded-2xl p-5 text-center transition-all hover:scale-105">
@@ -639,7 +642,7 @@
                                 <div class="text-moeba-muted text-xs mt-2">High risk / High APR</div>
                             </div>
                         </div>
-                        
+
                         <!-- Arrow -->
                         <div class="hidden lg:flex items-center text-moeba-muted">
                             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
@@ -647,7 +650,7 @@
                         <div class="lg:hidden text-moeba-muted">
                             <svg class="w-6 h-6 rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
                         </div>
-                        
+
                         <!-- Step 4: Senior (Protected) -->
                         <div class="waterfall-step group relative">
                             <div class="w-36 lg:w-40 bg-gradient-to-b from-moeba-green/20 to-moeba-green/5 border-2 border-moeba-green rounded-2xl p-5 text-center transition-all hover:scale-105 hover:border-moeba-green-hover">
@@ -660,7 +663,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Stats Bar -->
                     <div class="mt-10 pt-8 border-t border-moeba-border grid grid-cols-2 lg:grid-cols-4 gap-6 text-center">
                         <div>
@@ -687,11 +690,11 @@
         <!-- CTA Section -->
         <section class="py-24 lg:py-32 relative overflow-hidden">
             <div class="absolute inset-0 bg-gradient-to-r from-moeba-green/10 via-transparent to-moeba-pink/10"></div>
-            
+
             <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
                 <h2 class="text-3xl lg:text-5xl font-bold mb-6" data-i18n="cta_title">Ready to Build the Future of Insurance?</h2>
                 <p class="text-moeba-muted text-lg mb-10 max-w-2xl mx-auto" data-i18n="cta_subtitle">Join the decentralized insurance revolution with institutional-grade infrastructure.</p>
-                
+
                 <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
                     <a href="/app/" target="_blank" class="w-full sm:w-auto bg-moeba-green text-moeba-dark px-8 py-4 rounded-xl font-semibold text-base hover:bg-moeba-green-hover transition-all hover:scale-105" data-i18n="cta_launch_final">Launch dApp</a>
                     <a href="https://discord.gg/HGaYQNJh" target="_blank" class="w-full sm:w-auto border border-moeba-border text-moeba-light px-8 py-4 rounded-xl font-semibold text-base hover:bg-moeba-card transition-all" data-i18n="cta_discord">Join Discord</a>
@@ -711,7 +714,7 @@
                         </a>
                         <p class="text-moeba-muted text-sm" data-i18n="footer_tagline">Swiss ISPV Infrastructure for Decentralized Parametric Insurance.</p>
                     </div>
-                    
+
                     <!-- Protocol -->
                     <div>
                         <h4 class="font-semibold mb-4" data-i18n="footer_protocol">Protocol</h4>
@@ -721,7 +724,7 @@
                             <li><a href="#" class="text-moeba-muted text-sm hover:text-moeba-light transition-colors" data-i18n="footer_mechanics">Mechanics</a></li>
                         </ul>
                     </div>
-                    
+
                     <!-- Resources -->
                     <div>
                         <h4 class="font-semibold mb-4" data-i18n="footer_resources">Resources</h4>
@@ -731,7 +734,7 @@
                             <li><a href="#" class="text-moeba-muted text-sm hover:text-moeba-light transition-colors" data-i18n="footer_docs">Documentation</a></li>
                         </ul>
                     </div>
-                    
+
                     <!-- Legal -->
                     <div>
                         <h4 class="font-semibold mb-4" data-i18n="footer_legal">Legal</h4>
@@ -741,18 +744,18 @@
                             <li><a href="#" class="text-moeba-muted text-sm hover:text-moeba-light transition-colors" data-i18n="footer_risk">Risk Warning</a></li>
                         </ul>
                     </div>
-                    
+
                     <!-- Contact -->
                     <div>
                         <h4 class="font-semibold mb-4" data-i18n="footer_contact">Contact</h4>
                         <ul class="space-y-3">
                             <li><span class="text-moeba-muted text-sm">Lausanne, Switzerland</span></li>
-                            <li><a href="mailto:info@moeba.ch" class="text-moeba-muted text-sm hover:text-moeba-light transition-colors">info@moeba.ch</a></li>
+                            <li><a href="/cdn-cgi/l/email-protection#93fafdf5fcd3fefcf6f1f2bdf0fb" class="text-moeba-muted text-sm hover:text-moeba-light transition-colors"><span class="__cf_email__" data-cfemail="9df4f3fbf2ddf0f2f8fffcb3fef5">[email&#160;protected]</span></a></li>
                             <li><a href="https://discord.gg/HGaYQNJh" target="_blank" class="text-moeba-muted text-sm hover:text-moeba-light transition-colors">Discord</a></li>
                         </ul>
                     </div>
                 </div>
-                
+
                 <div class="pt-8 border-t border-moeba-border flex flex-col sm:flex-row items-center justify-between gap-4">
                     <p class="text-moeba-muted text-sm" data-i18n="footer_copyright">© Moeba Protocol 2026 • Swiss ISPV Infrastructure</p>
                     <div class="flex items-center gap-6">

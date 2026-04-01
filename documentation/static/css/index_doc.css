@@ -65,3 +65,34 @@ main::-webkit-scrollbar-thumb:hover {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
 }
+
+/* ============================================
+   LIGHT THEME OVERRIDES
+   ============================================ */
+body.light-theme {
+    background-color: #F4F7F8;
+    color: #0f172a;
+}
+body.light-theme .bg-moeba-dark { background-color: #F4F7F8; }
+body.light-theme .bg-moeba-darker { background-color: #EAF0F2; }
+body.light-theme .bg-moeba-card { background-color: #FFFFFF; }
+body.light-theme .border-moeba-border { border-color: rgba(0, 0, 0, 0.08); }
+body.light-theme .text-moeba-light,
+body.light-theme .text-moeba-cream { color: #0f172a; }
+body.light-theme .text-moeba-muted { color: #475569; }
+
+/* Scrollbars Light */
+body.light-theme main::-webkit-scrollbar-track { background: #F4F7F8; }
+body.light-theme main::-webkit-scrollbar-thumb { background: #CBD5E1; }
+
+/* Sidebar Links Light */
+body.light-theme .nav-link { color: #475569; }
+body.light-theme .nav-link:hover {
+    color: #0f172a;
+    background-color: rgba(0, 0, 0, 0.05);
+}
+body.light-theme .nav-link.active {
+    color: #059669; /* Un vert un peu plus sombre pour la lisibilité sur fond clair */
+    border-left-color: #059669;
+    background-color: rgba(5, 150, 105, 0.1);
+}
