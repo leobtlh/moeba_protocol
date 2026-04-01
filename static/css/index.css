@@ -169,29 +169,31 @@ html {
 }
 
 /* ============================================
-   LIGHT THEME - Sanzo Wada Warm Palette
+   LIGHT THEME - Version Claire (Blanc Clinique)
    ============================================ */
-body.light-theme {
-    /* Wada-inspired warm neutrals */
-    --bg-dark: #FAF8F3;        /* Warm paper white */
-    --bg-darker: #F5F0E6;      /* Cream */
-    --bg-card: #FFFFFF;
-    --border-color: #E8E2D6;   /* Warm gray border */
-    --text-light: #1A1A1A;     /* Deep charcoal */
-    --text-muted: #6B6560;     /* Warm gray */
-}
 
 body.light-theme {
-    background-color: #FAF8F3;
-    color: #1A1A1A;
+    /* Variables basées sur la palette "Blanc clinique pur & pro" */
+    --bg-dark: #F4F7F8;        /* Blanc glacé très subtil (Hint of Iron Blue) - Fond principal */
+    --bg-darker: #EAF0F2;      /* Navigation légèrement teintée pour délimiter */
+    --bg-card: #FFFFFF;        /* Cartes en blanc pur */
+    --border-color: rgba(0, 0, 0, 0.05); /* Bordure très fine et discrète */
+    --text-light: #0f172a;     /* Texte principal foncé (Slate) */
+    --text-muted: #475569;     /* Texte atténué */
+}
+
+/* Application des styles */
+body.light-theme {
+    background-color: #F4F7F8;
+    color: #0f172a;
 }
 
 body.light-theme .bg-moeba-dark {
-    background-color: #FAF8F3;
+    background-color: #F4F7F8;
 }
 
 body.light-theme .bg-moeba-darker {
-    background-color: #F5F0E6;
+    background-color: #EAF0F2;
 }
 
 body.light-theme .bg-moeba-card {
@@ -199,32 +201,34 @@ body.light-theme .bg-moeba-card {
 }
 
 body.light-theme .border-moeba-border {
-    border-color: #E8E2D6;
+    border-color: rgba(0, 0, 0, 0.05);
 }
 
 body.light-theme .text-moeba-light,
 body.light-theme .text-moeba-cream {
-    color: #1A1A1A;
+    color: #0f172a;
 }
 
 body.light-theme .text-moeba-muted {
-    color: #6B6560;
+    color: #475569;
 }
 
+/* Fond transparent (Navbar) - Conversion de #F4F7F8 en RGBA */
 body.light-theme .bg-moeba-dark\/80 {
-    background-color: rgba(250, 248, 243, 0.9);
+    background-color: rgba(244, 247, 248, 0.8);
 }
 
 body.light-theme .loader-overlay {
-    background-color: #FAF8F3;
+    background-color: #F4F7F8;
 }
 
+/* Barre de défilement (Scrollbar) pour le thème clair */
 body.light-theme ::-webkit-scrollbar-track {
-    background: #FAF8F3;
+    background: #F4F7F8;
 }
 
 body.light-theme ::-webkit-scrollbar-thumb {
-    background: #D4CFC5;
+    background: #CBD5E1; /* Gris bleuté clair pour le contraste */
 }
 
 /* ============================================
